@@ -1,0 +1,103 @@
+{
+  "layout": [
+    {
+      "width": 320,
+      "view": "home",
+      "scrollWidth": 320,
+      "innerWidth": 320
+    },
+    {
+      "width": 320,
+      "view": "board",
+      "scrollWidth": 320,
+      "innerWidth": 320
+    },
+    {
+      "width": 320,
+      "view": "pieces",
+      "scrollWidth": 320,
+      "innerWidth": 320
+    },
+    {
+      "width": 320,
+      "view": "moves",
+      "scrollWidth": 320,
+      "innerWidth": 320
+    },
+    {
+      "width": 320,
+      "view": "play",
+      "scrollWidth": 320,
+      "innerWidth": 320
+    },
+    {
+      "width": 390,
+      "view": "home",
+      "scrollWidth": 390,
+      "innerWidth": 390
+    },
+    {
+      "width": 390,
+      "view": "board",
+      "scrollWidth": 390,
+      "innerWidth": 390
+    },
+    {
+      "width": 390,
+      "view": "pieces",
+      "scrollWidth": 390,
+      "innerWidth": 390
+    },
+    {
+      "width": 390,
+      "view": "moves",
+      "scrollWidth": 390,
+      "innerWidth": 390
+    },
+    {
+      "width": 390,
+      "view": "play",
+      "scrollWidth": 390,
+      "innerWidth": 390
+    },
+    {
+      "width": 768,
+      "view": "home",
+      "scrollWidth": 768,
+      "innerWidth": 768
+    },
+    {
+      "width": 768,
+      "view": "board",
+      "scrollWidth": 768,
+      "innerWidth": 768
+    },
+    {
+      "width": 768,
+      "view": "pieces",
+      "scrollWidth": 768,
+      "innerWidth": 768
+    },
+    {
+      "width": 768,
+      "view": "moves",
+      "scrollWidth": 768,
+      "innerWidth": 768
+    },
+    {
+      "width": 768,
+      "view": "play",
+      "scrollWidth": 768,
+      "innerWidth": 768
+    }
+  ],
+  "historyBeforeReload": 2,
+  "keyboard": {
+    "cells": 256,
+    "tabbable": 256
+  },
+  "historyAfterReload": 0,
+  "externalRequests": [],
+  "storageDenied": [],
+  "invalidSave": []
+}

@@ -1,0 +1,26 @@
+/* 原始开发者：不疾不徐 | Copyright (c) 2026 合肥市朋程共行电子商务有限责任公司 | 许可状态见 COPYRIGHT */
+const assert=require('node:assert/strict');const {server}=require('./friend-server.cjs');
+const {chromium}=require('C:/Users/asus/.cache/codex-runtimes/codex-primary-runtime/dependencies/node/node_modules/playwright');
+(async()=>{const s=server();await new Promise(r=>s.listen(0,'127.0.0.1',r));const base='http://127.0.0.1:'+s.address().port;let browser;
+try{const api=async data=>{const r=await fetch(base+'/api/friend',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(data)});return {status:r.status,data:await r.json()};};
+const w=(await api({action:'create'})).data;const b=(await api({action:'join',id:w.id})).data;
+assert.equal((await api({action:'state',id:w.id,token:'wrong'})).status,400);
+let state=(await api({...w,action:'state'})).data;
+assert.equal((await api({...w,action:'move',version:state.version,op:'early',from:12,to:28})).status,400);
+state=(await api({...w,action:'ready',version:state.version,op:'r1'})).data;state=(await api({...b,action:'ready',version:state.version,op:'r2'})).data;
+assert.equal((await api({...b,action:'move',version:state.version,op:'wrongturn',from:52,to:36})).status,400);
+assert.equal((await api({...w,action:'move',version:state.version,op:'illegal',from:12,to:36})).status,400);
+const move={...w,action:'move',version:state.version,op:'move1',from:12,to:28};state=(await api(move)).data;assert.equal(state.history.length,1);assert.equal((await api(move)).data.history.length,1);
+assert.equal((await api({...b,action:'move',version:0,op:'stale',from:52,to:36})).status,400);
+browser=await chromium.launch({executablePath:'C:/Program Files/Google/Chrome/Application/chrome.exe',headless:true});
+const c1=await browser.newContext(),c2=await browser.newContext();const p1=await c1.newPage(),p2=await c2.newPage();const errors=[];for(const p of [p1,p2])p.on('pageerror',e=>errors.push(e.message));
+await p1.goto(base);await p2.goto(base);for(const p of [p1,p2])await p.evaluate(()=>{go('play');hideGuide();});
+await p1.locator('#friendCreate').click();await p1.waitForFunction(()=>document.querySelector('#friendStatus').textContent.includes('等待好友加入'));
+const id=(await p1.locator('#friendStatus').innerText()).match(/房间 ([A-F0-9]+)/)[1];await p2.locator('#friendCode').fill(id);await p2.locator('#friendJoin').click();await p2.waitForFunction(()=>!document.querySelector('#friendReady').hidden);await p1.waitForTimeout(2200);
+await p1.locator('#friendReady').click();await p2.waitForTimeout(2200);await p2.locator('#friendReady').click();await p1.waitForFunction(()=>document.querySelector('#friendStatus').textContent.includes('轮到你'));
+await p1.locator('#friendBoard [data-idx="12"]').click();await p1.locator('#friendBoard [data-idx="28"]').click();await p2.waitForFunction(()=>document.querySelector('#friendStatus').textContent.includes('轮到你'));
+assert.equal(await p2.locator('#friendBoard [data-idx="28"] .piece').count(),1);await p2.reload();await p2.evaluate(()=>{go('play');hideGuide();});await p2.waitForFunction(()=>document.querySelector('#friendStatus').textContent.includes('轮到你'));
+assert.equal(await p2.locator('#friendBoard [data-idx="28"] .piece').count(),1);
+await p2.setViewportSize({width:390,height:844});assert.ok(await p2.evaluate(()=>document.documentElement.scrollWidth<=innerWidth));await p2.locator('#friendBoard').screenshot({path:__dirname+'/preview-friend-board.png'});
+assert.deepEqual(errors,[]);console.log('PASS: two isolated browsers, create/join/ready/move, seat reload recovery; authorization, illegal moves, duplicate and stale requests; mobile width.');
+}finally{if(browser)await browser.close();await new Promise(r=>s.close(r));}})().catch(e=>{console.error(e);process.exitCode=1;});

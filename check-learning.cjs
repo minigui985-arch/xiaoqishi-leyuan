@@ -1,0 +1,33 @@
+/* 原始开发者：不疾不徐 | Copyright (c) 2026 合肥市朋程共行电子商务有限责任公司 | 许可状态见 COPYRIGHT */
+const {chromium}=require('C:/Users/asus/.cache/codex-runtimes/codex-primary-runtime/dependencies/node/node_modules/playwright');
+const {pathToFileURL}=require('node:url'),assert=require('node:assert/strict');
+(async()=>{const browser=await chromium.launch({executablePath:'C:/Program Files/Google/Chrome/Application/chrome.exe',headless:true});try{
+const page=await browser.newPage({viewport:{width:1100,height:1000},reducedMotion:'reduce'});const errors=[];page.on('pageerror',e=>errors.push(e.message));
+await page.goto(pathToFileURL(__dirname+'/小骑士乐园-统一主题版.html').href);
+await page.evaluate(()=>{go('play');hideGuide();});await page.locator('[data-mode="battle"]').click();await page.evaluate(()=>hideGuide());
+assert.equal(await page.locator('#coachPanel').count(),1);
+await page.locator('#coachHint').click();assert.match(await page.locator('#coachMessage').innerText(),/观察/);
+await page.evaluate(()=>doBattleMove({from:12,to:28}));
+await page.waitForFunction(()=>battle.history.length===2&&!battle.thinking);
+const before=await page.evaluate(()=>JSON.stringify(battle));
+await page.evaluate(()=>{go('home');go('play');hideGuide();});assert.equal(await page.evaluate(()=>JSON.stringify(battle)),before);
+await page.locator('#coachUndo').click();assert.equal(await page.evaluate(()=>battle.history.length),0);
+await page.evaluate(()=>{doBattleMove({from:12,to:28});initBattle();});
+await page.waitForTimeout(700);assert.equal(await page.evaluate(()=>battle.history.length),0);
+await page.evaluate(()=>doBattleMove({from:12,to:28}));await page.locator('[data-mode="capture"]').click();await page.waitForTimeout(600);assert.equal(await page.evaluate(()=>battle.history.length),1);await page.locator('[data-mode="battle"]').click();await page.waitForFunction(()=>battle.history.length===2&&!battle.thinking);
+await page.evaluate(()=>initBattle());
+await page.evaluate(()=>{battle.board=emptyBoard();battle.board[4]={t:'k',c:'w'};battle.board[60]={t:'k',c:'b'};battle.board[3]={t:'q',c:'w'};battle.board[59]={t:'r',c:'b'};battle.cast={};battle.positions=[positionKey(battle.board,'w',battle.cast)];recordAndMove({from:3,to:27},'w');battle.turn='w';battle.over=true;battle.thinking=false;renderBattle();renderCoach();});
+const snapshot=await page.evaluate(()=>JSON.stringify(battle));await page.locator('#coachReview').click();
+await page.locator('#reviewDirection').click();assert.match(await page.locator('#reviewMessage').innerText(),/观察/);
+await page.locator('#reviewAnswer').click();assert.equal(await page.locator('#reviewBoard .route-overlay').count(),1);
+await page.locator('#reviewReply').click();await page.locator('#reviewRetry').click();
+const move=await page.evaluate(()=>review.items[0].lines[0].move);
+await page.locator('#reviewBoard [data-idx="'+move.from+'"]').click();await page.locator('#reviewBoard [data-idx="'+move.to+'"]').click();assert.match(await page.locator('#reviewMessage').innerText(),/稳妥/);
+assert.equal(await page.evaluate(()=>JSON.stringify(battle)),snapshot);
+await page.screenshot({path:__dirname+'/preview-guided-review.png',fullPage:true});await page.locator('#closeReview').click();
+await page.setViewportSize({width:390,height:844});await page.evaluate(()=>hideGuide());assert.ok(await page.evaluate(()=>document.documentElement.scrollWidth<=innerWidth));
+await page.locator('#coachReview').click();assert.ok(await page.locator('#reviewDialog').evaluate(el=>el.getBoundingClientRect().width<=innerWidth));await page.locator('#closeReview').click();
+await page.evaluate(()=>{initBattle();battle.board=emptyBoard();battle.board[4]={t:'k',c:'w'};battle.board[60]={t:'k',c:'b'};battle.board[48]={t:'p',c:'w'};battle.cast={};renderBattle();onBattleClick(48);onBattleClick(56);});
+assert.equal(await page.locator('#promotionDialog [data-promotion]').count(),4);await page.locator('#promotionDialog [data-promotion="n"]').click();assert.equal(await page.evaluate(()=>battle.board[56].t),'n');
+assert.deepEqual(errors,[]);console.log('PASS: hint, move/AI, undo, navigation, stale AI cancellation, review arrows, retry isolation, mobile layout.');
+}finally{await browser.close();}})().catch(e=>{console.error(e);process.exit(1);});

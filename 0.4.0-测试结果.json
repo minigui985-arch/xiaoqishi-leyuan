@@ -1,0 +1,42 @@
+[
+  {
+    "test": "build-theme.cjs",
+    "exit": 0,
+    "output": "PASS: canonical HTML syntax and all skin assets. No desktop source dependency.\r\n"
+  },
+  {
+    "test": "check-rules.cjs",
+    "exit": 0,
+    "output": "PASS: {\"initial\":[20,400,8902],\"kiwi\":[48,2039],\"pin\":false,\"epPin\":false,\"promotions\":[\"b\",\"n\",\"q\",\"r\"],\"pawnCheck\":true,\"epSet\":[3,4],\"epExpired\":null,\"capturedRookRight\":false}\r\nPASS: checkmate, stalemate, castling through attack, legal en passant, no king captures.\r\n"
+  },
+  {
+    "test": "check-learning.cjs",
+    "exit": 0,
+    "output": "PASS: hint, move/AI, undo, navigation, stale AI cancellation, review arrows, retry isolation, mobile layout.\r\n"
+  },
+  {
+    "test": "check-replay.cjs",
+    "exit": 0,
+    "output": "PASS: replay seek/step/play/pause/end/ESC, retry switch, state isolation, mobile controls and special moves.\r\n"
+  },
+  {
+    "test": "check-theme.cjs",
+    "exit": 0,
+    "output": "PASS: five mobile views, both themes, local art loading, faction selection, dialog, saved preference, learning and battle state preservation; no page errors.\r\n"
+  },
+  {
+    "test": "check-friends.cjs",
+    "exit": 0,
+    "output": "PASS: two isolated browsers, create/join/ready/move, seat reload recovery; authorization, illegal moves, duplicate and stale requests; mobile width.\r\n"
+  },
+  {
+    "test": "check-feedback.cjs",
+    "exit": 0,
+    "output": "PASS: mobile feedback submission, durable file, deduplication, invalid input, private storage, network failure preserves text.\r\nIsolated test data (not production): C:\\Users\\asus\\AppData\\Local\\Temp\\knight-feedback-test-kCHmTP\r\n"
+  },
+  {
+    "test": "check-recovery.cjs",
+    "exit": 0,
+    "output": "PASS: create/join retry, black host, disk restart, AI reload, black orientation, isolated friend replay and leave.\r\n"
+  }
+]

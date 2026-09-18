@@ -1,0 +1,55 @@
+/* 原始开发者：不疾不徐 | Copyright (c) 2026 合肥市朋程共行电子商务有限责任公司 | 许可状态见 COPYRIGHT */
+.coach-panel{padding:18px;margin:14px 0;background:var(--card);border:1px solid var(--card-border);border-radius:var(--radius-md)}.coach-panel h3{font-size:1rem}.coach-panel p{font-size:.85rem;margin:8px 0;color:var(--ink-2)}.coach-actions{display:flex;gap:8px;flex-wrap:wrap}.coach-actions .btn{font-size:.78rem;padding:8px 12px}.coach-mode{font-size:.72rem;color:var(--green);font-weight:700}.race-pending{margin-top:14px;padding-top:12px;border-top:1px solid var(--card-border);font-size:.7rem;color:var(--ink-2)}.review-board{position:relative;max-width:550px;margin:12px auto}.route-overlay{position:absolute;inset:0;width:100%;height:100%;pointer-events:none;z-index:8}.review-line{stroke-dasharray:6 3}.review-controls{display:flex;gap:8px;flex-wrap:wrap;margin:12px 0}.review-copy{padding:14px;background:var(--orange-soft);border-radius:var(--radius-sm);font-size:.9rem;line-height:1.8}.review-caption{font-size:.72rem;color:var(--ink-2);margin:10px 0}.review-head{display:flex;align-items:center;justify-content:space-between;gap:12px}.review-head h2{font-size:1.1rem}#reviewDialog{max-width:700px}#promotionDialog{max-width:480px}.promotion-choices{display:grid;grid-template-columns:repeat(4,1fr);gap:8px}.promotion-choices button{border:1px solid var(--card-border);border-radius:var(--radius-sm);padding:10px}.promotion-choices svg{width:70px;max-width:100%}.coach-note{min-height:2em}#reviewMessage{min-height:3em}.review-controls button:disabled{opacity:.45}.review-board .board-wrap{touch-action:manipulation}
+.replay-tabs,.replay-transport{display:flex;gap:8px;flex-wrap:wrap;margin:12px 0}.replay-tabs [aria-pressed=true]{border-color:var(--orange);background:var(--orange-soft);color:var(--orange-deep)}.replay-transport .btn{padding:8px 12px;font-size:.8rem}.replay-transport label{display:flex;align-items:center;gap:6px;font-size:.8rem;color:var(--ink-2)}.replay-transport select{padding:8px;border:1px solid var(--card-border);border-radius:var(--radius-sm);background:var(--card);color:var(--ink)}#replaySeek{width:100%;accent-color:var(--orange);min-height:30px}#replayToolbar{padding:10px;border:1px solid var(--card-border);border-radius:var(--radius-sm)}
+/* Fit the full 8×8 grid; content must not set implicit row heights. */
+.board{aspect-ratio:1;min-width:0;grid-template-columns:repeat(8,minmax(0,1fr));grid-template-rows:repeat(8,minmax(0,1fr))}
+.board .sq{aspect-ratio:auto;min-width:0;min-height:0}
+.board .piece{position:absolute;inset:6%;width:88%;height:88%}
+.board-wrap,#playBoardWrap{width:min(100%,max(200px,calc(100dvh - 280px)));max-width:560px;scroll-margin-block:90px}
+.board-inner{min-width:0}.board-ranks{flex-shrink:0}
+#reviewDialog[open]{display:flex;flex-direction:column;width:min(1120px,96vw);max-width:1120px;height:min(760px,calc(100dvh - 24px));max-height:calc(100dvh - 24px);padding:16px;overflow:hidden;box-sizing:border-box}
+#reviewDialog .review-head{flex:none;margin-bottom:12px;gap:8px}
+#reviewDialog .review-head h2{font-size:1rem}
+.review-layout{display:grid;grid-template-columns:minmax(0,1.25fr) minmax(260px,1fr);gap:18px;flex:1;min-height:0}
+#reviewDialog .review-board{width:100%;max-width:min(100%,calc(100dvh - 130px));margin:0 auto;align-self:start}
+#reviewDialog .board-wrap{width:100%;max-width:none}
+.review-side{min-height:0;overflow:auto;overscroll-behavior:contain;padding:0 4px 12px;scrollbar-gutter:stable}
+.review-side .review-controls{gap:6px}.review-side .review-controls .btn{padding:8px 10px;font-size:.8rem}
+.review-side #reviewProgress{margin:8px 0}.review-side #reviewMessage{padding:12px;font-size:.85rem}
+@media(max-width:680px){
+ #reviewDialog[open]{padding:10px}
+ .review-layout{grid-template-columns:minmax(0,1fr);grid-template-rows:auto minmax(0,1fr);gap:8px}
+ #reviewDialog .review-board{max-width:100%}
+ #reviewDialog .review-board{width:min(100%,max(150px,calc(100dvh - 350px)))}
+ #reviewDialog .review-head{margin-bottom:8px}
+ .review-side .replay-tabs{margin:4px 0}.review-side .review-copy{margin:6px 0}
+}
+
+/* Board-first layout: size by the viewport short edge, not a fixed subtraction. */
+.board-ranks{width:24px;flex:0 0 24px}.board-files{padding-left:28px}
+.board-wrap,#playBoardWrap{width:min(100%,calc(86vmin + 28px));max-width:none}
+body.board-page .app{max-width:none;width:98%;margin:auto}
+body.board-page .topbar{position:static}
+body.board-page .bottomnav{position:static;transform:none;max-width:none;width:100%;margin:auto}
+.battle-workspace{display:grid;grid-template-columns:minmax(0,auto) minmax(260px,1fr);gap:24px;align-items:start;max-width:1600px;margin:auto;padding:10px 0}
+.battle-workspace #playBoardWrap{width:calc(86vmin + 28px);max-width:100%;margin:0}
+.battle-sidebar{max-height:94dvh;overflow:auto;min-width:0;padding:0 4px}
+.battle-sidebar .opponent-row{margin:0 0 10px}.battle-sidebar .play-status{flex-wrap:wrap;gap:8px}
+.battle-sidebar .coach-panel{padding:12px}.battle-sidebar .captured-tray{padding:10px}
+#reviewDialog[open]{width:98vw;max-width:none;height:98dvh;max-height:98dvh;padding:10px}
+#reviewDialog .review-head{margin-bottom:6px}
+.review-layout{grid-template-columns:minmax(0,auto) minmax(240px,1fr);gap:16px}
+#reviewDialog .review-board{width:calc(82vmin + 28px);max-width:100%;margin:0}
+@media(max-width:700px){
+ body.board-page .app{width:100%}body.board-page .app-main{padding-left:8px;padding-right:8px}
+ .battle-workspace{grid-template-columns:minmax(0,1fr);gap:12px}
+ .battle-workspace #playBoardWrap{width:min(100%,calc(90vw + 28px));margin:auto}
+ .battle-sidebar{max-height:none;overflow:visible}
+ .review-layout{grid-template-columns:minmax(0,1fr);grid-template-rows:auto minmax(0,1fr);gap:6px}
+ #reviewDialog .review-board{width:min(100%,calc(86vmin + 28px));margin:auto}
+}
+
+@media(min-width:701px){
+ #reviewDialog .review-head{position:absolute;top:12px;right:14px;width:calc(98vw - 82vmin - 70px);z-index:2}
+ #reviewDialog .review-side{padding-top:58px}
+}
