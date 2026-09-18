@@ -72,8 +72,9 @@ function server(options={}){const service=createRoomService(options.roomFile);co
   }
   if(req.method!=='GET')throw new Error('不支持的请求');
   const name=decodeURIComponent(new URL(req.url,'http://localhost').pathname).slice(1)||'小骑士乐园-统一主题版.html';
-  if(!['小骑士乐园-统一主题版.html','friend-client.js','feedback-client.js','battle-save.js','app-info.js','immersive.js'].includes(name)&&!/^assets\/[a-z_]+\.png$/.test(name))throw new Error('资源不存在');
-  res.setHeader('Content-Type',name.endsWith('.html')?'text/html; charset=utf-8':name.endsWith('.js')?'text/javascript; charset=utf-8':'image/png');res.end(fs.readFileSync(path.join(__dirname,name)));
+  const publicFiles=['小骑士乐园-统一主题版.html','friend-client.js','feedback-client.js','battle-save.js','app-info.js','immersive.js','classic-games.css','classic-games.js','classic-games-data.js','stockfish-engine.js','vendor/stockfish/stockfish-18-lite-single.js','vendor/stockfish/stockfish-18-lite-single.wasm','vendor/stockfish/stockfish-18-lite-bundle.js','vendor/stockfish/stockfish-18-lite-factory.js'];
+  if(!publicFiles.includes(name)&&!/^assets\/[a-z_]+\.png$/.test(name))throw new Error('资源不存在');
+  const type=name.endsWith('.html')?'text/html; charset=utf-8':name.endsWith('.css')?'text/css; charset=utf-8':name.endsWith('.js')?'text/javascript; charset=utf-8':name.endsWith('.wasm')?'application/wasm':'image/png';res.setHeader('Content-Type',type);res.end(fs.readFileSync(path.join(__dirname,name)));
  }catch(e){res.statusCode=400;res.setHeader('Content-Type','application/json; charset=utf-8');res.end(JSON.stringify({error:e.message}));}
 });}
 if(require.main===module)server({roomFile:require('./data-paths.cjs').roomFile}).listen(8787,'127.0.0.1',()=>console.log('本地联调：http://127.0.0.1:8787（房间保存至统一运行数据目录；禁止直接公网发布）'));

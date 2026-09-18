@@ -8,6 +8,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>小骑士乐园 · 双阵营学园</title>
 <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect x='4' y='4' width='56' height='56' rx='14' fill='%23FF8A3D'/%3E%3Cpath d='M14 16h10v8a8 8 0 0 1-10 0z' fill='%23FFF8EA'/%3E%3Cpath d='M14 16h10v3H14z' fill='%233A2E28'/%3E%3Ccircle cx='17' cy='19' r='1.6' fill='%233A2E28'/%3E%3Crect x='22' y='34' width='20' height='18' rx='4' fill='%23FFF8EA'/%3E%3Cpath d='M22 38h20v6H22z' fill='%233A2E28' opacity='.12'/%3E%3C/svg%3E">
+<link rel="stylesheet" href="classic-games.css">
 
 <style>
 /* ============ 设计变量 ============ */
@@ -930,7 +931,7 @@ let currentView = 'home';
 function showView(name, opts){
   if(currentView==='moves' && name!=='moves'){ movesLesson.epoch++; movesLesson.demoRunning=false; movesLesson.busy=false; }
   currentView = name;
-  document.body.classList.toggle('board-page',['board','moves','play'].includes(name));
+  document.body.classList.toggle('board-page',['board','moves','play','games'].includes(name));
   $$('.view').forEach(v=>v.classList.add('hidden'));
   const target = $('#view-'+name);
   target.classList.remove('hidden');
@@ -942,6 +943,7 @@ function showView(name, opts){
   if(name==='pieces') initPiecesLesson();
   if(name==='moves') initMovesLesson();
   if(name==='play') initPlayPage();
+  if(name==='games' && window.KnightClassics) KnightClassics.render();
   setTimeout(initBoardZoom, 50);
 }
 function go(name, opts){ showView(name, opts); try{ history.replaceState(null,'','#'+name); }catch(e){} }
@@ -1272,6 +1274,7 @@ const battle = {
   board:null, cast:null, turn:'w', over:false, thinking:false,
   selected:null, captured:{w:[],b:[]}, lastMove:null
 };
+let battleAiLevel=localStorage.getItem('knight-ai-level')||'basic';
 function initBattle(){
  clearTimeout(aiTimer);battleEpoch++;closeResult();
  battle.board=setupBoard();battle.cast=castlingState();battle.cast.halfmove=0;
@@ -1300,6 +1303,7 @@ function renderBattle(){
     ${battle.thinking?'小骑思考中…':(battle.over?'对局结束':(battle.turn==='w'?'轮到你啦':'小骑走棋中'))}`;
   $('#capWhite').innerHTML = battle.captured.w.map(p=>pieceSVG(p.t,p.c)).join('');
   $('#capBlack').innerHTML = battle.captured.b.map(p=>pieceSVG(p.t,p.c)).join('');
+  const engineState=$('#engineState');if(engineState)engineState.textContent=battleAiLevel==='master'?(battle.thinking?'大师正在推演…':'Stockfish 大师 · 本地离线'):'明军陪练 · 基础';
 }
 function onBattleClick(idx){
  if(battle.over||battle.thinking||battle.turn!=='w')return;
@@ -1320,9 +1324,15 @@ function doBattleMove(mv){
  const epoch=battleEpoch;aiTimer=setTimeout(()=>{if(epoch===battleEpoch)aiTurn();},450);
 }
 
-function aiTurn(){
+async function aiTurn(){
  if(battle.over||battle.turn!=='b')return;
- const mv=aiPickMove(battle.board,battle.cast);if(!mv){checkGameEnd('b');return;}
+ const epoch=battleEpoch;let mv=null;
+ if(battleAiLevel==='master'&&window.KnightStockfish){
+  try{const pos=copyPosition(battle.board,battle.cast);mv=await KnightStockfish.chooseMove(pos.board,'b',pos.cast,{movetime:1100});}
+  catch(e){console.warn(e);toast('大师引擎暂未就绪，本步由基础陪练接手','info');}
+ }
+ if(epoch!==battleEpoch||battle.over||battle.turn!=='b')return;
+ mv=mv||aiPickMove(battle.board,battle.cast);if(!mv){checkGameEnd('b');return;}
  recordAndMove(mv,'b');battle.turn='w';battle.thinking=false;renderBattle();renderCoach();checkGameEnd('w');
 }
 
@@ -1969,9 +1979,10 @@ function renderCapturePanel(lv){
 }
 function startBattle(){
   $('#playPanel').innerHTML = `
-    <div class="opponent-row"><div class="player-west"><span> 白方 · 十字军</span><b>你 · 骑士指挥官</b></div><span class="vs-mark">VS</span><div class="player-east"><span>黑方 · 明军 </span><b>小骑 · 明军陪练</b></div></div><div class="play-status">
+    <div class="opponent-row"><div class="player-west"><span> 白方 · 十字军</span><b>你 · 骑士指挥官</b></div><span class="vs-mark">VS</span><div class="player-east"><span>黑方 · 明军 </span><b id="engineState">明军陪练 · 基础</b></div></div><div class="play-status">
       <div class="turn" id="playTurn"></div>
       <div style="display:flex;gap:6px;align-items:center">
+        <label class="ai-level-label">对手 <select id="aiLevel"><option value="basic">基础陪练</option><option value="master">Stockfish 大师</option></select></label>
         <button class="btn btn-ghost btn-sm" id="zoomIn" title="放大看细节">🔍+</button>
         <button class="btn btn-ghost btn-sm" id="zoomOut" title="缩小看全局">🔍−</button>
         <button class="btn btn-ghost btn-sm" id="zoomReset" title="重置视图">⟲</button>
@@ -1982,6 +1993,8 @@ function startBattle(){
     <div class="captured-tray">十字军俘获：<span class="c-pieces" id="capWhite"></span></div>
     <div class="captured-tray">明军俘获：<span class="c-pieces" id="capBlack"></span></div>`;
   $('#restartBattle').addEventListener('click', ()=>{ SFX.tap(); initBattle(); });
+  $('#aiLevel').value=battleAiLevel;
+  $('#aiLevel').addEventListener('change',e=>{battleAiLevel=e.target.value;localStorage.setItem('knight-ai-level',battleAiLevel);renderBattle();if(battleAiLevel==='master'){toast('大师引擎在本机离线运行，首次启动需要几秒','info');KnightStockfish?.ready().catch(err=>toast(err.message,'error'));}});
   /* 棋盘缩放按钮（滚轮和拖拽由initBoardZoom提供） */
   const bWrap = $('#playBoardWrap');
   $('#zoomIn').addEventListener('click', ()=>{ SFX.tap(); const s=bWrap._zoomGet?bWrap._zoomGet():{scale:1,tx:0,ty:0}; bWrap._zoomSet(Math.min(4.5,s.scale+0.5), s.tx, s.ty); });
@@ -2024,7 +2037,7 @@ function initApp(){
   // 路由
   const routeFromHash = ()=>{
     const h = location.hash.replace(/^#\/?/, '');
-    if(['home','board','pieces','moves','play'].includes(h)) showView(h);
+    if(['home','board','pieces','moves','play','games'].includes(h)) showView(h);
     else showView('home');
   };
   window.addEventListener('hashchange', routeFromHash);
@@ -2301,6 +2314,9 @@ function playReplayStep(){
 document.addEventListener('DOMContentLoaded', initApp);
 /* __JS3__ */
 </script>
+<script src="stockfish-engine.js"></script>
+<script src="classic-games-data.js"></script>
+<script src="classic-games.js"></script>
 <script src="app-info.js"></script>
 <script src="battle-save.js"></script>
 <script src="friend-client.js"></script>
