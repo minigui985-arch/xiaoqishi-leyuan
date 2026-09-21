@@ -1,6 +1,8 @@
 /* 原始开发者：不疾不徐 | Copyright (c) 2026 合肥市朋程共行电子商务有限责任公司 | 许可状态见 COPYRIGHT */
 /* GUIDED_LEARNING_V1 */
 let aiTimer=null,battleEpoch=0,hintStage=0;
+let battleRuleMode='explore';try{battleRuleMode=localStorage.getItem('knight-rule-mode')==='tournament'?'tournament':'explore';}catch{}
+const tournamentRules=()=>battleRuleMode==='tournament';
 const copyPosition=(b,c)=>({board:b.map(p=>p?{...p}:null),cast:JSON.parse(JSON.stringify(c||{}))});
 const sameMove=(a,b)=>a.from===b.from&&a.to===b.to&&(a.promotion||'')===(b.promotion||'');
 function positionKey(b,turn,c){
@@ -29,13 +31,15 @@ function shortLines(b,c,color='w'){
 }
 function coachSay(text){const el=$('#coachMessage');if(el)el.textContent=text;}
 function mountCoach(){
- if(!$('#coachPanel'))$('#playPanel').insertAdjacentHTML('beforeend',`<section class="coach-panel" id="coachPanel"><span class="coach-mode">启蒙探索 · 不限时</span><h3>观察一下，再决定下一步</h3><p class="coach-note" id="coachMessage" aria-live="polite"></p><div class="coach-actions"><button class="btn btn-soft" id="coachHint">给我一点提示</button><button class="btn btn-ghost" id="coachUndo">退回上一步</button><button class="btn btn-ghost" id="coachReview">战局回顾</button><button class="btn btn-ghost" id="coachEnd">结束练习并复盘</button><button class="btn btn-ghost" id="coachDraw">申请和棋</button></div><div class="race-pending"><label><input type="checkbox" disabled> 国际标准赛事（验收中，暂未开放）</label><br>探索模式保留正确走法，允许提示和重试。</div></section>`);
+ if(!$('#coachPanel'))$('#playPanel').insertAdjacentHTML('beforeend',`<section class="coach-panel" id="coachPanel"><span class="coach-mode">启蒙探索 · 不限时</span><h3>观察一下，再决定下一步</h3><p class="coach-note" id="coachMessage" aria-live="polite"></p><div class="coach-actions"><button class="btn btn-soft" id="coachHint">给我一点提示</button><button class="btn btn-ghost" id="coachUndo">退回上一步</button><button class="btn btn-ghost" id="coachReview">战局回顾</button><button class="btn btn-ghost" id="coachEnd">结束练习并复盘</button><button class="btn btn-ghost" id="coachDraw">申请和棋</button></div><div class="race-pending"><label><input type="checkbox" id="tournamentRules"> 国际标准赛事规则</label><br><span id="ruleModeNote">探索模式保留合法走法提示、引导和重试。</span></div></section>`);
  $('#coachHint').onclick=giveHint;$('#coachUndo').onclick=undoLearning;$('#coachReview').onclick=openReview;
- $('#coachEnd').onclick=()=>finishLearning('本轮练习结束，一起回顾');$('#coachDraw').onclick=claimLearningDraw;renderCoach();
+ $('#coachEnd').onclick=endLearning;$('#coachDraw').onclick=claimLearningDraw;
+ $('#tournamentRules').onchange=e=>{if(battle.history?.length&&!battle.over){e.target.checked=tournamentRules();coachSay('规则模式只能在新对局开始前切换。');return;}battleRuleMode=e.target.checked?'tournament':'explore';try{localStorage.setItem('knight-rule-mode',battleRuleMode);}catch{}renderBattle();renderCoach();toast(tournamentRules()?'已开启赛事规则：本局不提供提示、悔棋和途中复盘':'已切换启蒙探索：可以使用提示、悔棋和复盘','success');};renderCoach();
 }
-function renderCoach(){if(!$('#coachPanel'))return;$('#coachHint').disabled=battle.over||battle.thinking;$('#coachUndo').disabled=!battle.history?.length;$('#coachReview').disabled=!battle.history?.some(h=>h.color==='w');$('#coachEnd').disabled=battle.over;$('#coachDraw').disabled=battle.over||battle.turn!=='w';coachSay(battle.over?'一局结束不只看输赢，看看你发现了什么。':battle.thinking?'明军陪练正在思考。留意它下一步想保护谁。':'先看看国王是否安全，再找一找受到攻击的伙伴。');}
+function renderCoach(){if(!$('#coachPanel'))return;const strict=tournamentRules(),started=!!battle.history?.length&&!battle.over;$('.coach-mode').textContent=strict?'国际标准赛事规则 · 不限时':'启蒙探索 · 不限时';$('#tournamentRules').checked=strict;$('#tournamentRules').disabled=started;$('#ruleModeNote').textContent=strict?'严格执行合法走法与和棋声明；关闭提示、悔棋和途中复盘。本地练习暂不计时。':'探索模式保留合法走法提示、引导和重试。';$('#coachHint').disabled=strict||battle.over||battle.thinking;$('#coachUndo').disabled=strict||!battle.history?.length;$('#coachReview').disabled=(strict&&!battle.over)||!battle.history?.some(h=>h.color==='w');$('#coachEnd').disabled=battle.over;$('#coachEnd').textContent=strict?'认输并复盘':'结束练习并复盘';$('#coachDraw').disabled=battle.over||battle.turn!=='w';coachSay(battle.over?'对局结束，可以查看完整复盘。':strict?(battle.thinking?'明军正在走棋。':'赛事规则已开启，请独立完成本回合。'):(battle.thinking?'明军陪练正在思考。留意它下一步想保护谁。':'先看看国王是否安全，再找一找受到攻击的伙伴。'));}
+function endLearning(){finishLearning(tournamentRules()?'白方认输，赛事对局结束':'本轮练习结束，一起回顾');}
 function giveHint(){
- if(battle.over||battle.thinking)return;
+ if(tournamentRules()){coachSay('赛事规则中不提供走法提示。结束后可以统一复盘。');return;}if(battle.over||battle.thinking)return;
  const lines=shortLines(battle.board,battle.cast);if(!lines.length)return;
  const line=lines[0],name=FACTIONS.w.roles[battle.board[line.move.from].t];hintStage++;
  if(hintStage===1){coachSay(inCheck(battle.board,'w')?'国王正受到攻击。你能找到一条解围路线吗？':'先观察：有没有伙伴受到攻击？有没有机会吃子后仍保持安全？');}
@@ -43,7 +47,7 @@ function giveHint(){
  else {coachSay(`短线练习方案：${idx2name(line.move.from)} → ${idx2name(line.move.to)}。这只比较眼前一来一回；先想想对手会如何回应。`);drawRoutes($('#playBoardWrap'),[{...line.move,color:'#276a87'}]);}
 }
 function undoLearning(){
- if(!battle.history?.length)return;clearTimeout(aiTimer);battleEpoch++;
+ if(tournamentRules()){coachSay('赛事规则中不能悔棋。');return;}if(!battle.history?.length)return;clearTimeout(aiTimer);battleEpoch++;
  let index=battle.history.length-1;while(index>0&&battle.history[index].color!=='w')index--;
  const saved=battle.history[index].before;battle.board=copyPosition(saved.board,saved.cast).board;battle.cast=JSON.parse(JSON.stringify(saved.cast));battle.history=battle.history.slice(0,index);battle.positions=battle.positions.slice(0,index+1);battle.turn='w';battle.thinking=false;battle.over=false;battle.selected=null;battle.lastMove=battle.history.length?[battle.history.at(-1).move.from,battle.history.at(-1).move.to]:null;
  battle.captured={w:[],b:[]};for(const h of battle.history){const pos=copyPosition(h.before.board,h.before.cast);const cap=applyMove(pos.board,h.move,pos.cast);if(cap)battle.captured[h.color].push(cap);}hintStage=0;closeResult();renderBattle();renderCoach();coachSay('回到选择之前。这次试着说说：我想保护谁，或威胁谁？');

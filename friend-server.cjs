@@ -2,6 +2,7 @@
 // Local integration server only. Do not expose this prototype to the Internet.
 const http=require('node:http'),fs=require('node:fs'),path=require('node:path'),vm=require('node:vm'),crypto=require('node:crypto');
 const {saveFeedback}=require('./feedback-store.cjs');
+require('./data-paths.cjs').ensureDataDirs();
 const html=fs.readFileSync(path.join(__dirname,'小骑士乐园-统一主题版.html'),'utf8');
 const ctx=vm.createContext({});vm.runInContext(html.slice(html.indexOf('function emptyBoard()'),html.indexOf('function aiPickMove(')),ctx);
 const engine=vm.runInContext('({setupBoard,castlingState,allLegalMoves,applyMove,inCheck})',ctx);
