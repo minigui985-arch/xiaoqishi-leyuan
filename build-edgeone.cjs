@@ -1,0 +1,55 @@
+/* 原始开发者：不疾不徐 | Copyright (c) 2026 合肥市朋程共行电子商务有限责任公司 */
+const fs = require('node:fs');
+const path = require('node:path');
+const crypto = require('node:crypto');
+const root = __dirname;
+const output = path.resolve(root, 'dist', 'edgeone-pages');
+const distRoot = path.resolve(root, 'dist') + path.sep;
+if (!output.startsWith(distRoot)) throw new Error('拒绝清理工作区以外的目录');
+fs.rmSync(output, { recursive: true, force: true });
+fs.mkdirSync(output, { recursive: true });
+const runtimeFiles = [
+  'manifest.webmanifest', 'service-worker.js', 'pwa.js', 'app-info.js',
+  'battle-save.js', 'friend-client.js', 'feedback-client.js', 'immersive.js',
+  'learning.js', 'classic-games.css', 'classic-games.js', 'classic-games-data.js',
+  'stockfish-engine.js', 'COPYRIGHT', 'AUTHORS.md', 'NOTICE', 'LICENSE',
+  'COMMERCIAL-LICENSE.md', 'THIRD_PARTY_NOTICES.md',
+  'icons/icon-180.png', 'icons/icon-192.png', 'icons/icon-512.png',
+  'assets/child_w_keyed.png', 'assets/child_b_keyed.png',
+  'assets/adult_w_keyed.png', 'assets/adult_b_keyed.png',
+  'vendor/stockfish/stockfish-18-lite-single.js',
+  'vendor/stockfish/stockfish-18-lite-single.wasm',
+  'vendor/stockfish/stockfish-18-lite-bundle.js',
+  'vendor/stockfish/stockfish-18-lite-factory.js',
+  'vendor/stockfish/COPYING', 'vendor/stockfish/SOURCE.md'
+];
+function copy(relative, target = relative) {
+  const source = path.join(root, relative);
+  const destination = path.join(output, target);
+  if (!fs.existsSync(source)) throw new Error(`缺少发布文件：${relative}`);
+  fs.mkdirSync(path.dirname(destination), { recursive: true });
+  fs.copyFileSync(source, destination);
+}
+for (const file of runtimeFiles) copy(file);
+copy('小骑士乐园-统一主题版.html', 'index.html');
+copy('小骑士乐园-统一主题版.html');
+const files = [];
+function inventory(directory = output) {
+  for (const entry of fs.readdirSync(directory, { withFileTypes: true })) {
+    const absolute = path.join(directory, entry.name);
+    if (entry.isDirectory()) inventory(absolute);
+    else {
+      const relative = path.relative(output, absolute).replaceAll('\\', '/');
+      files.push({ file: relative, bytes: fs.statSync(absolute).size,
+        sha256: crypto.createHash('sha256').update(fs.readFileSync(absolute)).digest('hex') });
+    }
+  }
+}
+inventory();
+fs.writeFileSync(path.join(output, 'deployment-info.json'), JSON.stringify({
+  product: '小骑士乐园', version: '0.8.0-endgame-voice',
+  target: 'Tencent EdgeOne Pages static closed beta', generatedAt: new Date().toISOString(),
+  developer: '不疾不徐', copyright: '合肥市朋程共行电子商务有限责任公司',
+  notes: '静态部署支持课程、名局、离线对弈与本机双人；跨网络好友房间和在线反馈需另接 HTTPS API。', files
+}, null, 2));
+console.log(output);

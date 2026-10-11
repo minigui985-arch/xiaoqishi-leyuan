@@ -1,0 +1,29 @@
+{
+  "id": "./",
+  "name": "小骑士乐园 · 双阵营学园",
+  "short_name": "小骑士乐园",
+  "description": "十字军与明军双阵营国际象棋启蒙、名局学习和离线对弈。",
+  "lang": "zh-CN",
+  "dir": "ltr",
+  "start_url": "./小骑士乐园-统一主题版.html?source=pwa",
+  "scope": "./",
+  "display": "standalone",
+  "orientation": "any",
+  "background_color": "#FBF3E4",
+  "theme_color": "#9B3D2F",
+  "categories": ["education", "games"],
+  "icons": [
+    {
+      "src": "icons/icon-192.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "icons/icon-512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any maskable"
+    }
+  ]
+}

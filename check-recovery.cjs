@@ -3,7 +3,7 @@ const assert=require('node:assert/strict'),fs=require('node:fs'),os=require('nod
 const {createRoomService,server}=require('./friend-server.cjs');const {chromium}=require('C:/Users/asus/.cache/codex-runtimes/codex-primary-runtime/dependencies/node/node_modules/playwright');
 (async()=>{const dir=fs.mkdtempSync(path.join(os.tmpdir(),'knight-recovery-')),file=path.join(dir,'rooms.json');let service=createRoomService(file);
 const create={action:'create',clientKey:randomUUID(),color:'b'},b=service.act(create);assert.equal(b.color,'b');assert.deepEqual(service.act(create),b);
-const join={action:'join',id:b.id,clientKey:randomUUID()},w=service.act(join);assert.equal(w.color,'w');assert.deepEqual(service.act(join),w);
+const join={action:'join',id:b.id,inviteCode:b.inviteCode,clientKey:randomUUID()},w=service.act(join);assert.equal(w.color,'w');assert.deepEqual(service.act(join),w);
 service=createRoomService(file);assert.deepEqual(service.act(join),w);let state=service.act({...w,action:'state'});
 for(const seat of [w,b])state=service.act({...seat,action:'ready',version:state.version,op:randomUUID()});state=service.act({...w,action:'move',version:state.version,op:randomUUID(),from:12,to:28});
 assert.equal(createRoomService(file).act({...b,action:'state'}).history.length,1);
@@ -15,3 +15,4 @@ p.once('dialog',d=>d.accept());await p.locator('#friendResign').click();await p.
 p.once('dialog',d=>d.accept());await p.locator('#friendLeave').click();assert.equal(await p.locator('#friendCreate').isEnabled(),true);assert.equal(await p.evaluate(()=>localStorage.getItem('friendSeat')),null);
 console.log('PASS: create/join retry, black host, disk restart, AI reload, black orientation, isolated friend replay and leave.');
 }finally{if(browser)await browser.close();s.closeAllConnections();await new Promise(r=>s.close(r));}})().catch(e=>{console.error(e);process.exitCode=1;});
+

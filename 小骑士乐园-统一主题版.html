@@ -6,8 +6,15 @@
 <meta name="copyright" content="2026 合肥市朋程共行电子商务有限责任公司">
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#9B3D2F">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
+<meta name="apple-mobile-web-app-title" content="小骑士乐园">
 <title>小骑士乐园 · 双阵营学园</title>
 <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect x='4' y='4' width='56' height='56' rx='14' fill='%23FF8A3D'/%3E%3Cpath d='M14 16h10v8a8 8 0 0 1-10 0z' fill='%23FFF8EA'/%3E%3Cpath d='M14 16h10v3H14z' fill='%233A2E28'/%3E%3Ccircle cx='17' cy='19' r='1.6' fill='%233A2E28'/%3E%3Crect x='22' y='34' width='20' height='18' rx='4' fill='%23FFF8EA'/%3E%3Cpath d='M22 38h20v6H22z' fill='%233A2E28' opacity='.12'/%3E%3C/svg%3E">
+<link rel="manifest" href="manifest.webmanifest">
+<link rel="apple-touch-icon" href="icons/icon-180.png">
 <link rel="stylesheet" href="classic-games.css">
 
 <style>
@@ -47,6 +54,7 @@
   --font-display:"Baloo 2","Noto Sans SC",system-ui,-apple-system,"PingFang SC","Microsoft YaHei",sans-serif;
   --font-body:"Noto Sans SC",system-ui,-apple-system,"PingFang SC","Microsoft YaHei",sans-serif;
   --safe-bottom:env(safe-area-inset-bottom,0px);
+  --safe-top:env(safe-area-inset-top,0px);
 }
 /* ============ 基础重置 ============ */
 *,*::before,*::after{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent}
@@ -58,7 +66,7 @@ body{
     radial-gradient(900px 500px at -10% 20%, rgba(255,138,61,.12), transparent 55%),
     var(--bg);
   color:var(--ink);
-  min-height:100vh;
+  min-height:100vh;min-height:100dvh;
   line-height:1.6;
   overflow-x:hidden;
 }
@@ -69,13 +77,13 @@ input{font-family:inherit}
 :focus-visible{outline:3px solid var(--blue);outline-offset:2px;border-radius:6px}
 ::selection{background:var(--orange-soft)}
 /* ============ App 外壳 ============ */
-.app{max-width:640px;margin:0 auto;min-height:100vh;display:flex;flex-direction:column;position:relative}
+.app{max-width:640px;margin:0 auto;min-height:100vh;min-height:100dvh;display:flex;flex-direction:column;position:relative}
 .app-main{flex:1;padding:0 18px calc(118px + var(--safe-bottom));width:100%}
 /* ============ 顶部栏 ============ */
 .topbar{
   position:sticky;top:0;z-index:40;
   display:flex;align-items:center;justify-content:space-between;
-  padding:14px 18px 10px;
+  padding:calc(14px + var(--safe-top)) 18px 10px;
   background:linear-gradient(180deg, rgba(251,243,228,.98) 70%, rgba(251,243,228,0));
 }
 .topbar-brand{display:flex;align-items:center;gap:10px}
@@ -178,6 +186,15 @@ input{font-family:inherit}
 .toast.good{background:var(--green)}
 .toast.bad{background:var(--red)}
 .toast.info{background:var(--blue)}
+.mobile-install{width:100%;margin:18px 0 6px}
+.install-dialog{width:min(420px,calc(100% - 28px));padding:24px;border:1px solid var(--card-border);border-radius:22px;background:var(--card);color:var(--ink)}
+.install-dialog::backdrop{background:rgba(58,46,40,.42)}
+.install-dialog p{margin:14px 0 20px;line-height:1.8}
+@media(display-mode:standalone){body{overscroll-behavior-y:none}.topbar{top:0}}
+.friend-talk{margin-top:14px;padding:14px;border:1px solid var(--card-border);border-radius:var(--radius-md);background:var(--card)}
+.friend-talk h4{margin-bottom:8px}.friend-messages{min-height:54px;max-height:150px;overflow:auto;padding:8px;background:var(--bg);border-radius:12px}
+.friend-messages p{width:fit-content;max-width:85%;margin:5px 0;padding:7px 11px;border-radius:12px;background:var(--blue-soft);font-size:.82rem}.friend-messages .mine{margin-left:auto;background:var(--green-soft)}
+.friend-phrases{display:flex;flex-wrap:wrap;gap:7px;margin:10px 0}.friend-phrases button{padding:8px 11px;border:1px solid var(--card-border);border-radius:999px;background:var(--card);font-weight:700}.friend-talk small{color:var(--ink-2)}
 /* 庆祝动画 */
 .celebrate-wrap{position:fixed;inset:0;z-index:90;pointer-events:none;overflow:hidden}
 .confetti{position:absolute;top:-20px;border-radius:4px;animation:confettiFall linear forwards}
@@ -294,6 +311,7 @@ input{font-family:inherit}
 }
 .sq.selected{outline:4px solid var(--blue);outline-offset:-4px;z-index:2}
 .sq.selected .piece{transform:translateY(-6%) scale(1.08)}
+.sq{touch-action:manipulation}
 .sq.from-hl{background-image:radial-gradient(circle at 50% 50%, rgba(255,197,61,.65) 0 26%, transparent 60%)}
 .sq.lastmove{background-image:radial-gradient(circle at 50% 50%, rgba(255,197,61,.4) 0 30%, transparent 72%)}
 .sq.hint-target{box-shadow:inset 0 0 0 4px var(--yellow)}
@@ -398,9 +416,9 @@ input{font-family:inherit}
 .ml-step{display:flex;align-items:center;gap:8px;font-size:.84rem;font-weight:700;color:var(--ink-2);margin-top:12px}
 .ml-step b{color:var(--orange-deep)}
 /* ============ 实战课 ============ */
-.play-modes{display:flex;gap:10px;margin-top:14px}
+.play-modes{display:flex;flex-wrap:wrap;gap:10px;margin-top:14px}
 .play-mode{
-  flex:1;text-align:left;background:var(--card);border:2px solid var(--card-border);border-radius:var(--radius-lg);
+  flex:1 1 calc(50% - 5px);text-align:left;background:var(--card);border:2px solid var(--card-border);border-radius:var(--radius-lg);
   box-shadow:var(--shadow-soft);padding:16px;display:flex;flex-direction:column;gap:6px;
   transition:transform .15s ease,border-color .15s ease;
 }
@@ -428,9 +446,12 @@ input{font-family:inherit}
 .result-card{background:var(--card);border-radius:32px;box-shadow:var(--shadow-pop);padding:30px 36px;text-align:center;width:min(88vw,420px);transform:scale(.85);transition:transform .3s cubic-bezier(.2,.9,.3,1.3)}
 .result-overlay.show .result-card{transform:scale(1)}
 .result-card .r-emoji{width:90px;height:90px;margin:0 auto 10px}
+.result-card .r-emoji svg{width:100%;height:100%}
 .result-card h2{font-family:var(--font-display);font-weight:800;font-size:1.6rem}
 .result-card p{color:var(--ink-2);font-weight:600;font-size:.9rem;margin:6px 0 18px}
 .result-card .btn{margin:0 4px}
+.sq.checkmate-king{box-shadow:inset 0 0 0 6px #d34b3f,0 0 24px rgba(211,75,63,.85);z-index:4;animation:checkmatePulse .8s ease-in-out infinite alternate}
+@keyframes checkmatePulse{from{filter:saturate(1)}to{filter:saturate(1.5) brightness(1.12)}}
 /* ============ 各页面通用进场 ============ */
 .view{animation:viewIn .35s ease}
 @keyframes viewIn{from{opacity:0;transform:translateY(12px)}to{opacity:1;transform:none}}
@@ -457,6 +478,7 @@ input{font-family:inherit}
 /* 选中时棋子跳动 */
 .sq.selected .piece svg{animation:pieceBounce .5s ease-in-out infinite}
 @keyframes pieceBounce{0%,100%{transform:translateY(-6%) scale(1.08)}50%{transform:translateY(-12%) scale(1.1)}}
+@media(pointer:coarse){.board .piece svg{animation:none}}
 /* 走法演示：路线箭头 */
 .demo-arrow{
   position:absolute;z-index:5;pointer-events:none;
@@ -787,7 +809,7 @@ body.board-page .bottomnav{position:static;transform:none;max-width:none;width:1
     <div class="r-emoji" id="resultEmoji"></div>
     <h2 id="resultTitle"></h2>
     <p id="resultDesc"></p>
-    <div><button class="btn btn-primary" id="resultAgain">再来一局</button><button class="btn btn-ghost" id="resultBack">返回</button></div>
+    <div><button class="btn btn-primary" id="resultAgain">进入复盘</button><button class="btn btn-ghost" id="resultBack">留在终局</button></div>
   </div>
 </div>
 <script>
@@ -1272,16 +1294,17 @@ function animatePiece(wrapEl, from, to, type, color){
    ================================================================ */
 const battle = {
   board:null, cast:null, turn:'w', over:false, thinking:false,
-  selected:null, captured:{w:[],b:[]}, lastMove:null
+  selected:null, captured:{w:[],b:[]}, lastMove:null, human:false, end:null
 };
+let endTransitionTimer=null;
 let battleAiLevel=localStorage.getItem('knight-ai-level')||'basic';
 function initBattle(){
- clearTimeout(aiTimer);battleEpoch++;closeResult();
+ clearTimeout(aiTimer);clearTimeout(endTransitionTimer);battleEpoch++;closeResult();
  battle.board=setupBoard();battle.cast=castlingState();battle.cast.halfmove=0;
- battle.turn='w';battle.over=false;battle.thinking=false;battle.selected=null;
+ battle.turn='w';battle.over=false;battle.thinking=false;battle.selected=null;battle.end=null;
  battle.captured={w:[],b:[]};battle.lastMove=null;battle.history=[];battle.positions=[positionKey(battle.board,'w',battle.cast)];
  hintStage=0;renderBattle();renderCoach();
- guide(tournamentRules()?'你执白方十字军。赛事规则已开启：本局不提供提示、悔棋或途中复盘。':'你执白方十字军。先观察谁需要保护，再试着走一步。需要时点“给我一点提示”，不用着急。');
+ guide(battle.human?'同屏双人已经开始。十字军白方先行，两位玩家轮流操作棋盘。':tournamentRules()?'你执白方十字军。赛事规则已开启：本局不提供提示、悔棋或途中复盘。':'你执白方十字军。先观察谁需要保护，再试着走一步。需要时点“给我一点提示”，不用着急。');
 }
 
 function renderBattle(){
@@ -1300,27 +1323,33 @@ function renderBattle(){
   });
   const turnEl = $('#playTurn');
   turnEl.innerHTML = `<span class="turn-dot ${battle.turn==='w'?'white':'black'}"></span>
-    ${battle.thinking?'小骑思考中…':(battle.over?'对局结束':(battle.turn==='w'?'轮到你啦':'小骑走棋中'))}`;
+    ${battle.thinking?'小骑思考中…':(battle.over?(battle.end?.status||'对局结束'):battle.human?(battle.turn==='w'?'轮到十字军（白方）':'轮到明军（黑方）'):(battle.turn==='w'?'轮到你啦':'小骑走棋中'))}`;
   $('#capWhite').innerHTML = battle.captured.w.map(p=>pieceSVG(p.t,p.c)).join('');
   $('#capBlack').innerHTML = battle.captured.b.map(p=>pieceSVG(p.t,p.c)).join('');
-  const engineState=$('#engineState');if(engineState)engineState.textContent=battleAiLevel==='master'?(battle.thinking?'大师正在推演…':'Stockfish 大师 · 本地离线'):'明军陪练 · 基础';
+  const engineState=$('#engineState');if(engineState)engineState.textContent=battle.human?'真人玩家二':battleAiLevel==='master'?(battle.thinking?'大师正在推演…':'Stockfish 大师 · 本地离线'):'明军陪练 · 基础';
+}
+function renderBattleSelection(){
+ const board=$('#playBoardWrap')?.querySelector('.board');if(!board){renderBattle();return;}
+ const legal=battle.selected===null?[]:legalMoves(battle.board,battle.selected,battle.cast),selectable=new Set(),captures=new Set();
+ if(!tournamentRules())legal.forEach(move=>{selectable.add(move.to);if(move.capture)captures.add(move.to);});
+ board.querySelectorAll('.sq').forEach(square=>{const i=Number(square.dataset.idx);square.classList.toggle('selected',i===battle.selected);square.classList.toggle('selectable',selectable.has(i));square.classList.toggle('capture',captures.has(i));});
 }
 function onBattleClick(idx){
- if(battle.over||battle.thinking||battle.turn!=='w')return;
- const p=battle.board[idx],sel=battle.selected;
+ if(battle.over||battle.thinking||(!battle.human&&battle.turn!=='w'))return;
+ const color=battle.turn,p=battle.board[idx],sel=battle.selected;
  if(sel!==null&&idx!==sel){
   const moves=legalMoves(battle.board,sel,battle.cast).filter(m=>m.to===idx);
-  if(moves.length){if(moves.some(m=>m.promotion)){choosePromotion(moves,doBattleMove);}else doBattleMove(moves[0]);return;}
-   if(!p||p.c!=='w'){coachSay(tournamentRules()?'这一步不符合国际象棋合法走法，请重新选择。':(inCheck(battle.board,'w')?'国王正在被攻击。试试移动国王、挡住路线，或吃掉进攻者。':'这条路线暂时走不通。看看亮点：它们是这枚棋子能安全到达的位置。'));return;}
+  if(moves.length){if(moves.some(m=>m.promotion)){choosePromotion(moves,doBattleMove,color);}else doBattleMove(moves[0]);return;}
+   if(!p||p.c!==color){coachSay(tournamentRules()?'这一步不符合国际象棋合法走法，请重新选择。':(inCheck(battle.board,color)?'国王正在被攻击。试试移动国王、挡住路线，或吃掉进攻者。':'这条路线暂时走不通。看看亮点：它们是这枚棋子能安全到达的位置。'));return;}
  }
- if(p?.c==='w'){battle.selected=sel===idx?null:idx;renderBattle();}
+ if(p?.c===color){battle.selected=sel===idx?null:idx;renderBattleSelection();}
 }
 
 function doBattleMove(mv){
- if(battle.over||battle.thinking||battle.turn!=='w')return;
- const valid=allLegalMoves(battle.board,'w',battle.cast).find(m=>sameMove(m,mv));if(!valid)return;
- recordAndMove(valid,'w');battle.turn='b';battle.thinking=true;battle.selected=null;hintStage=0;renderBattle();renderCoach();
- if(checkGameEnd('b'))return;
+ if(battle.over||battle.thinking||(!battle.human&&battle.turn!=='w'))return;
+ const color=battle.turn,next=color==='w'?'b':'w',valid=allLegalMoves(battle.board,color,battle.cast).find(m=>sameMove(m,mv));if(!valid)return;
+ recordAndMove(valid,color);battle.turn=next;battle.thinking=!battle.human&&next==='b';battle.selected=null;hintStage=0;renderBattle();renderCoach();
+ if(checkGameEnd(next)||battle.human)return;
  const epoch=battleEpoch;aiTimer=setTimeout(()=>{if(epoch===battleEpoch)aiTurn();},450);
 }
 
@@ -1342,7 +1371,7 @@ function checkGameEnd(color){
  if(simpleDeadPosition(battle.board)){finishLearning('和棋：当前子力无法形成将杀');return true;}
  const key=positionKey(battle.board,color,battle.cast),count=battle.positions.filter(k=>k===key).length;
  if(count>=5||(battle.cast.halfmove||0)>=150){finishLearning(count>=5?'和棋：同一局面出现五次':'和棋：双方连续75回合没有动兵或吃子');return true;}
- if(inCheck(battle.board,color)&&color==='w')coachSay('先保护国王：移动、挡住攻击路线，或吃掉进攻者。你想试哪一种？');
+ if(inCheck(battle.board,color)&&(battle.human||color==='w'))coachSay(`${color==='w'?'十字军':'明军'}国王受到将军：移动国王、挡住攻击路线，或吃掉进攻者。`);
  return false;
 }
 
@@ -1944,6 +1973,16 @@ function initPlayPage(){
         <div class="pm-ico">${pieceSVG('k','w')}</div>
         <h3>人机对战</h3>
         <p>执白方十字军，与明军陪练练习对弈</p>
+      </button>
+      <button class="play-mode" data-mode="local">
+        <div class="pm-ico">${pieceSVG('q','w')}</div>
+        <h3>同屏双人</h3>
+        <p>两位真人使用同一台设备，轮流完成一盘棋</p>
+      </button>
+      <button class="play-mode" data-mode="online">
+        <div class="pm-ico">${pieceSVG('n','b')}</div>
+        <h3>邀请好友</h3>
+        <p>两台设备进入同一房间，并用友好短句交流</p>
       </button>`;
     $$('#playModes .play-mode').forEach(b=>b.addEventListener('click',()=>{
       SFX.tap();
@@ -1959,10 +1998,12 @@ function initPlayPage(){
 function renderPlayPanel(){
   $$('#playModes .play-mode').forEach(b=>b.classList.toggle('active', b.dataset.mode===playPageMode));
   const panel = $('#playPanel');
+  if(playPageMode==='online'){panel.classList.add('hidden');requestAnimationFrame(()=>document.querySelector('.friend-room-panel')?.scrollIntoView({block:'start',behavior:'smooth'}));return;}
   panel.classList.remove('hidden');
   if(playPageMode==='capture'){
     startCapture();
   } else {
+    const human=playPageMode==='local';if(battle.human!==human){battle.human=human;battle.board=null;clearTimeout(aiTimer);battleEpoch++;}
     startBattle();
   }
 }
@@ -1978,11 +2019,12 @@ function renderCapturePanel(lv){
   $('#goBattle').addEventListener('click', ()=>{ SFX.tap(); playPageMode='battle'; renderPlayPanel(); });
 }
 function startBattle(){
+  const human=!!battle.human;
   $('#playPanel').innerHTML = `
-    <div class="opponent-row"><div class="player-west"><span> 白方 · 十字军</span><b>你 · 骑士指挥官</b></div><span class="vs-mark">VS</span><div class="player-east"><span>黑方 · 明军 </span><b id="engineState">明军陪练 · 基础</b></div></div><div class="play-status">
+    <div class="opponent-row"><div class="player-west"><span> 白方 · 十字军</span><b>${human?'真人玩家一':'你 · 骑士指挥官'}</b></div><span class="vs-mark">VS</span><div class="player-east"><span>黑方 · 明军 </span><b id="engineState">${human?'真人玩家二':'明军陪练 · 基础'}</b></div></div><div class="play-status">
       <div class="turn" id="playTurn"></div>
       <div style="display:flex;gap:6px;align-items:center">
-        <label class="ai-level-label">对手 <select id="aiLevel"><option value="basic">基础陪练</option><option value="master">Stockfish 大师</option></select></label>
+        ${human?'':`<label class="ai-level-label">对手 <select id="aiLevel"><option value="basic">基础陪练</option><option value="master">Stockfish 大师</option></select></label>`}
         <button class="btn btn-ghost btn-sm" id="zoomIn" title="放大看细节">🔍+</button>
         <button class="btn btn-ghost btn-sm" id="zoomOut" title="缩小看全局">🔍−</button>
         <button class="btn btn-ghost btn-sm" id="zoomReset" title="重置视图">⟲</button>
@@ -1993,8 +2035,8 @@ function startBattle(){
     <div class="captured-tray">十字军俘获：<span class="c-pieces" id="capWhite"></span></div>
     <div class="captured-tray">明军俘获：<span class="c-pieces" id="capBlack"></span></div>`;
   $('#restartBattle').addEventListener('click', ()=>{ SFX.tap(); initBattle(); });
-  $('#aiLevel').value=battleAiLevel;
-  $('#aiLevel').addEventListener('change',e=>{battleAiLevel=e.target.value;localStorage.setItem('knight-ai-level',battleAiLevel);renderBattle();if(battleAiLevel==='master'){toast('大师引擎在本机离线运行，首次启动需要几秒','info');KnightStockfish?.ready().catch(err=>toast(err.message,'error'));}});
+  if(!human){$('#aiLevel').value=battleAiLevel;
+  $('#aiLevel').addEventListener('change',e=>{battleAiLevel=e.target.value;localStorage.setItem('knight-ai-level',battleAiLevel);renderBattle();if(battleAiLevel==='master'){toast('大师引擎在本机离线运行，首次启动需要几秒','info');KnightStockfish?.ready().catch(err=>toast(err.message,'error'));}});}
   /* 棋盘缩放按钮（滚轮和拖拽由initBoardZoom提供） */
   const bWrap = $('#playBoardWrap');
   $('#zoomIn').addEventListener('click', ()=>{ SFX.tap(); const s=bWrap._zoomGet?bWrap._zoomGet():{scale:1,tx:0,ty:0}; bWrap._zoomSet(Math.min(4.5,s.scale+0.5), s.tx, s.ty); });
@@ -2007,7 +2049,7 @@ function startBattle(){
   workspace.append(bWrap,sidebar);for(const child of [...$('#playPanel').children])sidebar.append(child);
   $('#playPanel').append(workspace);
   requestAnimationFrame(()=>$('#playPanel').scrollIntoView({block:'start',behavior:'instant'}));
-  if(battle.thinking&&!battle.over){clearTimeout(aiTimer);const epoch=battleEpoch;aiTimer=setTimeout(()=>{if(epoch===battleEpoch)aiTurn();},450);}
+  if(!human&&battle.thinking&&!battle.over){clearTimeout(aiTimer);const epoch=battleEpoch;aiTimer=setTimeout(()=>{if(epoch===battleEpoch)aiTurn();},450);}else if(battle.over&&battle.end){markMatedKing(battle.end.loser);clearTimeout(endTransitionTimer);endTransitionTimer=setTimeout(()=>showEndTransition(battle.end),700);}
 }
 /* ================================================================
    初始化
@@ -2032,8 +2074,8 @@ function initApp(){
   $('#logoBtn').addEventListener('click', ()=>{ SFX.tap(); go('home'); });
   $('#starBtn').addEventListener('click', ()=>{ SFX.tap(); toast('每完成一课就能获得星星哦','info'); });
   $$('.nav-item').forEach(n=>n.addEventListener('click', ()=>{ SFX.tap(); go(n.dataset.view); }));
-  $('#resultAgain').addEventListener('click', ()=>{ closeResult(); if(playPageMode==='battle') initBattle(); else startCapture(); });
-  $('#resultBack').addEventListener('click', ()=>{ closeResult(); go('play'); });
+  $('#resultAgain').addEventListener('click', ()=>{ closeResult(); openReview(); });
+  $('#resultBack').addEventListener('click', ()=>{ closeResult(); coachSay(battle.end?.status||'终局已保留。'); });
   // 路由
   const routeFromHash = ()=>{
     const h = location.hash.replace(/^#\/?/, '');
@@ -2153,26 +2195,50 @@ function mountCoach(){
  $('#coachEnd').onclick=endLearning;$('#coachDraw').onclick=claimLearningDraw;
  $('#tournamentRules').onchange=e=>{if(battle.history?.length&&!battle.over){e.target.checked=tournamentRules();coachSay('规则模式只能在新对局开始前切换。');return;}battleRuleMode=e.target.checked?'tournament':'explore';try{localStorage.setItem('knight-rule-mode',battleRuleMode);}catch{}renderBattle();renderCoach();toast(tournamentRules()?'已开启赛事规则：本局不提供提示、悔棋和途中复盘':'已切换启蒙探索：可以使用提示、悔棋和复盘','success');};renderCoach();
 }
-function renderCoach(){if(!$('#coachPanel'))return;const strict=tournamentRules(),started=!!battle.history?.length&&!battle.over;$('.coach-mode').textContent=strict?'国际标准赛事规则 · 不限时':'启蒙探索 · 不限时';$('#tournamentRules').checked=strict;$('#tournamentRules').disabled=started;$('#ruleModeNote').textContent=strict?'严格执行合法走法与和棋声明；关闭提示、悔棋和途中复盘。本地练习暂不计时。':'探索模式保留合法走法提示、引导和重试。';$('#coachHint').disabled=strict||battle.over||battle.thinking;$('#coachUndo').disabled=strict||!battle.history?.length;$('#coachReview').disabled=(strict&&!battle.over)||!battle.history?.some(h=>h.color==='w');$('#coachEnd').disabled=battle.over;$('#coachEnd').textContent=strict?'认输并复盘':'结束练习并复盘';$('#coachDraw').disabled=battle.over||battle.turn!=='w';coachSay(battle.over?'对局结束，可以查看完整复盘。':strict?(battle.thinking?'明军正在走棋。':'赛事规则已开启，请独立完成本回合。'):(battle.thinking?'明军陪练正在思考。留意它下一步想保护谁。':'先看看国王是否安全，再找一找受到攻击的伙伴。'));}
-function endLearning(){finishLearning(tournamentRules()?'白方认输，赛事对局结束':'本轮练习结束，一起回顾');}
+function renderCoach(){if(!$('#coachPanel'))return;const strict=tournamentRules(),started=!!battle.history?.length&&!battle.over;$('.coach-mode').textContent=strict?'国际标准赛事规则 · 不限时':battle.human?'同屏双人 · 启蒙探索':'启蒙探索 · 不限时';$('#tournamentRules').checked=strict;$('#tournamentRules').disabled=started;$('#ruleModeNote').textContent=strict?'严格执行合法走法与和棋声明；关闭提示、悔棋和途中复盘。本地练习暂不计时。':battle.human?'双方轮流操作；探索局允许共同悔棋和赛后复盘。':'探索模式保留合法走法提示、引导和重试。';$('#coachHint').disabled=strict||battle.human||battle.over||battle.thinking;$('#coachUndo').disabled=strict||!battle.history?.length;$('#coachReview').disabled=(strict&&!battle.over)||!battle.history?.some(h=>h.color==='w');$('#coachEnd').disabled=battle.over;$('#coachEnd').textContent=strict?'认输并复盘':battle.human?'结束本局并复盘':'结束练习并复盘';$('#coachDraw').disabled=battle.over||(!battle.human&&battle.turn!=='w');coachSay(battle.over?'对局结束，可以查看完整复盘。':battle.human?`请${battle.turn==='w'?'十字军（白方）':'明军（黑方）'}玩家走棋。`:strict?(battle.thinking?'明军正在走棋。':'赛事规则已开启，请独立完成本回合。'):(battle.thinking?'明军陪练正在思考。留意它下一步想保护谁。':'先看看国王是否安全，再找一找受到攻击的伙伴。'));}
+function endLearning(){finishLearning(tournamentRules()?`${battle.turn==='w'?'白方':'黑方'}认输，对局结束`:'本轮练习结束，一起回顾');}
 function giveHint(){
  if(tournamentRules()){coachSay('赛事规则中不提供走法提示。结束后可以统一复盘。');return;}if(battle.over||battle.thinking)return;
  const lines=shortLines(battle.board,battle.cast);if(!lines.length)return;
  const line=lines[0],name=FACTIONS.w.roles[battle.board[line.move.from].t];hintStage++;
  if(hintStage===1){coachSay(inCheck(battle.board,'w')?'国王正受到攻击。你能找到一条解围路线吗？':'先观察：有没有伙伴受到攻击？有没有机会吃子后仍保持安全？');}
- else if(hintStage===2){coachSay(`试着观察 ${idx2name(line.move.from)} 的${name}。看看它能到达哪些格子。`);battle.selected=line.move.from;renderBattle();}
+ else if(hintStage===2){coachSay(`试着观察 ${idx2name(line.move.from)} 的${name}。看看它能到达哪些格子。`);battle.selected=line.move.from;renderBattleSelection();}
  else {coachSay(`短线练习方案：${idx2name(line.move.from)} → ${idx2name(line.move.to)}。这只比较眼前一来一回；先想想对手会如何回应。`);drawRoutes($('#playBoardWrap'),[{...line.move,color:'#276a87'}]);}
 }
 function undoLearning(){
  if(tournamentRules()){coachSay('赛事规则中不能悔棋。');return;}if(!battle.history?.length)return;clearTimeout(aiTimer);battleEpoch++;
- let index=battle.history.length-1;while(index>0&&battle.history[index].color!=='w')index--;
- const saved=battle.history[index].before;battle.board=copyPosition(saved.board,saved.cast).board;battle.cast=JSON.parse(JSON.stringify(saved.cast));battle.history=battle.history.slice(0,index);battle.positions=battle.positions.slice(0,index+1);battle.turn='w';battle.thinking=false;battle.over=false;battle.selected=null;battle.lastMove=battle.history.length?[battle.history.at(-1).move.from,battle.history.at(-1).move.to]:null;
+ let index=battle.history.length-1;if(!battle.human)while(index>0&&battle.history[index].color!=='w')index--;
+ const undone=battle.history[index],saved=undone.before;battle.board=copyPosition(saved.board,saved.cast).board;battle.cast=JSON.parse(JSON.stringify(saved.cast));battle.history=battle.history.slice(0,index);battle.positions=battle.positions.slice(0,index+1);battle.turn=battle.human?undone.color:'w';battle.thinking=false;battle.over=false;battle.end=null;clearTimeout(endTransitionTimer);battle.selected=null;battle.lastMove=battle.history.length?[battle.history.at(-1).move.from,battle.history.at(-1).move.to]:null;
  battle.captured={w:[],b:[]};for(const h of battle.history){const pos=copyPosition(h.before.board,h.before.cast);const cap=applyMove(pos.board,h.move,pos.cast);if(cap)battle.captured[h.color].push(cap);}hintStage=0;closeResult();renderBattle();renderCoach();coachSay('回到选择之前。这次试着说说：我想保护谁，或威胁谁？');
 }
 function claimLearningDraw(){
  const key=positionKey(battle.board,battle.turn,battle.cast);if(battle.positions.filter(k=>k===key).length>=3||(battle.cast.halfmove||0)>=100)finishLearning('和棋申请成立');else coachSay('目前尚未达到同一局面三次或双方50回合未动兵、未吃子的条件。你也可以结束练习，直接复盘。');
 }
-function finishLearning(title){clearTimeout(aiTimer);battleEpoch++;battle.over=true;battle.thinking=false;renderBattle();renderCoach();coachSay(title);openReview();}
+function endOutcome(title){
+ let winner=null,loser=null;
+ if(title.includes('十字军将杀')){winner='w';loser='b';}
+ else if(title.includes('明军将杀')){winner='b';loser='w';}
+ else if(title.includes('认输')){loser=battle.turn;winner=loser==='w'?'b':'w';}
+ const winnerName=winner==='w'?'十字军':winner==='b'?'明军':null,loserName=loser==='w'?'十字军':'明军';
+ if(winner&&title.includes('将杀'))return {winner,loser,title:`${winnerName}胜利！`,status:`${loserName}国王被将死`,detail:`将军无法解除，${loserName}国王已经被将死。先看清最后局面，再进入复盘寻找关键转折。`,raw:title};
+ if(winner)return {winner,loser,title:`${winnerName}胜利！`,status:`${loserName}认输`,detail:`${loserName}结束了本局。棋盘会保留在终局，你可以继续观察或进入复盘。`,raw:title};
+ return {winner:null,loser:null,title:title.startsWith('和棋')||title.startsWith('逼和')?'本局和棋':'本轮结束',status:title,detail:`${title}。棋盘会保留在终局，准备好后再进入复盘。`,raw:title};
+}
+function markMatedKing(color){
+ if(!color)return;const king=battle.board.findIndex(p=>p?.c===color&&p.t==='k');
+ requestAnimationFrame(()=>$('#playBoardWrap [data-idx="'+king+'"]')?.classList.add('checkmate-king'));
+}
+function showEndTransition(end){
+ if(!battle.over||battle.end!==end)return;
+ $('#resultTitle').textContent=end.title;$('#resultDesc').textContent=end.detail;
+ $('#resultEmoji').innerHTML=end.winner?pieceSVG('k',end.winner):pieceSVG('k','w');
+ $('#resultAgain').textContent='进入复盘';$('#resultBack').textContent='留在终局';
+ $('#resultOverlay').classList.add('show');if(end.winner){celebrate(2);SFX.win();}
+}
+function finishLearning(title){
+ clearTimeout(aiTimer);clearTimeout(endTransitionTimer);battleEpoch++;battle.over=true;battle.thinking=false;battle.end=endOutcome(title);renderBattle();renderCoach();coachSay(battle.end.status);markMatedKing(battle.end.loser);
+ endTransitionTimer=setTimeout(()=>showEndTransition(battle.end),1100);
+}
 function choosePromotion(moves,commit,overrideColor){
  let dialog=$('#promotionDialog');if(!dialog){document.body.insertAdjacentHTML('beforeend','<dialog id="promotionDialog"><h2>选择升变棋子</h2><p>兵到达底线，可以变成后、车、象或马。</p><div class="promotion-choices"></div><button class="btn btn-ghost" id="cancelPromotion">暂不走这步</button></dialog>');dialog=$('#promotionDialog');}
  const color=overrideColor||battle.board[moves[0].from]?.c||'w';dialog.querySelector('.promotion-choices').innerHTML=moves.map(m=>`<button data-promotion="${m.promotion}">${pieceSVG(m.promotion,color)}${PIECES[m.promotion].name}</button>`).join('');dialog.querySelectorAll('[data-promotion]').forEach(b=>b.onclick=()=>{dialog.close();commit(moves.find(m=>m.promotion===b.dataset.promotion));});$('#cancelPromotion').onclick=()=>dialog.close();dialog.showModal();
@@ -2191,13 +2257,14 @@ function drawRoutes(wrap,routes){
   return `<g class="march-route"><path d="${route}" fill="none" stroke="${m.color}" stroke-width="46" stroke-linecap="round" stroke-linejoin="round" opacity=".12"/>${m.dashed?`<path class="march-trail" d="${route}" fill="none" stroke="${m.color}" stroke-width="26" stroke-linecap="round" stroke-dasharray="25 20" opacity=".65"/>`:`<path class="march-trail" d="${band}" fill="${m.color}" opacity=".62" stroke="${m.color}" stroke-width="3" stroke-linejoin="round"/>`}<circle cx="${a[0]}" cy="${a[1]}" r="17" fill="${m.color}" opacity=".45"/><path class="march-head" transform="translate(${b}) rotate(${angle})" d="M0 0 Q-17 -13 -47 -31 Q-52 -32 -48 -25 L-37 0 L-48 25 Q-52 32 -47 31 Q-17 13 0 0Z" fill="${m.color}" opacity=".86" stroke="${m.color}" stroke-width="3" stroke-linejoin="round"/></g>`;
  }).join('')}</svg>`);
 }
-let review={items:[],index:0,stage:0,selected:null,retry:false,awarded:new Set()};
+let review={items:[],index:0,stage:0,selected:null,retry:false,awarded:new Set(),focusColor:'w'};
 function openReview(source){
  if(!source||!Array.isArray(source.history))source=battle;
  if(source.thinking){coachSay('等对手走完这一步，再一起回顾。');return;}
- const history=(source.history||[]).filter(h=>h.color==='w');if(!history.length){coachSay('先尝试走一步，再来看看你的选择。');return;}
- const items=history.map((h,i)=>{const lines=shortLines(h.before.board,h.before.cast);const actual=lines.find(l=>sameMove(l.move,h.move));return {...h,number:i+1,lines,actual,gap:actual?lines[0].score-actual.score:0};});
- review={items:items.sort((a,b)=>b.gap-a.gap).slice(0,3).sort((a,b)=>a.number-b.number),index:0,stage:0,selected:null,retry:false,awarded:new Set()};
+ const focusColor=source.end?.loser||'w';
+  const history=(source.history||[]).map((h,globalPly)=>({...h,globalPly:globalPly+1})).filter(h=>h.color===focusColor);if(!history.length){coachSay('先尝试走一步，再来看看你的选择。');return;}
+ const items=history.map((h,i)=>{const lines=shortLines(h.before.board,h.before.cast,h.color),actual=lines.find(l=>sameMove(l.move,h.move)),gap=actual?(h.color==='w'?lines[0].score-actual.score:actual.score-lines[0].score):0;return {...h,number:i+1,lines,actual,gap};});
+ review={items:items.sort((a,b)=>b.gap-a.gap).slice(0,3).sort((a,b)=>a.number-b.number),index:0,stage:0,selected:null,retry:false,awarded:new Set(),focusColor};
  if(!$('#reviewDialog'))document.body.insertAdjacentHTML('beforeend',`<dialog id="reviewDialog" aria-labelledby="reviewTitle"><div class="review-head"><h2 id="reviewTitle">战局回顾 · 看懂再试</h2><button class="btn btn-ghost" id="closeReview">返回棋局</button></div><p id="reviewProgress"></p><div class="review-board"><div class="board-wrap" id="reviewBoard"></div></div><div class="review-copy" id="reviewMessage" aria-live="polite"></div><div class="review-controls"><button class="btn btn-soft" id="reviewHint">提醒观察</button><button class="btn btn-soft" id="reviewDirection">提供方向</button><button class="btn btn-soft" id="reviewAnswer">展示路线</button><button class="btn btn-ghost" id="reviewReply">对手回应</button><button class="btn btn-primary" id="reviewRetry">我来试试</button></div><div class="review-controls"><button class="btn btn-ghost" id="reviewPrev">上一个时刻</button><button class="btn btn-ghost" id="reviewNext">下一个时刻</button></div><p class="review-caption">虚线：原来的路线　蓝色：练习方案　红色：对手回应。短线分析只比较一来一回的子力与将杀，不代表全局最佳；重试不会改动原对局。</p></dialog>`);
  const dialog=$('#reviewDialog');
  if(!dialog.querySelector('.review-layout')){
@@ -2221,12 +2288,12 @@ function renderReview(){
  if(review.stage===3)routes.push({...best.move,color:'#276a87'});
  if(review.stage===4){applyMove(pos.board,best.move,pos.cast);if(best.reply){routes=[{...best.reply,color:'#b7483b'}];applyMove(pos.board,best.reply,pos.cast);}else routes=[];}
  let text=item.gap>=2?'这里有一个值得再观察的时刻。先看原来的路线，想想对手可能如何回应。':'这里没有发现明确的短线损失。我们一起看看这一步，也可以尝试其他路线。';
- if(review.stage===1){text=inCheck(item.before.board,'w')?'先观察国王：它是否正被攻击？我们要先解围。':'找一找：有没有伙伴受到攻击？对手下一步能吃到谁？';if(item.actual?.reply&&item.gap>=2){applyMove(pos.board,item.move,pos.cast);const reply=item.actual.reply;routes.push({...reply,color:'#b7483b',dashed:true});const target=pos.board[reply.to];text=`原来的路线走完后，对手可以 ${idx2name(reply.from)} → ${idx2name(reply.to)}${target?'，攻击这里的'+FACTIONS.w.roles[target.t]:''}。看看红色虚线，怎样让局面更稳？`;}}
- if(review.stage===2)text=`观察 ${idx2name(best.move.from)} 的${FACTIONS.w.roles[item.before.board[best.move.from].t]}：想想移动、保护或吃子，哪种行动能让局面更稳。`;
+ if(review.stage===1){text=inCheck(item.before.board,item.color)?'先观察国王：它是否正被攻击？我们要先解围。':'找一找：有没有伙伴受到攻击？对手下一步能吃到谁？';if(item.actual?.reply&&item.gap>=2){applyMove(pos.board,item.move,pos.cast);const reply=item.actual.reply;routes.push({...reply,color:'#b7483b',dashed:true});const target=pos.board[reply.to];text=`原来的路线走完后，对手可以 ${idx2name(reply.from)} → ${idx2name(reply.to)}${target?'，攻击这里的'+FACTIONS[item.color].roles[target.t]:''}。看看红色虚线，怎样让局面更稳？`;}}
+ if(review.stage===2)text=`观察 ${idx2name(best.move.from)} 的${FACTIONS[item.color].roles[item.before.board[best.move.from].t]}：想想移动、保护或吃子，哪种行动能让局面更稳。`;
  if(review.stage===3)text=`可以试试 ${idx2name(best.move.from)} → ${idx2name(best.move.to)}${best.move.promotion?'，升变为'+PIECES[best.move.promotion].name:''}。${item.gap>=2?'在眼前一来一回中，这个方案的子力结果更稳。':'这是一种短线可行方案，并不意味着你的原走法错误。'}接着看看对手的回应。`;
  if(review.stage===4)text=best.reply?`对手可以 ${idx2name(best.reply.from)} → ${idx2name(best.reply.to)}。这是一个合理候选回应，不是它唯一能走的一步。再看看现在双方还剩哪些保护关系。`:'这一方案后，对手已无合法走法。结合国王是否被将军，区分将杀和逼和。';
  if(review.retry)text='轮到你来试。先选一枚白棋，再选目的地；同样稳妥的其他路线也值得肯定。';
- $('#reviewMessage').textContent=text;$('#reviewProgress').textContent=`时刻 ${review.index+1} / ${review.items.length} · 你的第 ${item.number} 步`;
+ $('#reviewMessage').textContent=text;$('#reviewProgress').textContent=`时刻 ${review.index+1} / ${review.items.length} · ${FACTIONS[item.color].name}第 ${item.number} 步`;
  const selectable=new Set(review.retry&&review.selected!==null?legalMoves(pos.board,review.selected,pos.cast).map(m=>m.to):[]);
  renderChessBoard($('#reviewBoard'),pos.board,{selected:review.selected,selectable,onClick:retryReview});drawRoutes($('#reviewBoard'),routes);
  $('#reviewPrev').disabled=review.index===0;$('#reviewNext').disabled=review.index===review.items.length-1;
@@ -2235,25 +2302,26 @@ function retryReview(idx){
  if(replay.active)return;
  if(!review.retry)return;const item=review.items[review.index],b=item.before.board;
  const options=review.selected===null?[]:item.lines.filter(l=>l.move.from===review.selected&&l.move.to===idx);
- const assess=line=>{const good=item.lines[0].score-line.score<1.5;$('#reviewMessage').textContent=good?'你找到了一条短线同样稳妥的路线！试着说说，你想保护谁或威胁谁？':'这个选择值得再观察：对手还有吃子或将杀的机会。点“提供方向”得到下一层提示，再试一次。';drawRoutes($('#reviewBoard'),[{...line.move,color:good?'#347458':'#a66448'}]);};
+ const assess=line=>{const good=(item.color==='w'?item.lines[0].score-line.score:line.score-item.lines[0].score)<1.5;$('#reviewMessage').textContent=good?'你找到了一条短线同样稳妥的路线！试着说说，你想保护谁或威胁谁？':'这个选择值得再观察：对手还有吃子或将杀的机会。点“提供方向”得到下一层提示，再试一次。';drawRoutes($('#reviewBoard'),[{...line.move,color:good?'#347458':'#a66448'}]);};
  if(options.length){if(options.length>1)choosePromotion(options.map(l=>l.move),m=>assess(options.find(l=>sameMove(l.move,m))));else assess(options[0]);return;}
- if(b[idx]?.c==='w'){review.selected=idx;renderReview();}else $('#reviewMessage').textContent='这一步不符合走法或会暴露国王。再观察一下点亮的格子。';
+ if(b[idx]?.c===item.color){review.selected=idx;renderReview();}else $('#reviewMessage').textContent='这一步不符合走法或会暴露国王。再观察一下点亮的格子。';
 }
-let replay={active:false,playing:false,ply:0,history:[],timer:null,frame:null,epoch:0};
+let replay={active:false,playing:false,ply:0,history:[],timer:null,frame:null,epoch:0,voice:false};
 function mountReplayControls(history=battle.history){
- pauseReplay();replay.active=false;replay.ply=0;replay.history=JSON.parse(JSON.stringify(history||[]));
+ pauseReplay();replay.active=false;replay.ply=0;replay.history=JSON.parse(JSON.stringify(history||[]));replay.voice=!muted&&replaySpeechAvailable();
  if(!$('#replayToolbar')){
-  $('#reviewProgress').insertAdjacentHTML('beforebegin',`<div class="replay-tabs" role="group" aria-label="复盘方式"><button id="keyMoments" class="btn btn-soft" aria-pressed="true">关键时刻</button><button id="wholeReplay" class="btn btn-ghost" aria-pressed="false">全局行军回放</button></div><div id="replayToolbar" class="hidden"><div class="replay-transport"><button id="replayFirst" class="btn btn-ghost" aria-label="回到开局">开局</button><button id="replayBack" class="btn btn-ghost" aria-label="上一步">上一步</button><button id="replayPlay" class="btn btn-primary">播放</button><button id="replayForward" class="btn btn-ghost" aria-label="下一步">下一步</button><button id="replayLast" class="btn btn-ghost" aria-label="最后一步">终局</button><label>节奏 <select id="replaySpeed" aria-label="回放节奏"><option value="3600">慢速</option><option value="2400" selected>正常</option><option value="1500">快速</option></select></label></div><input id="replaySeek" type="range" min="0" value="0" aria-label="选择回放步数"></div>`);
+  $('#reviewProgress').insertAdjacentHTML('beforebegin',`<div class="replay-tabs" role="group" aria-label="复盘方式"><button id="keyMoments" class="btn btn-soft" aria-pressed="true">关键时刻</button><button id="wholeReplay" class="btn btn-ghost" aria-pressed="false">全局行军回放</button></div><div id="replayToolbar" class="hidden"><div class="replay-transport"><button id="replayFirst" class="btn btn-ghost" aria-label="回到开局">开局</button><button id="replayBack" class="btn btn-ghost" aria-label="上一步">上一步</button><button id="replayPlay" class="btn btn-primary">播放</button><button id="replayForward" class="btn btn-ghost" aria-label="下一步">下一步</button><button id="replayLast" class="btn btn-ghost" aria-label="最后一步">终局</button><button id="replayVoice" class="btn btn-ghost" aria-pressed="false">语音讲解：关</button><label>节奏 <select id="replaySpeed" aria-label="回放节奏"><option value="3600">慢速</option><option value="2400" selected>正常</option><option value="1500">快速</option></select></label></div><input id="replaySeek" type="range" min="0" value="0" aria-label="选择回放步数"></div>`);
   $('#reviewDialog').addEventListener('close',pauseReplay);$('#reviewDialog').addEventListener('cancel',pauseReplay);
  }
  $('#replayToolbar').classList.add('hidden');
  $('#keyMoments').onclick=()=>{leaveReplay();renderReview();};
- $('#wholeReplay').onclick=()=>{pauseReplay();replay.active=true;review.retry=false;$('#replayToolbar').classList.remove('hidden');setReplayTabs(true);renderReplay();};
+ $('#wholeReplay').onclick=()=>{pauseReplay();replay.active=true;review.retry=false;$('#replayToolbar').classList.remove('hidden');setReplayTabs(true);renderReplay();updateReplayVoice();speakReplay($('#reviewMessage').textContent);};
  $('#replayFirst').onclick=()=>seekReplay(0);$('#replayLast').onclick=()=>seekReplay(replay.history.length);
  $('#replayBack').onclick=()=>seekReplay(replay.ply-1);$('#replayForward').onclick=()=>seekReplay(replay.ply+1);
  $('#replaySeek').oninput=e=>seekReplay(+e.target.value);
  $('#replayPlay').onclick=()=>{if(replay.playing){pauseReplay();renderReplay();}else{if(replay.ply>=replay.history.length)replay.ply=0;replay.playing=true;renderReplay();playReplayStep();}};
  $('#replaySpeed').onchange=()=>{if(replay.playing){pauseReplay();replay.playing=true;playReplayStep();}};
+  $('#replayVoice').onclick=()=>{replay.voice=!replay.voice;updateReplayVoice();if(replay.voice)speakReplay($('#reviewMessage').textContent);else stopReplayVoice();};
  setReplayTabs(false);$('#keyMoments').hidden=false;
 }
 function setReplayTabs(active){
@@ -2261,16 +2329,24 @@ function setReplayTabs(active){
  document.querySelectorAll('#reviewDialog .review-controls').forEach(el=>el.classList.toggle('hidden',active));
  const caption=$('#reviewDialog .review-caption');if(caption){caption.dataset.guidedText ||= caption.textContent;caption.textContent=active?'蓝色路线：十字军；红色路线：明军。马的日字折线是走法示意，可以越子。回放还原本局实际走法；分析与重试请切回“关键时刻”。':caption.dataset.guidedText;}
 }
-function pauseReplay(){clearTimeout(replay.timer);clearTimeout(replay.frame);replay.epoch++;replay.playing=false;$('#reviewBoard .piece-anim')?.remove();if($('#replayPlay'))$('#replayPlay').textContent='播放';}
+function replaySpeechAvailable(){return 'speechSynthesis' in window&&'SpeechSynthesisUtterance' in window;}
+function stopReplayVoice(){if(replaySpeechAvailable())window.speechSynthesis.cancel();}
+function updateReplayVoice(){const button=$('#replayVoice');if(!button)return;const available=replaySpeechAvailable();if(!available)replay.voice=false;button.disabled=!available;button.textContent=available?`语音讲解：${replay.voice?'开':'关'}`:'本机无语音';button.setAttribute('aria-pressed',String(replay.voice));}
+function speakReplay(text){
+ if(!replay.voice||!replaySpeechAvailable()||!text)return;stopReplayVoice();const utterance=new SpeechSynthesisUtterance(text);utterance.lang='zh-CN';utterance.rate=.9;utterance.pitch=1;
+ const voice=window.speechSynthesis.getVoices().find(v=>/^zh(-|_)/i.test(v.lang));if(voice)utterance.voice=voice;window.speechSynthesis.speak(utterance);
+}
+function replayStepDelay(text){return Math.max(+$('#replaySpeed').value,Math.min(10000,String(text).length*160));}
+function pauseReplay(){clearTimeout(replay.timer);clearTimeout(replay.frame);replay.epoch++;replay.playing=false;stopReplayVoice();$('#reviewBoard .piece-anim')?.remove();if($('#replayPlay'))$('#replayPlay').textContent='播放';}
 function leaveReplay(){pauseReplay();replay.active=false;$('#replayToolbar')?.classList.add('hidden');setReplayTabs(false);}
-function seekReplay(ply){pauseReplay();replay.ply=Math.max(0,Math.min(replay.history.length,ply));renderReplay();}
+function seekReplay(ply){pauseReplay();replay.ply=Math.max(0,Math.min(replay.history.length,ply));renderReplay();speakReplay($('#reviewMessage').textContent);}
 function replayPosition(ply){
  if(!replay.history.length)return copyPosition(setupBoard(),castlingState());
  if(ply<replay.history.length){const h=replay.history[ply];return copyPosition(h.before.board,h.before.cast);}
  const h=replay.history.at(-1),pos=copyPosition(h.before.board,h.before.cast);applyMove(pos.board,h.move,pos.cast);return pos;
 }
-function replayNarration(h){
- const m=h.move,p=h.before.board[m.from],role=FACTIONS[h.color].roles[p.t];
+function replayNarration(h,ply=0){
+ const m=h.move,p=h.before.board[m.from],role=FACTIONS[h.color].roles[p.t],enemy=h.color==='w'?'b':'w';
  let text=`${h.color==='w'?'白方':'黑方'}${role}从 ${idx2name(m.from)} 行进到 ${idx2name(m.to)}。`;
  const captured=h.before.board[m.ep?m.to+(h.color==='w'?-8:8):m.to];
  if(m.castle)text+='这是王车易位：王与同侧的车在这一步同时调动。';
@@ -2278,8 +2354,15 @@ function replayNarration(h){
  else if(captured)text+=`${FACTIONS[captured.c].roles[captured.t]}被吃，退出这次对局。`;
  if(m.promotion)text+=`兵到达底线，升变为${PIECES[m.promotion].name}。`;
  if(p.t==='n')text+='马走日字，能够越过其他棋子。';
- const next=copyPosition(h.before.board,h.before.cast);applyMove(next.board,m,next.cast);
- if(inCheck(next.board,h.color==='w'?'b':'w'))text+='将军！另一方下一步必须先解除国王受到的攻击。';
+ const next=copyPosition(h.before.board,h.before.cast);applyMove(next.board,m,next.cast);const checked=inCheck(next.board,enemy),enemyMoves=allLegalMoves(next.board,enemy,next.cast);
+ if(checked&&!enemyMoves.length)text+=`这一手形成将死，${FACTIONS[h.color].name}取得胜利。`;
+ else if(checked)text+='将军！另一方下一步必须先解除国王受到的攻击。';
+ const key=review.items.find(item=>item.globalPly===ply&&item.gap>=1.5);
+ if(key){
+  const best=key.lines[0],reply=key.actual?.reply;text+='这是本局的关键转折。';
+  if(reply){const replyPiece=next.board[reply.from],target=next.board[reply.to],after=copyPosition(next.board,next.cast);applyMove(after.board,reply,after.cast);const trapped=!allLegalMoves(after.board,key.color,after.cast).length&&inCheck(after.board,key.color);text+=`原走法让对手可以用${replyPiece?FACTIONS[enemy].roles[replyPiece.t]:'棋子'}从 ${idx2name(reply.from)} 到 ${idx2name(reply.to)}${trapped?'完成将死':target?'吃掉'+FACTIONS[key.color].roles[target.t]:inCheck(after.board,key.color)?'形成将军':'取得主动'}。`;}
+  text+=`更稳的思路是 ${idx2name(best.move.from)} 到 ${idx2name(best.move.to)}。规避方法：走子前先检查国王安全、对手的将军路线和没有保护的棋子。`;
+ }
  return text;
 }
 function renderReplay(){
@@ -2287,7 +2370,7 @@ function renderReplay(){
  renderChessBoard($('#reviewBoard'),pos.board,{lastMove:previous?[previous.move.from,previous.move.to]:null});
  if(previous)drawRoutes($('#reviewBoard'),[{...previous.move,color:previous.color==='w'?'#276a87':'#b7483b'}]);
  $('#reviewProgress').textContent=`全局回放 · ${replay.ply} / ${replay.history.length} 步（双方各走一步分别计数）`;
- $('#reviewMessage').textContent=previous?replayNarration(previous):'先看看这一局的起始局面。按“播放”，观察十字军与明军如何一步步展开。';
+ $('#reviewMessage').textContent=previous?replayNarration(previous,replay.ply):'先看看这一局的起始局面。按“播放”，观察十字军与明军如何一步步展开。';
  $('#replaySeek').max=replay.history.length;$('#replaySeek').value=replay.ply;
  $('#replayPlay').textContent=replay.playing?'暂停':'播放';
  $('#replayFirst').disabled=$('#replayBack').disabled=replay.ply===0;
@@ -2299,10 +2382,10 @@ function playReplayStep(){
  if(replay.ply>=replay.history.length){pauseReplay();renderReplay();return;}
  const epoch=replay.epoch,h=replay.history[replay.ply],m=h.move,p=h.before.board[m.from];
  renderReplay();drawRoutes($('#reviewBoard'),[{...m,color:h.color==='w'?'#276a87':'#b7483b'}]);
- $('#reviewMessage').textContent=replayNarration(h);
+ const narration=replayNarration(h,replay.ply+1);$('#reviewMessage').textContent=narration;speakReplay(narration);
  const reduced=window.matchMedia('(prefers-reduced-motion: reduce)').matches;
  if(!reduced){$('#reviewBoard [data-idx="'+m.from+'"] .piece')?.style.setProperty('visibility','hidden');animatePiece($('#reviewBoard'),m.from,m.to,p.t,p.c);}
- replay.frame=setTimeout(()=>{if(epoch!==replay.epoch||!replay.playing||!$('#reviewDialog').open)return;replay.ply++;renderReplay();if(replay.ply>=replay.history.length){pauseReplay();renderReplay();return;}replay.timer=setTimeout(playReplayStep,+$('#replaySpeed').value);},reduced?0:400);
+ replay.frame=setTimeout(()=>{if(epoch!==replay.epoch||!replay.playing||!$('#reviewDialog').open)return;replay.ply++;renderReplay();if(replay.ply>=replay.history.length){pauseReplay();renderReplay();return;}replay.timer=setTimeout(playReplayStep,replayStepDelay(narration));},reduced?0:400);
 }
 /* END_GUIDED_LEARNING_V1 */
 
@@ -2330,5 +2413,13 @@ document.addEventListener('DOMContentLoaded', initApp);
 <script src="friend-client.js"></script>
 <script src="feedback-client.js"></script>
 <script src="immersive.js"></script>
+<script src="pwa.js"></script>
 </body>
 </html>
+
+
+
+
+
+
+

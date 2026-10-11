@@ -1,0 +1,16 @@
+/* 原始开发者：不疾不徐 | Copyright (c) 2026 合肥市朋程共行电子商务有限责任公司 */
+const assert=require('node:assert/strict');
+const {server}=require('./friend-server.cjs');
+const {chromium}=require('C:/Users/asus/.cache/codex-runtimes/codex-primary-runtime/dependencies/node/node_modules/playwright');
+(async()=>{const app=server(),browser=await chromium.launch({executablePath:'C:/Program Files/Google/Chrome/Application/chrome.exe',headless:true});await new Promise(r=>app.listen(0,'127.0.0.1',r));const page=await browser.newPage({viewport:{width:390,height:844}}),errors=[];page.on('pageerror',e=>errors.push(e.message));try{
+ const base='http://127.0.0.1:'+app.address().port;await page.goto(base);await page.evaluate(()=>{go('play');hideGuide();});await page.locator('[data-mode="local"]').click();
+ await page.evaluate(()=>{const play=(a,b)=>doBattleMove(allLegalMoves(battle.board,battle.turn,battle.cast).find(m=>m.from===name2idx(a)&&m.to===name2idx(b)));play('f2','f3');play('e7','e5');play('g2','g4');play('d8','h4');});
+ assert.deepEqual(await page.evaluate(()=>({over:battle.over,winner:battle.end?.winner,loser:battle.end?.loser,review:!!document.querySelector('#reviewDialog')?.open,overlay:document.querySelector('#resultOverlay').classList.contains('show')})),{over:true,winner:'b',loser:'w',review:false,overlay:false});
+ assert.deepEqual(await page.evaluate(()=>[endOutcome('十字军将杀').title,endOutcome('明军将杀').title]),['十字军胜利！','明军胜利！']);
+ await page.waitForFunction(()=>document.querySelector('#resultOverlay').classList.contains('show'));assert.equal(await page.locator('#resultTitle').textContent(),'明军胜利！');assert.match(await page.locator('#resultDesc').textContent(),/将死/);assert.equal(await page.locator('#playBoardWrap .checkmate-king').count(),1);
+ await page.locator('#resultBack').click();assert.equal(await page.locator('#reviewDialog').count(),0);assert.equal(await page.locator('#resultOverlay.show').count(),0);
+ await page.evaluate(()=>showEndTransition(battle.end));await page.locator('#resultAgain').click();assert.equal(await page.locator('#reviewDialog').getAttribute('open'),'');assert.equal(await page.evaluate(()=>review.focusColor),'w');
+ await page.locator('#wholeReplay').click();assert.equal(await page.locator('#replayVoice').count(),1);const analysis=await page.evaluate(()=>{const item=[...review.items].sort((a,b)=>b.gap-a.gap)[0],text=replayNarration(replay.history[item.globalPly-1],item.globalPly),last=replayNarration(replay.history.at(-1),replay.history.length);return {gap:item.gap,text,last};});assert.ok(analysis.gap>=1.5,analysis.gap);assert.match(analysis.text,/关键转折/);assert.match(analysis.text,/更稳的思路/);assert.match(analysis.text,/规避方法/);assert.match(analysis.last,/将死/);assert.deepEqual(errors,[]);
+ console.log('PASS: checkmate board pause, Ming victory transition, no automatic review, keep-final-position action, loser-focused key-move explanation, alternative and prevention advice, voice control.');
+}finally{await browser.close();app.closeAllConnections();await new Promise(r=>app.close(r));}})().catch(e=>{console.error(e);process.exitCode=1;});
+
