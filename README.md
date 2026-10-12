@@ -2,7 +2,7 @@
 
 以十字军与明军双阵营文化角色为主题的国际象棋启蒙、学习与实战项目，提供儿童Q版和成人版人物皮肤。
 
-> 当前状态：本地开发与联调阶段。本仓库暂为私有仓库，尚不代表已经达到应用商店正式上线标准或已开放公网服务。
+> 当前状态：v0.8.0 公开测试版源码发行。本仓库已公开供审阅和非商业使用；尚未达到应用商店正式上线标准，也未开放正式公网联机服务。
 
 ## 当前能力
 
@@ -20,6 +20,10 @@
 - 实战可在“启蒙探索”与“国际标准赛事规则”间切换；赛事模式关闭提示、悔棋、走法亮点和途中复盘，并按三次重复/50回合申请及五次重复/75回合自动和棋执行。
 
 云端正式联机、应用商店合规、用户体系和内容审核仍属于后续工作，详见项目内交付及待办文档。
+
+## 下载公开测试版
+
+GitHub Release：<https://github.com/minigui985-arch/xiaoqishi-leyuan/releases/tag/v0.8.0>
 
 ## 本地运行
 
@@ -65,7 +69,7 @@
 
 https://github.com/minigui985-arch/xiaoqishi-leyuan
 
-### EdgeOne Pages 封闭测试
+### EdgeOne Pages 部署
 
-源代码仓库保持私有时，可运行 `node build-edgeone.cjs` 生成 `dist/edgeone-pages`，再将该目录作为腾讯 EdgeOne Pages 的发布目录。运行 `node check-edgeone-deploy.cjs` 可检查入口、PWA 核心文件以及不应公开的数据。具体设置见 `EDGEONE-PAGES-部署说明.md`。
+运行 `node build-edgeone.cjs` 可生成 `dist/edgeone-pages`，再将该目录作为腾讯 EdgeOne Pages 的发布目录。运行 `node check-edgeone-deploy.cjs` 可检查入口、PWA 核心文件以及不应公开的数据。具体设置见 `EDGEONE-PAGES-部署说明.md`。
 
