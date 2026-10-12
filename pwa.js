@@ -21,7 +21,7 @@
   document.body.append(dialog);home.append(button);dialog.querySelector('button').onclick=()=>dialog.close();
   button.onclick=async()=>{
    if(installPrompt){const prompt=installPrompt;installPrompt=undefined;await prompt.prompt();const choice=await prompt.userChoice;if(choice.outcome==='accepted')button.hidden=true;return;}
-   dialog.querySelector('p').textContent=instruction();dialog.showModal();
+   dialog.querySelector('p').textContent=window.KnightI18n.text(instruction());dialog.showModal();
   };
   addEventListener('appinstalled',()=>{installPrompt=undefined;button.hidden=true;if(dialog.open)dialog.close();});
  });

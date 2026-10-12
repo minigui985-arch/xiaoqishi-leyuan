@@ -7,6 +7,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <meta name="theme-color" content="#9B3D2F">
+<meta name="description" content="十字军与明军双阵营国际象棋启蒙、名局学习和离线对弈。">
 <meta name="mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="default">
@@ -615,6 +616,9 @@ body.board-page .bottomnav{position:static;transform:none;max-width:none;width:1
  #reviewDialog .review-side{padding-top:58px}
 }
 
+
+.language-select{min-height:44px;padding:0 10px;border:1px solid var(--card-border);border-radius:12px;background:var(--card);color:var(--ink);font:inherit;font-weight:700;cursor:pointer}
+@media(max-width:560px){.language-select{max-width:92px;padding:0 6px;font-size:12px}}
 </style>
 <!-- 全局渐变与滤镜定义（棋子立体效果用） -->
 <svg width="0" height="0" style="position:absolute" aria-hidden="true">
@@ -673,7 +677,7 @@ body.board-page .bottomnav{position:static;transform:none;max-width:none;width:1
   <header class="topbar">
     <div class="topbar-brand">
       <div class="topbar-logo" id="logoBtn"><span aria-hidden="true">♞</span></div>
-      <div class="topbar-title">小骑士乐园<small>十字军 × 明军 · 国际象棋学园</small></div>
+      <div class="topbar-title"><span data-i18n="brand.name">小骑士乐园</span><small data-i18n="brand.sub">十字军 × 明军 · 国际象棋学园</small></div>
     </div>
     <div class="topbar-actions">
       <button class="star-counter" id="starBtn" aria-label="我的星星"><svg viewBox="0 0 24 24" fill="#FFB81C"><path d="M12 2.6l2.7 5.7 6.2.8-4.6 4.3 1.2 6.1L12 16.7l-5.5 2.8 1.2-6.1L3.1 9.1l6.2-.8z"/></svg><span id="starNum">0</span></button>
@@ -682,22 +686,22 @@ body.board-page .bottomnav{position:static;transform:none;max-width:none;width:1
     </div>
   </header>
 
-  <div class="world-ribbon"><span> 白方 · 十字军</span><span>同一棋盘 · 两种文明</span><span>明军 · 黑方 </span></div>
+  <div class="world-ribbon"><span data-i18n="ribbon.white">白方 · 十字军</span><span data-i18n="ribbon.center">同一棋盘 · 两种文明</span><span data-i18n="ribbon.black">明军 · 黑方</span></div>
 <main class="app-main" id="appMain">
     <!-- ===== 视图：首页 ===== -->
     <section class="view" id="view-home">
       <div class="hero">
-        <div class="hero-kicker">THE TWO KINGDOMS / 双阵营学园</div>
-        <h1 id="worldTitle">两支小队，一起学棋</h1>
-        <p id="worldSubtitle">从第一步开始，与十字军和明军小伙伴一起成长。</p>
+        <div class="hero-kicker" data-i18n="hero.kicker">THE TWO KINGDOMS / 双阵营学园</div>
+        <h1 id="worldTitle" data-i18n="hero.childTitle">两支小队，一起学棋</h1>
+        <p id="worldSubtitle" data-i18n="hero.childSub">从第一步开始，与十字军和明军小伙伴一起成长。</p>
         <div class="realm-grid">
           <button class="realm-card west" data-realm="w"><span class="realm-label">WHITE / 白方</span><strong>十字军</strong><span class="realm-art" id="westHero"></span><span class="realm-caption">盾徽 · 城堡 · 骑士 <b>查看人物 →</b></span></button>
           <button class="realm-card east" data-realm="b"><span class="realm-label">BLACK / 黑方</span><strong>明军</strong><span class="realm-art" id="eastHero"></span><span class="realm-caption">凤冠 · 火铳 · 文臣 <b>查看人物 →</b></span></button>
         </div>
-        <div class="hero-actions"><button class="btn btn-primary" id="learnNow">开始学习 →</button><button class="btn btn-ghost" id="exploreNow">探索人物</button></div>
+        <div class="hero-actions"><button class="btn btn-primary" id="learnNow" data-i18n="home.learn">开始学习 →</button><button class="btn btn-ghost" id="exploreNow" data-i18n="home.explore">探索人物</button></div>
         <span class="hidden" id="heroMascot"></span>
       </div>
-      <div class="section-heading"><span>学习之旅</span><small>认识 → 理解 → 实践</small></div>
+      <div class="section-heading"><span data-i18n="home.journey">学习之旅</span><small data-i18n="home.steps">认识 → 理解 → 实践</small></div>
       <div class="progress-strip" id="progressStrip"></div>
       <div class="lesson-list" id="lessonList"></div>
       <div class="home-quote"><b>给小骑的悄悄话：</b>国际象棋就像一场小冒险——每个棋子都有自己的超能力。跟着课程一步步学，每完成一课就能点亮一颗星星，全部学会就可以和"小骑"对战啦！</div>
@@ -706,8 +710,8 @@ body.board-page .bottomnav{position:static;transform:none;max-width:none;width:1
     <!-- ===== 视图：认识棋盘 ===== -->
     <section class="view hidden" id="view-board">
       <div class="page-head">
-        <h2>第一课 · 认识棋盘</h2>
-        <p>棋盘是棋子的家，先来认识它吧</p>
+        <h2 data-i18n="board.title">第一课 · 认识棋盘</h2>
+        <p data-i18n="board.sub">棋盘是棋子的家，先来认识它吧</p>
       </div>
       <div class="concept-card">
         <div class="c-ico"><svg viewBox="0 0 24 24" fill="none" stroke="#8A5B00" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="2"/><path d="M3 9h18M3 15h18M9 3v18M15 3v18" stroke="#F5B93E"/></svg></div>
@@ -736,14 +740,14 @@ body.board-page .bottomnav{position:static;transform:none;max-width:none;width:1
     <!-- ===== 视图：认识棋子 ===== -->
     <section class="view hidden" id="view-pieces">
       <div class="page-head">
-        <h2>第二课 · 认识棋子</h2>
-        <p>六位小勇士，各有各的本领</p>
+        <h2 data-i18n="pieces.title">第二课 · 认识棋子</h2>
+        <p data-i18n="pieces.sub">六位小勇士，各有各的本领</p>
       </div>
       <div class="concept-card">
         <div class="c-ico"><svg viewBox="0 0 24 24" fill="none" stroke="#8A5B00" stroke-width="2"><path d="M5 3l2 4-2 4 2 4-2 4M19 3l-2 4 2 4-2 4 2 4" stroke="#F5B93E"/><circle cx="12" cy="8" r="3.4" fill="#FF8A3D" stroke="none"/></svg></div>
         <div class="c-tx">点击下面的棋子卡片，认识每一位小勇士。<b>白棋</b>和<b>黑棋</b>各有 16 个，是两支小军队。</div>
       </div>
-      <div class="faction-tabs" role="group" aria-label="图鉴阵营"><button data-faction="w" aria-pressed="true"> 十字军 · 白方</button><button data-faction="b" aria-pressed="false"> 明军 · 黑方</button></div><div class="piece-gallery" id="pieceGallery"></div>
+      <div class="faction-tabs" role="group" aria-label="图鉴阵营"><button data-faction="w" aria-pressed="true" data-i18n="faction.white">十字军 · 白方</button><button data-faction="b" aria-pressed="false" data-i18n="faction.black">明军 · 黑方</button></div><div class="piece-gallery" id="pieceGallery"></div>
       <div class="piece-detail hidden" id="pieceDetail"></div>
       <div class="quiz-box" id="findQuiz">
         <div class="quiz-q"><span class="qtag">找一找</span><span id="findQuizQ">找出棋盘上所有 …</span></div>
@@ -764,8 +768,8 @@ body.board-page .bottomnav{position:static;transform:none;max-width:none;width:1
     <!-- ===== 视图：走法课堂 ===== -->
     <section class="view hidden" id="view-moves">
       <div class="page-head">
-        <h2>第三课 · 走法课堂</h2>
-        <p>选中一枚棋子，点亮的就是它能去的地方</p>
+        <h2 data-i18n="moves.title">第三课 · 走法课堂</h2>
+        <p data-i18n="moves.sub">选中一枚棋子，点亮的就是它能去的地方</p>
       </div>
       <div class="moves-tabs" id="movesTabs"></div>
       <div class="move-lesson" id="moveLesson"></div>
@@ -774,8 +778,8 @@ body.board-page .bottomnav{position:static;transform:none;max-width:none;width:1
     <!-- ===== 视图：实战乐园 ===== -->
     <section class="view hidden" id="view-play">
       <div class="page-head">
-        <h2>实战乐园</h2>
-        <p>学了就用起来，和"小骑"过过招</p>
+        <h2 data-i18n="play.title">实战乐园</h2>
+        <p data-i18n="play.sub">学了就用起来，和“小骑”过过招</p>
       </div>
       <div class="play-modes" id="playModes"></div>
       <div class="play-panel hidden" id="playPanel"></div>
@@ -783,11 +787,11 @@ body.board-page .bottomnav{position:static;transform:none;max-width:none;width:1
   </main>
 
   <nav class="bottomnav" id="bottomNav">
-    <button class="nav-item" data-view="home"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 11l9-8 9 8"/><path d="M5 10v10h14V10"/></svg>首页</button>
-    <button class="nav-item" data-view="board"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><rect x="3" y="3" width="18" height="18" rx="2"/><path d="M3 9h18M3 15h18M9 3v18M15 3v18"/></svg>棋盘</button>
-    <button class="nav-item" data-view="pieces"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="8" r="3"/><path d="M12 11v4"/><path d="M8 21c0-2.5 1.8-4 4-4s4 1.5 4 4z"/></svg>棋子</button>
-    <button class="nav-item" data-view="moves"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 4l8 8m0-8l-8 8"/><circle cx="18" cy="18" r="3"/></svg>走法</button>
-    <button class="nav-item" data-view="play"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3l2.6 5.4 6 .8-4.4 4.2 1.1 5.9L12 16.4 6.7 19.3l1.1-5.9L3.4 9.2l6-.8z"/></svg>实战</button>
+    <button class="nav-item" data-view="home"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 11l9-8 9 8"/><path d="M5 10v10h14V10"/></svg><span data-i18n="nav.home">首页</span></button>
+    <button class="nav-item" data-view="board"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><rect x="3" y="3" width="18" height="18" rx="2"/><path d="M3 9h18M3 15h18M9 3v18M15 3v18"/></svg><span data-i18n="nav.board">棋盘</span></button>
+    <button class="nav-item" data-view="pieces"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="8" r="3"/><path d="M12 11v4"/><path d="M8 21c0-2.5 1.8-4 4-4s4 1.5 4 4z"/></svg><span data-i18n="nav.pieces">棋子</span></button>
+    <button class="nav-item" data-view="moves"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 4l8 8m0-8l-8 8"/><circle cx="18" cy="18" r="3"/></svg><span data-i18n="nav.moves">走法</span></button>
+    <button class="nav-item" data-view="play"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3l2.6 5.4 6 .8-4.4 4.2 1.1 5.9L12 16.4 6.7 19.3l1.1-5.9L3.4 9.2l6-.8z"/></svg><span data-i18n="nav.play">实战</span></button>
   </nav>
 </div>
 
@@ -809,9 +813,21 @@ body.board-page .bottomnav{position:static;transform:none;max-width:none;width:1
     <div class="r-emoji" id="resultEmoji"></div>
     <h2 id="resultTitle"></h2>
     <p id="resultDesc"></p>
-    <div><button class="btn btn-primary" id="resultAgain">进入复盘</button><button class="btn btn-ghost" id="resultBack">留在终局</button></div>
+    <div><button class="btn btn-primary" id="resultAgain" data-i18n="result.review">进入复盘</button><button class="btn btn-ghost" id="resultBack" data-i18n="result.stay">留在终局</button></div>
   </div>
 </div>
+<script src="locales/zh-CN.js"></script>
+<script src="locales/en-US.js"></script>
+<script src="locales/ru-RU.js"></script>
+<script src="locales/es-ES.js"></script>
+<script src="locales/de-DE.js"></script>
+<script src="locales/fr-FR.js"></script>
+<script src="locales/pt-BR.js"></script>
+<script src="locales/hi-IN.js"></script>
+<script src="locales/ja-JP.js"></script>
+<script src="locales/ko-KR.js"></script>
+<script src="locales/content.js"></script>
+<script src="i18n.js"></script>
 <script>
 /* ================================================================
    小骑士乐园 · 国际象棋入门互动课
@@ -2070,6 +2086,7 @@ function initApp(){
   $('#skinBtn').addEventListener('click', ()=>{ SFX.tap(); toggleSkin(); toast('已切换为'+(window.__chessSkinMode==='adult'?'成人':'儿童')+'皮肤','success'); });
   renderSkinBtn();
   initWorldUI();
+  document.addEventListener('knight-languagechange',()=>{applyWorldTheme();renderHome();if(currentView==='pieces'){renderGallery();if(!$('#pieceDetail').classList.contains('hidden'))showPieceDetail(piecesLesson.active||'p');}if(currentView==='moves')renderMovesTabs();if($('#coachPanel'))renderCoach();window.KnightClassics?.render();window.KnightI18n.apply(document);});
   $('#guideClose').addEventListener('click', hideGuide);
   $('#logoBtn').addEventListener('click', ()=>{ SFX.tap(); go('home'); });
   $('#starBtn').addEventListener('click', ()=>{ SFX.tap(); toast('每完成一课就能获得星星哦','info'); });
@@ -2117,14 +2134,13 @@ function characterArt(type,color){
  return `<svg class="character-art" data-character="${type}" data-color="${color}" viewBox="0 0 512 ${height}" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="${FACTIONS[color].roles[type]}"><svg width="512" height="${height}" viewBox="${x} ${y} 512 ${height}" overflow="hidden"><image href="assets/${mode}_${color}_keyed.png" filter="url(#spriteChroma)" width="1536" height="1024"/></svg></svg>`;
 }
 function applyWorldTheme(){
- const adult=window.__chessSkinMode==='adult';
+ const adult=window.__chessSkinMode==='adult',i18n=window.KnightI18n;
  document.documentElement.dataset.theme=adult?'adult':'child';
- const btn=$('#skinBtn');btn.textContent=adult?'成人 · 切换':'儿童 · 切换';
- btn.title=adult?'切换为儿童整体主题':'切换为成人整体主题';btn.setAttribute('aria-label',btn.title);btn.setAttribute('aria-pressed',String(adult));
- $('#worldTitle').textContent=adult?'以棋会友，观两方风华':'两支小队，一起学棋';
- $('#worldSubtitle').textContent=adult?'十字军的盾徽，明军的冠服。从规则走向对弈。':'从第一步开始，与十字军和明军小伙伴一起成长。';
+ const btn=$('#skinBtn');btn.textContent=i18n.t(adult?'theme.adult':'theme.child');
+ btn.title=i18n.t(adult?'theme.toChild':'theme.toAdult');btn.setAttribute('aria-label',btn.title);btn.setAttribute('aria-pressed',String(adult));
+ const title=$('#worldTitle'),subtitle=$('#worldSubtitle');title.dataset.i18n=adult?'hero.adultTitle':'hero.childTitle';subtitle.dataset.i18n=adult?'hero.adultSub':'hero.childSub';title.textContent=i18n.t(title.dataset.i18n);subtitle.textContent=i18n.t(subtitle.dataset.i18n);
  $('#westHero').innerHTML=pieceSVG('n','w');$('#eastHero').innerHTML=pieceSVG('n','b');
- const quote=$('.home-quote');quote.innerHTML=adult?'<b>学棋有序</b> · 认识棋盘，理解子力，再在实战中练习。两方文化服饰，共用同一套国际象棋规则。':'<b>小骑的约定</b> · 先认识棋盘，再认识伙伴。完成练习点亮星星，让十字军和明军陪你一起进步！';
+ $('.home-quote').innerHTML=i18n.t(adult?'theme.adultQuote':'theme.childQuote');
  if($('#conceptDialog').open) updateConceptImage();
 }
 function updateConceptImage(){
@@ -2333,8 +2349,8 @@ function replaySpeechAvailable(){return 'speechSynthesis' in window&&'SpeechSynt
 function stopReplayVoice(){if(replaySpeechAvailable())window.speechSynthesis.cancel();}
 function updateReplayVoice(){const button=$('#replayVoice');if(!button)return;const available=replaySpeechAvailable();if(!available)replay.voice=false;button.disabled=!available;button.textContent=available?`语音讲解：${replay.voice?'开':'关'}`:'本机无语音';button.setAttribute('aria-pressed',String(replay.voice));}
 function speakReplay(text){
- if(!replay.voice||!replaySpeechAvailable()||!text)return;stopReplayVoice();const utterance=new SpeechSynthesisUtterance(text);utterance.lang='zh-CN';utterance.rate=.9;utterance.pitch=1;
- const voice=window.speechSynthesis.getVoices().find(v=>/^zh(-|_)/i.test(v.lang));if(voice)utterance.voice=voice;window.speechSynthesis.speak(utterance);
+ if(!replay.voice||!replaySpeechAvailable()||!text)return;stopReplayVoice();const utterance=new SpeechSynthesisUtterance(text);utterance.lang=window.KnightI18n.locale;utterance.rate=.9;utterance.pitch=1;
+ const prefix=utterance.lang.split('-')[0];const voice=window.speechSynthesis.getVoices().find(v=>v.lang.toLowerCase().startsWith(prefix));if(voice)utterance.voice=voice;window.speechSynthesis.speak(utterance);
 }
 function replayStepDelay(text){return Math.max(+$('#replaySpeed').value,Math.min(10000,String(text).length*160));}
 function pauseReplay(){clearTimeout(replay.timer);clearTimeout(replay.frame);replay.epoch++;replay.playing=false;stopReplayVoice();$('#reviewBoard .piece-anim')?.remove();if($('#replayPlay'))$('#replayPlay').textContent='播放';}
@@ -2346,22 +2362,22 @@ function replayPosition(ply){
  const h=replay.history.at(-1),pos=copyPosition(h.before.board,h.before.cast);applyMove(pos.board,h.move,pos.cast);return pos;
 }
 function replayNarration(h,ply=0){
- const m=h.move,p=h.before.board[m.from],role=FACTIONS[h.color].roles[p.t],enemy=h.color==='w'?'b':'w';
- let text=`${h.color==='w'?'白方':'黑方'}${role}从 ${idx2name(m.from)} 行进到 ${idx2name(m.to)}。`;
+ const m=h.move,p=h.before.board[m.from],enemy=h.color==='w'?'b':'w',i18n=window.KnightI18n,role=i18n.text(FACTIONS[h.color].roles[p.t]);
+ let text=i18n.t('replay.move',{side:i18n.text(h.color==='w'?'白方':'黑方'),role,from:idx2name(m.from),to:idx2name(m.to)});
  const captured=h.before.board[m.ep?m.to+(h.color==='w'?-8:8):m.to];
- if(m.castle)text+='这是王车易位：王与同侧的车在这一步同时调动。';
- else if(m.ep)text+='这是吃过路兵：对方刚走两格的兵从相邻位置退场。';
- else if(captured)text+=`${FACTIONS[captured.c].roles[captured.t]}被吃，退出这次对局。`;
- if(m.promotion)text+=`兵到达底线，升变为${PIECES[m.promotion].name}。`;
- if(p.t==='n')text+='马走日字，能够越过其他棋子。';
+ if(m.castle)text+=i18n.t('replay.castle');
+ else if(m.ep)text+=i18n.t('replay.ep');
+ else if(captured)text+=i18n.t('replay.capture',{piece:i18n.text(FACTIONS[captured.c].roles[captured.t])});
+ if(m.promotion)text+=i18n.t('replay.promotion',{piece:i18n.text(PIECES[m.promotion].name)});
+ if(p.t==='n')text+=i18n.t('replay.knight');
  const next=copyPosition(h.before.board,h.before.cast);applyMove(next.board,m,next.cast);const checked=inCheck(next.board,enemy),enemyMoves=allLegalMoves(next.board,enemy,next.cast);
- if(checked&&!enemyMoves.length)text+=`这一手形成将死，${FACTIONS[h.color].name}取得胜利。`;
- else if(checked)text+='将军！另一方下一步必须先解除国王受到的攻击。';
+ if(checked&&!enemyMoves.length)text+=i18n.t('replay.mate',{faction:i18n.text(FACTIONS[h.color].name)});
+ else if(checked)text+=i18n.t('replay.check');
  const key=review.items.find(item=>item.globalPly===ply&&item.gap>=1.5);
  if(key){
-  const best=key.lines[0],reply=key.actual?.reply;text+='这是本局的关键转折。';
-  if(reply){const replyPiece=next.board[reply.from],target=next.board[reply.to],after=copyPosition(next.board,next.cast);applyMove(after.board,reply,after.cast);const trapped=!allLegalMoves(after.board,key.color,after.cast).length&&inCheck(after.board,key.color);text+=`原走法让对手可以用${replyPiece?FACTIONS[enemy].roles[replyPiece.t]:'棋子'}从 ${idx2name(reply.from)} 到 ${idx2name(reply.to)}${trapped?'完成将死':target?'吃掉'+FACTIONS[key.color].roles[target.t]:inCheck(after.board,key.color)?'形成将军':'取得主动'}。`;}
-  text+=`更稳的思路是 ${idx2name(best.move.from)} 到 ${idx2name(best.move.to)}。规避方法：走子前先检查国王安全、对手的将军路线和没有保护的棋子。`;
+  const best=key.lines[0],reply=key.actual?.reply;text+=i18n.t('replay.turning');
+  if(reply){const replyPiece=next.board[reply.from],target=next.board[reply.to],after=copyPosition(next.board,next.cast);applyMove(after.board,reply,after.cast);const trapped=!allLegalMoves(after.board,key.color,after.cast).length&&inCheck(after.board,key.color);const action=trapped?i18n.t('replay.actionMate'):target?i18n.t('replay.actionCapture',{piece:i18n.text(FACTIONS[key.color].roles[target.t])}):inCheck(after.board,key.color)?i18n.t('replay.actionCheck'):i18n.t('replay.actionInitiative');text+=i18n.t('replay.reply',{piece:replyPiece?i18n.text(FACTIONS[enemy].roles[replyPiece.t]):i18n.text('棋子'),from:idx2name(reply.from),to:idx2name(reply.to),action});}
+  text+=i18n.t('replay.better',{from:idx2name(best.move.from),to:idx2name(best.move.to)});
  }
  return text;
 }
@@ -2416,10 +2432,3 @@ document.addEventListener('DOMContentLoaded', initApp);
 <script src="pwa.js"></script>
 </body>
 </html>
-
-
-
-
-
-
-

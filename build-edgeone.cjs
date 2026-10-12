@@ -9,7 +9,8 @@ if (!output.startsWith(distRoot)) throw new Error('拒绝清理工作区以外�
 fs.rmSync(output, { recursive: true, force: true });
 fs.mkdirSync(output, { recursive: true });
 const runtimeFiles = [
-  'manifest.webmanifest', 'service-worker.js', 'pwa.js', 'app-info.js',
+  'manifest.webmanifest', 'service-worker.js', 'pwa.js', 'app-info.js', 'i18n.js',
+  'locales/zh-CN.js', 'locales/en-US.js','locales/ru-RU.js','locales/es-ES.js','locales/de-DE.js','locales/fr-FR.js','locales/pt-BR.js','locales/hi-IN.js', 'locales/ja-JP.js', 'locales/ko-KR.js', 'locales/content.js',
   'battle-save.js', 'friend-client.js', 'feedback-client.js', 'immersive.js',
   'learning.js', 'classic-games.css', 'classic-games.js', 'classic-games-data.js',
   'stockfish-engine.js', 'COPYRIGHT', 'AUTHORS.md', 'NOTICE', 'LICENSE',
@@ -47,7 +48,7 @@ function inventory(directory = output) {
 }
 inventory();
 fs.writeFileSync(path.join(output, 'deployment-info.json'), JSON.stringify({
-  product: '小骑士乐园', version: '0.8.0-endgame-voice',
+  product: '小骑士乐园', version: '0.8.1-i18n',
   target: 'Tencent EdgeOne Pages static closed beta', generatedAt: new Date().toISOString(),
   developer: '不疾不徐', copyright: '合肥市朋程共行电子商务有限责任公司',
   notes: '静态部署支持课程、名局、离线对弈与本机双人；跨网络好友房间和在线反馈需另接 HTTPS API。', files

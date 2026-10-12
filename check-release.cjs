@@ -1,7 +1,7 @@
 /* 原始开发者：不疾不徐 | Copyright (c) 2026 合肥市朋程共行电子商务有限责任公司 | 许可状态见 COPYRIGHT */
 const fs=require('node:fs'),path=require('node:path'),assert=require('node:assert/strict'),crypto=require('node:crypto');
-(async()=>{const root=path.join(__dirname,'dist');const name=fs.readdirSync(root).filter(n=>n.startsWith('knight-0.8.0-endgame-voice-')).sort().at(-1);assert.ok(name);const dir=path.join(root,name),manifest=JSON.parse(fs.readFileSync(path.join(dir,'manifest.json')));
-for(const required of ['LICENSE','NOTICE','THIRD_PARTY_NOTICES.md','vendor/stockfish/COPYING','vendor/stockfish/SOURCE.md','COMMERCIAL-LICENSE.md','AUTHORS.md','COPYRIGHT'])assert.ok(manifest.files.some(item=>item.file===required),required+' missing from release');
+(async()=>{const root=path.join(__dirname,'dist');const name=fs.readdirSync(root).filter(n=>n.startsWith('knight-0.8.1-i18n-')).sort().at(-1);assert.ok(name);const dir=path.join(root,name),manifest=JSON.parse(fs.readFileSync(path.join(dir,'manifest.json')));
+for(const required of ['LICENSE','NOTICE','THIRD_PARTY_NOTICES.md','vendor/stockfish/COPYING','vendor/stockfish/SOURCE.md','COMMERCIAL-LICENSE.md','AUTHORS.md','COPYRIGHT','i18n.js','locales/zh-CN.js','locales/en-US.js','locales/ru-RU.js','locales/es-ES.js','locales/de-DE.js','locales/fr-FR.js','locales/pt-BR.js','locales/hi-IN.js','locales/ja-JP.js','locales/ko-KR.js','locales/content.js'])assert.ok(manifest.files.some(item=>item.file===required),required+' missing from release');
 const license=fs.readFileSync(path.join(dir,'LICENSE'),'utf8'),notice=fs.readFileSync(path.join(dir,'NOTICE'),'utf8');
 assert.match(license,/营利性教育机构必须取得付费商业许可/);assert.match(notice,/营利性学校、培训机构/);assert.doesNotMatch(license,/PolyForm/);
 for(const item of manifest.files){assert.ok(!/(feedback-data|private-data|rooms\.json|check-|\.env)/.test(item.file));assert.equal(crypto.createHash('sha256').update(fs.readFileSync(path.join(dir,item.file))).digest('hex'),item.sha256);}
