@@ -1,5 +1,5 @@
 /* 原始开发者：不疾不徐 | Copyright (c) 2026 合肥市朋程共行电子商务有限责任公司 */
-const CACHE='knight-mobile-0.8.1';
+const CACHE='knight-mobile-0.8.1-artfix';
 const APP='./小骑士乐园-统一主题版.html';
 const CORE=[
   APP,'./manifest.webmanifest','./pwa.js','./app-info.js','./i18n.js',
@@ -7,8 +7,8 @@ const CORE=[
   './friend-client.js','./feedback-client.js','./immersive.js','./classic-games.css',
   './classic-games.js','./classic-games-data.js','./stockfish-engine.js',
   './icons/icon-180.png','./icons/icon-192.png','./icons/icon-512.png',
-  './assets/child_w_keyed.png','./assets/child_b_keyed.png',
-  './assets/adult_w_keyed.png','./assets/adult_b_keyed.png',
+  './assets/child_w_keyed.webp','./assets/child_b_keyed.webp',
+  './assets/adult_w_keyed.webp','./assets/adult_b_keyed.webp',
   './vendor/stockfish/stockfish-18-lite-single.js',
   './vendor/stockfish/stockfish-18-lite-single.wasm',
   './vendor/stockfish/stockfish-18-lite-bundle.js',

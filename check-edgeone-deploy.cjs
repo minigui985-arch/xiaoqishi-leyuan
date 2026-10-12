@@ -3,7 +3,7 @@ const fs = require('node:fs');
 const path = require('node:path');
 const root = __dirname;
 const output = path.join(root, 'dist', 'edgeone-pages');
-const required = ['index.html','manifest.webmanifest','service-worker.js','pwa.js','i18n.js','locales/zh-CN.js','locales/en-US.js','locales/ru-RU.js','locales/es-ES.js','locales/de-DE.js','locales/fr-FR.js','locales/pt-BR.js','locales/hi-IN.js','locales/ja-JP.js','locales/ko-KR.js','locales/content.js','icons/icon-192.png','icons/icon-512.png','assets/child_w_keyed.png','assets/child_b_keyed.png','assets/adult_w_keyed.png','assets/adult_b_keyed.png','vendor/stockfish/stockfish-18-lite-single.wasm','deployment-info.json'];
+const required = ['index.html','manifest.webmanifest','service-worker.js','pwa.js','i18n.js','locales/zh-CN.js','locales/en-US.js','locales/ru-RU.js','locales/es-ES.js','locales/de-DE.js','locales/fr-FR.js','locales/pt-BR.js','locales/hi-IN.js','locales/ja-JP.js','locales/ko-KR.js','locales/content.js','icons/icon-192.png','icons/icon-512.png','assets/child_w_keyed.webp','assets/child_b_keyed.webp','assets/adult_w_keyed.webp','assets/adult_b_keyed.webp','vendor/stockfish/stockfish-18-lite-single.wasm','deployment-info.json'];
 const forbidden = [/\.env(?:\.|$)/i,/rooms\.json$/i,/feedback-records/i,/\.log$/i,/codex-remote/i];
 const failures = [];
 for (const file of required) { const full=path.join(output,file); if(!fs.existsSync(full)||fs.statSync(full).size===0) failures.push(`缺少或为空：${file}`); }

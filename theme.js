@@ -21,7 +21,7 @@ function characterArt(type,color){
  const split=mode==='adult'?490:508;
  const x=(i%3)*512,y=i<3?top:split;
  const height=i<3?split:1024-split;
- return `<svg class="character-art" data-character="${type}" data-color="${color}" viewBox="0 0 512 ${height}" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="${FACTIONS[color].roles[type]}"><svg width="512" height="${height}" viewBox="${x} ${y} 512 ${height}" overflow="hidden"><image href="assets/${mode}_${color}_keyed.png" filter="url(#spriteChroma)" width="1536" height="1024"/></svg></svg>`;
+ return `<svg class="character-art" data-character="${type}" data-color="${color}" viewBox="0 0 512 ${height}" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="${FACTIONS[color].roles[type]}"><svg width="512" height="${height}" viewBox="${x} ${y} 512 ${height}" overflow="hidden"><image href="assets/${mode}_${color}_keyed.webp" filter="url(#spriteChroma)" width="1536" height="1024"/></svg></svg>`;
 }
 function applyWorldTheme(){
  const adult=window.__chessSkinMode==='adult';
@@ -37,7 +37,7 @@ function applyWorldTheme(){
 function updateConceptImage(){
  const color=$('#conceptDialog').dataset.faction||galleryFaction;
  const adult=window.__chessSkinMode==='adult';
- $('#conceptImage').setAttribute('href',`assets/${adult?'adult':'child'}_${color}_keyed.png`);
+ $('#conceptImage').setAttribute('href',`assets/${adult?'adult':'child'}_${color}_keyed.webp`);
  $('#conceptTitle').textContent=`${adult?'成人写实':'儿童Q版'} · ${FACTIONS[color].name}六类棋子原画`;
 }
 function openConcept(color){$('#conceptDialog').dataset.faction=color;updateConceptImage();$('#conceptDialog').showModal();}
