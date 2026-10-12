@@ -69,6 +69,9 @@ const {act}=createRoomService();
 function server(options={}){const service=createRoomService(options.roomFile);const requests=new Map();return http.createServer(async(req,res)=>{
  res.setHeader('Cache-Control','no-store');res.setHeader('X-Content-Type-Options','nosniff');
  try{
+  if(req.method==='GET'&&req.url==='/api/friend/health'){
+   res.setHeader('Content-Type','application/json; charset=utf-8');res.end(JSON.stringify({status:'ok',service:'friend-room'}));return;
+  }
   if(req.method==='POST'&&['/api/friend','/api/feedback'].includes(req.url)){
    const now=Date.now(),who=req.socket.remoteAddress;for(const [k,v] of requests)if(now-v.time>60000)requests.delete(k);const counter=requests.get(who)||{time:now,count:0};counter.count++;requests.set(who,counter);if(counter.count>180)throw Error('操作过于频繁，请稍后重试');
    if(req.headers.origin&&!new Set([`http://${req.headers.host}`,`https://${req.headers.host}`]).has(req.headers.origin))throw new Error('不允许跨站请求');

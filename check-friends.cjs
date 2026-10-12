@@ -3,6 +3,7 @@ const assert=require('node:assert/strict');const {server}=require('./friend-serv
 const {chromium}=require('C:/Users/asus/.cache/codex-runtimes/codex-primary-runtime/dependencies/node/node_modules/playwright');
 (async()=>{const s=server();await new Promise(r=>s.listen(0,'127.0.0.1',r));const base='http://127.0.0.1:'+s.address().port;let browser;
 try{const api=async data=>{const r=await fetch(base+'/api/friend',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(data)});return {status:r.status,data:await r.json()};};
+assert.deepEqual(await (await fetch(base+'/api/friend/health')).json(),{status:'ok',service:'friend-room'});
 const w=(await api({action:'create'})).data;assert.match(w.inviteCode,/^[A-Z2-9]{10}$/);assert.equal((await api({action:'join',id:w.id})).status,400);assert.equal((await api({action:'join',id:w.id,inviteCode:'AAAAAAAAAA'})).status,400);const b=(await api({action:'join',id:w.id,inviteCode:w.inviteCode})).data;
 assert.equal((await api({action:'state',id:w.id,token:'wrong'})).status,400);
 let state=(await api({...w,action:'state'})).data;

@@ -22,7 +22,7 @@ self.addEventListener('fetch',event=>{
   const url=new URL(request.url);
   if(url.origin!==location.origin||url.pathname.includes('/api/'))return;
   if(request.mode==='navigate'){
-    event.respondWith(fetch(request).then(response=>{const copy=response.clone();caches.open(CACHE).then(cache=>cache.put(APP,copy));return response;}).catch(()=>caches.match(APP)));
+    event.respondWith(fetch(request).then(async response=>{if(response.ok){const copy=response.clone();caches.open(CACHE).then(cache=>cache.put(APP,copy));return response;}return await caches.match(APP)||response;}).catch(()=>caches.match(APP)));
     return;
   }
   event.respondWith(caches.match(request).then(cached=>cached||fetch(request).then(response=>{if(response.ok)caches.open(CACHE).then(cache=>cache.put(request,response.clone()));return response;})));
