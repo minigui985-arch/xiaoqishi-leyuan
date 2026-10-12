@@ -1,6 +1,6 @@
 # EdgeOne Pages 封闭测试部署
 
-当前源代码仓库保持私有：`minigui985-arch/xiaoqishi-leyuan`。
+当前源代码仓库已公开：`minigui985-arch/xiaoqishi-leyuan`。EdgeOne 项目绑定 GitHub `main` 分支后可自动构建部署。
 
 ## 构建设置
 
@@ -21,7 +21,7 @@
 
 ## 发布控制
 
-1. GitHub 仓库保持 Private。
+1. GitHub 仓库为公开状态，运行数据和密钥不得提交。
 2. EdgeOne 仅发布 `dist/edgeone-pages`。
 3. 封闭测试阶段使用访问邀请码或平台保护链接。
 4. 中国大陆固定域名启用大陆节点前完成 ICP 备案。

@@ -1978,7 +1978,7 @@ function captureLevelDone(){
    ================================================================ */
 let playPageMode = null;
 function initPlayPage(){
-  if(!playPageMode){
+  if(!$('#playModes .play-mode')){
     $('#playModes').innerHTML = `
       <button class="play-mode" data-mode="capture">
         <div class="pm-ico">${pieceSVG('n','w')}</div>
@@ -2007,6 +2007,7 @@ function initPlayPage(){
       renderPlayPanel();
     }));
     guide('学完了三课，来实战检验一下！先试试<b>捕棋大冒险</b>，再挑战人机对战。');
+    if(playPageMode) renderPlayPanel();
   } else {
     renderPlayPanel();
   }
@@ -2096,6 +2097,7 @@ function initApp(){
   // 路由
   const routeFromHash = ()=>{
     const h = location.hash.replace(/^#\/?/, '');
+    if(h==='play'&&/^[A-F0-9]{12}-[A-Z2-9]{10}$/i.test(new URLSearchParams(location.search).get('invite')||'')) playPageMode='online';
     if(['home','board','pieces','moves','play','games'].includes(h)) showView(h);
     else showView('home');
   };
