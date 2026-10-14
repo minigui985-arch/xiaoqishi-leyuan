@@ -4,6 +4,7 @@ on:
   push:
     branches: [main]
     paths:
+      - '.github/workflows/android-test.yml'
       - 'mobile/**'
       - 'pwa.js'
       - 'build-edgeone.cjs'

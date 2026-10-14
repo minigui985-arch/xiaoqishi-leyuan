@@ -8,6 +8,8 @@
 
 在本目录运行 `npm ci`，再运行 `npm run sync:android`。使用 Android Studio 打开 `android/`，安装 SDK 后在真机运行。此电脑目前未安装 Android Studio/SDK，因此尚未生成、签名或实测 APK/AAB。
 
+仓库的 `Android test APK` 工作流会构建短期保存的 **debug APK**，供开发测试下载；它不是商店签名包，也不代表已完成真机验收。
+
 ## 苹果
 
 在本目录运行 `npm ci`，再运行 `npm run sync:ios`。使用 macOS 上的 Xcode 打开 `ios/`，配置团队、签名和真机运行；TestFlight 与 App Store 提交需要 Apple Developer 账号。Windows 无法在本机完成 iOS 签名与真机编译。
