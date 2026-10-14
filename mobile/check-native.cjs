@@ -1,4 +1,4 @@
-const fs=require('node:fs'),path=require('node:path'),assert=require('node:assert/strict'),crypto=require('node:crypto');
+const fs=require('node:fs'),path=require('node:path'),assert=require('node:assert/strict'),crypto=require('node:crypto'),vm=require('node:vm');
 const root=__dirname,config=JSON.parse(fs.readFileSync(path.join(root,'capacitor.config.json'),'utf8'));
 assert.equal(config.server?.url,undefined,'原生安装包不得依赖远程网页入口');
 const web=path.resolve(root,config.webDir),read=p=>fs.readFileSync(path.join(root,p));
@@ -12,4 +12,19 @@ assert.match(read('android/app/src/main/java/cn/xiaoqishileyuan/mobile/MainActiv
 assert.match(read('ios/App/App/AppDelegate.swift').toString(),/原始开发者：不疾不徐/);
 assert.ok(read('ios/App/App/Assets.xcassets/AppIcon.appiconset/AppIcon-512@2x.png').length>10000);
 assert.ok(read('android/app/src/main/res/mipmap-xxxhdpi/ic_launcher.png').length>10000);
-console.log('PASS: Android/iOS 原生工程及内置资源一致；未配置远程 server.url。');
+const friendConfig=fs.readFileSync(path.resolve(root,'../friend-config.js'),'utf8');
+for(const [protocol,hostname,expected] of [
+ ['http:','localhost',''],
+ ['https:','minigui985-arch.github.io','https://api.xiaoqishileyuan.cn'],
+ ['https:','localhost','https://api.xiaoqishileyuan.cn'],
+ ['capacitor:','localhost','https://api.xiaoqishileyuan.cn']
+]){
+ const context={window:{},location:{protocol,hostname}};
+ vm.runInNewContext(friendConfig,context);
+ assert.equal(context.window.KNIGHT_FRIEND_API_URL,expected,`${protocol}//${hostname} 好友接口配置错误`);
+}
+const unit=read('../deploy/ucloud/knight-friend.service').toString();
+for(const origin of ['https://minigui985-arch.github.io','https://localhost','capacitor://localhost']){
+ assert.ok(unit.includes(origin),`好友服务缺少 ${origin} 来源`);
+}
+console.log('PASS: Android/iOS 内置资源、原生好友接口来源及服务允许列表一致。');

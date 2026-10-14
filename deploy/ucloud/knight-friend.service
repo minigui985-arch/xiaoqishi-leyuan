@@ -9,7 +9,7 @@ DynamicUser=yes
 StateDirectory=xiaoqishi-friend
 WorkingDirectory=/opt/xiaoqishi-friend/current
 Environment=KNIGHT_DATA_DIR=/var/lib/xiaoqishi-friend
-Environment=KNIGHT_FRIEND_ORIGINS=https://minigui985-arch.github.io
+Environment=KNIGHT_FRIEND_ORIGINS=https://minigui985-arch.github.io,https://localhost,capacitor://localhost
 ExecStart=/usr/bin/node /opt/xiaoqishi-friend/current/friend-api.cjs
 Restart=on-failure
 RestartSec=3
