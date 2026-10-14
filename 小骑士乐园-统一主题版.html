@@ -319,6 +319,8 @@ input{font-family:inherit}
 /* 棋子 */
 .piece{width:88%;height:88%;transition:transform .18s ease;pointer-events:none}
 .piece svg{width:100%;height:100%}
+.board .piece.facing-away{transform:rotate(180deg)}
+.board .sq.selected .piece.facing-away{transform:translateY(-6%) scale(1.08) rotate(180deg)}
 .piece-anim{
   position:absolute;z-index:30;width:88%;height:88%;
   transition:transform .34s cubic-bezier(.25,.8,.3,1);
@@ -1270,7 +1272,7 @@ function renderChessBoard(wrapEl, board, opts){
     const routeNum = opts.route && opts.route[i];
     const pieceName = p ? (p.t==='k'?'国王':p.t==='q'?'王后':p.t==='r'?'车':p.t==='b'?'象':p.t==='n'?'马':'兵') : '空格';
     sqHtml += `<div class="${cls.join(' ')}" data-idx="${i}" role="button" tabindex="${opts.onClick?0:-1}" aria-label="${FILES[f]}${r+1} ${p?(p.c==='w'?'白':'黑')+pieceName:pieceName}">
-      ${p?`<div class="piece ${opts.popIdx===i?'piece-pop':''}">${pieceSVG(p.t,p.c)}</div>`:''}
+      ${p?`<div class="piece ${opts.popIdx===i?'piece-pop':''} ${opts.opposedPieces&&p.c!==(opts.flip?'b':'w')?'facing-away':''}">${pieceSVG(p.t,p.c)}</div>`:''}
       ${opts.coords && (f===0||r===7)?`<span class="coord ${f===0?'cr':'cf'}">${sqName(f,r)}</span>`:''}
       ${routeNum?`<span class="route-num">${routeNum}</span>`:''}
     </div>`;
@@ -1336,7 +1338,7 @@ function renderBattle(){
   }
   renderChessBoard($('#playBoardWrap'), battle.board, {
     selected: sel, selectable, captureSet,
-    lastMove: battle.lastMove,
+    lastMove: battle.lastMove, opposedPieces: battle.human,
     onClick: onBattleClick
   });
   const turnEl = $('#playTurn');

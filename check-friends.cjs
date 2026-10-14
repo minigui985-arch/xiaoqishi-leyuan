@@ -25,6 +25,13 @@ await p1.locator('[data-phrase="good"]').click();await p2.waitForFunction(()=>do
 await p1.locator('#friendBoard [data-idx="12"]').click();await p1.locator('#friendBoard [data-idx="28"]').click();await p2.waitForFunction(()=>document.querySelector('#friendStatus').textContent.includes('轮到你'));
 assert.equal(await p2.locator('#friendBoard [data-idx="28"] .piece').count(),1);await p2.reload();await p2.evaluate(()=>{go('play');hideGuide();});await p2.waitForFunction(()=>document.querySelector('#friendStatus').textContent.includes('轮到你'));
 assert.equal(await p2.locator('#friendBoard [data-idx="28"] .piece').count(),1);
-await p2.setViewportSize({width:390,height:844});assert.ok(await p2.evaluate(()=>document.documentElement.scrollWidth<=innerWidth));await p2.locator('#friendBoard').screenshot({path:__dirname+'/preview-friend-board.png'});
-assert.deepEqual(errors,[]);console.log('PASS: two isolated browsers, create/join/ready/move, fixed child-safe communication, seat reload recovery; authorization, illegal moves, duplicate and stale requests; mobile width.');
+await p2.setViewportSize({width:390,height:844});assert.ok(await p2.evaluate(()=>document.documentElement.scrollWidth<=innerWidth));if(process.env.KNIGHT_SAVE_PREVIEW==='1')await p2.locator('#friendBoard').screenshot({path:__dirname+'/preview-friend-board.png'});
+assert.equal(await p1.locator('#friendBoard [data-idx="52"] .piece.facing-away').count(),1);
+assert.equal(await p2.locator('#friendBoard [data-idx="8"] .piece.facing-away').count(),1);
+const normalWidth=await p2.locator('#friendBoard .board').evaluate(e=>e.getBoundingClientRect().width);
+await p2.locator('[data-immerse="friendBoard"]').click();
+const immersiveFit=await p2.locator('#friendBoard .board').evaluate(e=>{const r=e.getBoundingClientRect();return {width:r.width,inside:r.left>=0&&r.right<=innerWidth&&r.top>=0&&r.bottom<=innerHeight};});
+assert.equal(immersiveFit.inside,true);assert.ok(immersiveFit.width>=normalWidth);
+await p2.locator('#exitImmersive').click();
+assert.deepEqual(errors,[]);console.log('PASS: two isolated browsers, create/join/ready/move, fixed child-safe communication, seat reload recovery; authorization, illegal moves, duplicate and stale requests; mobile width, opposite piece facing, immersive fit.');
 }finally{if(browser)await browser.close();await new Promise(r=>s.close(r));}})().catch(e=>{console.error(e);process.exitCode=1;});

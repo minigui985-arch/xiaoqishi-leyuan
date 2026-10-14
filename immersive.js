@@ -5,7 +5,7 @@ document.addEventListener('DOMContentLoaded',()=>{
  body.chess-immersive *{visibility:hidden!important}
  body.chess-immersive .immersive-parent{transform:none!important;filter:none!important;contain:none!important;overflow:visible!important}
  body.chess-immersive .immersive-board,body.chess-immersive .immersive-board *{visibility:visible!important}
- body.chess-immersive .immersive-board{position:fixed!important;left:50%!important;top:50%!important;transform:translate(-50%,-50%)!important;width:min(calc(100vw - 18px),calc(100dvh - 38px))!important;max-width:none!important;margin:0!important;z-index:100000!important}
+ body.chess-immersive .immersive-board{position:fixed!important;left:50%!important;top:50%!important;transform:translate(-50%,-50%)!important;width:min(calc(100vw - env(safe-area-inset-left) - env(safe-area-inset-right) - 4px),calc(100dvh - env(safe-area-inset-top) - env(safe-area-inset-bottom) - 24px))!important;max-width:none!important;margin:0!important;z-index:100000!important}
  body.chess-immersive .immersive-board .board-inner{transform:none!important}
  body.chess-immersive #exitImmersive{visibility:visible!important;position:fixed;right:6px;top:6px;z-index:100001;padding:6px 10px;font-size:12px;background:var(--card);border:1px solid var(--card-border);border-radius:12px;color:var(--ink)}
  body:not(.chess-immersive) #exitImmersive{display:none}

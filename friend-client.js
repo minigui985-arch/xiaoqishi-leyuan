@@ -29,7 +29,7 @@ document.addEventListener('DOMContentLoaded',()=>{
   say(`房间 ${seat.id} · 你是${seat.color==='w'?'十字军（白方）':'明军（黑方）'} · ${state.result||(!state.joined?'等待好友加入':!state.ready.w||!state.ready.b?'等待双方准备':state.turn===seat.color?'轮到你走棋':'等待好友走棋')}`);
   for(const id of ['friendReady','friendResign','friendExport','friendDraw','friendLeave','friendReview'])el(id).hidden=false;el('friendShare').hidden=!seat.inviteCode;
   el('friendReview').disabled=!state.result||!state.history.length;el('friendColor').disabled=!state.result;el('friendReady').disabled=state.ready[seat.color]||!!state.result;el('friendResign').disabled=!!state.result;el('friendDraw').disabled=!!state.result||state.turn!==seat.color;el('friendCreate').disabled=!state.result;el('friendJoin').disabled=!state.result;
-  renderChessBoard(el('friendBoard'),state.board,{selected,flip:seat.color==='b',onClick:click});
+  renderChessBoard(el('friendBoard'),state.board,{selected,flip:seat.color==='b',opposedPieces:true,onClick:click});
   el('friendTalk').hidden=!state.joined;el('friendMessages').replaceChildren(...(state.messages||[]).map(message=>{const line=document.createElement('p');line.className=message.color===seat.color?'mine':'theirs';line.textContent=`${message.color===seat.color?'我':message.color==='w'?'十字军':'明军'}：${message.text}`;return line;}));el('friendMessages').scrollTop=el('friendMessages').scrollHeight;
  }
  async function refresh(){if(!seat||busy)return;busy=true;try{const next=await api({...seat,action:'state'});state=next;if(next.version!==lastVersion){lastVersion=next.version;selected=null;render();}}catch(e){say('同步失败：'+e.message+'。可重试或退出/清理席位。');el('friendLeave').hidden=false;lastVersion=-1;}finally{busy=false;}}
