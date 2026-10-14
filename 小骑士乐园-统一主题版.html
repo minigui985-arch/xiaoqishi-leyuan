@@ -621,8 +621,6 @@ body.board-page .bottomnav{position:static;transform:none;max-width:none;width:1
 
 .language-select{min-height:44px;padding:0 10px;border:1px solid var(--card-border);border-radius:12px;background:var(--card);color:var(--ink);font:inherit;font-weight:700;cursor:pointer}
 @media(max-width:560px){.language-select{max-width:92px;padding:0 6px;font-size:12px}}
-.character-art image,#conceptImage{opacity:0}
-html.art-child_w-ready image[href$="child_w_keyed.webp"],html.art-child_b-ready image[href$="child_b_keyed.webp"],html.art-adult_w-ready image[href$="adult_w_keyed.webp"],html.art-adult_b-ready image[href$="adult_b_keyed.webp"]{opacity:1}
 </style>
 <!-- 全局渐变与滤镜定义（棋子立体效果用） -->
 <svg width="0" height="0" style="position:absolute" aria-hidden="true">
@@ -2129,11 +2127,6 @@ const FACTIONS={
  b:{name:'明军',roles:{p:'明军火铳手',r:'红衣大炮',n:'明军骑兵',b:'明军文臣',q:'明军皇后',k:'明军皇帝'},details:{p:'斗笠盔、鸳鸯战袄、火铳、腰刀与方盾。',r:'炮管、炮架、双轮与点火烟雾。',n:'凤翅盔、红缨、中式鞍、马铃与三眼铳。',b:'带帽翅的乌纱帽、圆领补服、笏板与三绺长髯。',q:'凤凰凤冠、博鬓垂珠、翟衣、披帛、团扇与步摇。',k:'翼善冠、龙纹衮服、玉带、玉圭与披风。'}}
 };
 const RULE_TEXT={k:'国王每次向任意方向走一格，不能走进受攻击的格子。被将军且无法解围称为将杀；国王不会被实际吃掉。',q:'王后沿横线、竖线或斜线移动任意格，不能越过其他棋子。',r:'车沿横线或竖线移动任意格，不能越子。两方造型不同，走法完全相同。',b:'象沿斜线移动任意格，不能越子；始终停留在同一种颜色的格子。',n:'马走日字：一个方向两格，再垂直一格，可以越过其他棋子。',p:'兵向前直走、斜向前吃子；初始位置可前进两格。到达底线可升变，到达底线时可自行选择升变棋子。'};
-for(const skin of ['child_w','child_b','adult_w','adult_b']){
- const preview=new Image();
- preview.src=`assets/${skin}_keyed.webp`;
- preview.decode().then(()=>document.documentElement.classList.add(`art-${skin}-ready`)).catch(()=>{});
-}
 function characterArt(type,color){
  const mode=window.__chessSkinMode==='adult'?'adult':'child';
  const i=['p','r','n','b','q','k'].indexOf(type);
