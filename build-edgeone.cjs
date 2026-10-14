@@ -32,6 +32,7 @@ function copy(relative, target = relative) {
   fs.copyFileSync(source, destination);
 }
 for (const file of runtimeFiles) copy(file);
+copy('company-site/index.html');
 copy('小骑士乐园-统一主题版.html', 'index.html');
 copy('小骑士乐园-统一主题版.html');
 const files = [];
