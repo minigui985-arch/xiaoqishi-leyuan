@@ -1,0 +1,26 @@
+name: iOS simulator build
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - '.github/workflows/ios-test.yml'
+      - 'mobile/**'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  ios-simulator:
+    runs-on: macos-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - run: xcodebuild -version
+      - run: npm ci --prefix mobile
+      - run: npm run sync:android --prefix mobile && npm run sync:ios --prefix mobile && npm run check:native --prefix mobile
+      - run: xcodebuild -project App.xcodeproj -scheme App -configuration Debug -sdk iphonesimulator -destination 'generic/platform=iOS Simulator' CODE_SIGNING_ALLOWED=NO build
+        working-directory: mobile/ios/App

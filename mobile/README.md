@@ -14,6 +14,8 @@
 
 在本目录运行 `npm ci`，再运行 `npm run sync:ios`。使用 macOS 上的 Xcode 打开 `ios/`，配置团队、签名和真机运行；TestFlight 与 App Store 提交需要 Apple Developer 账号。Windows 无法在本机完成 iOS 签名与真机编译。
 
+仓库的 `iOS simulator build` 工作流只检查无签名的模拟器编译；其结果不能安装到真实 iPhone。
+
 每次修改网页程序后，重新运行对应平台的 `sync` 命令，再从原生工程构建。原生容器加载随包附带的资源，不使用 `server.url` 指向 GitHub Pages。`pwa.js` 在原生容器内隐藏“安装到手机”按钮；浏览器 PWA 仍保留该入口。Android `versionName` 与 iOS `MARKETING_VERSION` 当前为 0.8.1，商店构建前还需递增构建号。
 
 公开商店发布前需完成双平台真机验收、应用隐私与儿童保护材料、第三方代码许可核对，并确认线上好友对弈的云端服务。此目录是开发测试工程，不代表已获得商店审核或已上线。
