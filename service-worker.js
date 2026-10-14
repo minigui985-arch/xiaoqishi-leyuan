@@ -4,7 +4,7 @@ const APP='./小骑士乐园-统一主题版.html';
 const CORE=[
   APP,'./manifest.webmanifest','./pwa.js','./app-info.js','./i18n.js',
   './locales/zh-CN.js','./locales/en-US.js','./locales/ru-RU.js','./locales/es-ES.js','./locales/de-DE.js','./locales/fr-FR.js','./locales/pt-BR.js','./locales/hi-IN.js','./locales/ja-JP.js','./locales/ko-KR.js','./locales/content.js','./battle-save.js',
-  './privacy.html','./support.html','./friend-config.js','./friend-client.js','./feedback-client.js','./immersive.js','./classic-games.css',
+  './friend-config.js','./friend-client.js','./feedback-client.js','./immersive.js','./classic-games.css',
   './classic-games.js','./classic-games-data.js','./stockfish-engine.js',
   './icons/icon-180.png','./icons/icon-192.png','./icons/icon-512.png',
   './assets/child_w_keyed.webp','./assets/child_b_keyed.webp',
