@@ -13,7 +13,7 @@ const runtimeFiles = [
   'locales/zh-CN.js', 'locales/en-US.js','locales/ru-RU.js','locales/es-ES.js','locales/de-DE.js','locales/fr-FR.js','locales/pt-BR.js','locales/hi-IN.js', 'locales/ja-JP.js', 'locales/ko-KR.js', 'locales/content.js',
   'battle-save.js', 'friend-config.js', 'friend-client.js', 'feedback-client.js', 'immersive.js',
   'learning.js', 'classic-games.css', 'classic-games.js', 'classic-games-data.js',
-  'stockfish-engine.js', 'COPYRIGHT', 'AUTHORS.md', 'NOTICE', 'LICENSE',
+  'stockfish-engine.js', 'privacy.html', 'support.html', 'COPYRIGHT', 'AUTHORS.md', 'NOTICE', 'LICENSE',
   'COMMERCIAL-LICENSE.md', 'THIRD_PARTY_NOTICES.md',
   'icons/icon-180.png', 'icons/icon-192.png', 'icons/icon-512.png',
   'assets/child_w_keyed.webp', 'assets/child_b_keyed.webp',
@@ -51,6 +51,6 @@ fs.writeFileSync(path.join(output, 'deployment-info.json'), JSON.stringify({
   product: '小骑士乐园', version: '0.8.1-i18n',
   target: 'Tencent EdgeOne Pages static closed beta', generatedAt: new Date().toISOString(),
   developer: '不疾不徐', copyright: '合肥市朋程共行电子商务有限责任公司',
-  notes: '静态部署支持课程、名局、离线对弈与本机双人；跨网络好友房间和在线反馈需另接 HTTPS API。', files
+  notes: '国际网页部署支持课程、名局、离线对弈、本机双人和经 HTTPS API 邀请的好友房间；在线反馈收件暂未启用。', files
 }, null, 2));
 console.log(output);
