@@ -48,7 +48,7 @@ function inventory(directory = output) {
 }
 inventory();
 fs.writeFileSync(path.join(output, 'deployment-info.json'), JSON.stringify({
-  product: '小骑士乐园', version: '0.8.1-i18n',
+  product: '小骑士乐园', version: '0.8.3-friend-beta',
   target: 'Tencent EdgeOne Pages static closed beta', generatedAt: new Date().toISOString(),
   developer: '不疾不徐', copyright: '合肥市朋程共行电子商务有限责任公司',
   notes: '国际网页部署支持课程、名局、离线对弈、本机双人和经 HTTPS API 邀请的好友房间；在线反馈收件暂未启用。', files
