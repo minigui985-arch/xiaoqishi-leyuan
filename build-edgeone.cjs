@@ -11,7 +11,7 @@ fs.mkdirSync(output, { recursive: true });
 const runtimeFiles = [
   'manifest.webmanifest', 'service-worker.js', 'pwa.js', 'app-info.js', 'i18n.js',
   'locales/zh-CN.js', 'locales/en-US.js','locales/ru-RU.js','locales/es-ES.js','locales/de-DE.js','locales/fr-FR.js','locales/pt-BR.js','locales/hi-IN.js', 'locales/ja-JP.js', 'locales/ko-KR.js', 'locales/content.js',
-  'battle-save.js', 'friend-client.js', 'feedback-client.js', 'immersive.js',
+  'battle-save.js', 'friend-config.js', 'friend-client.js', 'feedback-client.js', 'immersive.js',
   'learning.js', 'classic-games.css', 'classic-games.js', 'classic-games-data.js',
   'stockfish-engine.js', 'COPYRIGHT', 'AUTHORS.md', 'NOTICE', 'LICENSE',
   'COMMERCIAL-LICENSE.md', 'THIRD_PARTY_NOTICES.md',

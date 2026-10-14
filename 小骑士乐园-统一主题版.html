@@ -74,7 +74,7 @@ body{
 img,svg{display:block;max-width:100%}
 button{font-family:inherit;cursor:pointer;border:none;background:none;color:inherit}
 input{font-family:inherit}
-.hidden{display:none!important}
+.hidden,[hidden]{display:none!important}
 :focus-visible{outline:3px solid var(--blue);outline-offset:2px;border-radius:6px}
 ::selection{background:var(--orange-soft)}
 /* ============ App 外壳 ============ */
@@ -2435,6 +2435,7 @@ document.addEventListener('DOMContentLoaded', initApp);
 <script src="classic-games.js"></script>
 <script src="app-info.js"></script>
 <script src="battle-save.js"></script>
+<script src="friend-config.js"></script>
 <script src="friend-client.js"></script>
 <script src="feedback-client.js"></script>
 <script src="immersive.js"></script>

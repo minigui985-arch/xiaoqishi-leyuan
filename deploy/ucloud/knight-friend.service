@@ -1,0 +1,25 @@
+[Unit]
+Description=XiaoQishi friend-room API
+After=network-online.target
+Wants=network-online.target
+
+[Service]
+Type=simple
+DynamicUser=yes
+StateDirectory=xiaoqishi-friend
+WorkingDirectory=/opt/xiaoqishi-friend/current
+Environment=KNIGHT_DATA_DIR=/var/lib/xiaoqishi-friend
+Environment=KNIGHT_FRIEND_ORIGINS=https://minigui985-arch.github.io
+ExecStart=/usr/bin/node /opt/xiaoqishi-friend/current/friend-api.cjs
+Restart=on-failure
+RestartSec=3
+UMask=0077
+NoNewPrivileges=yes
+PrivateTmp=yes
+ProtectHome=yes
+ProtectSystem=strict
+MemoryMax=512M
+CPUQuota=50%
+
+[Install]
+WantedBy=multi-user.target

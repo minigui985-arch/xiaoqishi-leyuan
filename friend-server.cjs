@@ -2,7 +2,6 @@
 // Local integration server only. Do not expose this prototype to the Internet.
 const http=require('node:http'),fs=require('node:fs'),path=require('node:path'),vm=require('node:vm'),crypto=require('node:crypto');
 const {saveFeedback}=require('./feedback-store.cjs');
-require('./data-paths.cjs').ensureDataDirs();
 const html=fs.readFileSync(path.join(__dirname,'小骑士乐园-统一主题版.html'),'utf8');
 const ctx=vm.createContext({});vm.runInContext(html.slice(html.indexOf('function emptyBoard()'),html.indexOf('function aiPickMove(')),ctx);
 const engine=vm.runInContext('({setupBoard,castlingState,allLegalMoves,applyMove,inCheck})',ctx);
@@ -66,23 +65,37 @@ function createRoomService(file){
  return {act(input){const before=encode(rooms);try{const result=apply(input);const after=encode(rooms);if(file&&after!==before){fs.mkdirSync(path.dirname(file),{recursive:true});const tmp=file+'.tmp';fs.writeFileSync(tmp,after,{mode:0o600});fs.renameSync(tmp,file);}return JSON.parse(JSON.stringify(result));}catch(e){rooms=decode(before);throw e;}}};
 }
 const {act}=createRoomService();
-function server(options={}){const service=createRoomService(options.roomFile);const requests=new Map();return http.createServer(async(req,res)=>{
+function server(options={}){if(options.apiOnly&&(!options.roomFile||!options.allowedOrigins?.length))throw Error('公网模式必须配置持久棋局文件与允许的网页来源');const service=createRoomService(options.roomFile);const requests=new Map();return http.createServer(async(req,res)=>{
  res.setHeader('Cache-Control','no-store');res.setHeader('X-Content-Type-Options','nosniff');
  try{
+  const origin=req.headers.origin;
+  if(options.apiOnly){
+   if(origin&&!options.allowedOrigins.includes(origin))throw Error('不允许跨站请求');
+   if(origin){res.setHeader('Access-Control-Allow-Origin',origin);res.setHeader('Vary','Origin');}
+   if(req.method==='OPTIONS'&&req.url==='/api/friend'){
+    res.setHeader('Access-Control-Allow-Methods','POST, OPTIONS');res.setHeader('Access-Control-Allow-Headers','Content-Type');res.statusCode=204;res.end();return;
+   }
+   if(req.url!=='/api/friend'&&req.url!=='/api/friend/health')throw Error('资源不存在');
+  }
   if(req.method==='GET'&&req.url==='/api/friend/health'){
    res.setHeader('Content-Type','application/json; charset=utf-8');res.end(JSON.stringify({status:'ok',service:'friend-room'}));return;
   }
-  if(req.method==='POST'&&['/api/friend','/api/feedback'].includes(req.url)){
-   const now=Date.now(),who=req.socket.remoteAddress;for(const [k,v] of requests)if(now-v.time>60000)requests.delete(k);const counter=requests.get(who)||{time:now,count:0};counter.count++;requests.set(who,counter);if(counter.count>180)throw Error('操作过于频繁，请稍后重试');
-   if(req.headers.origin&&!new Set([`http://${req.headers.host}`,`https://${req.headers.host}`]).has(req.headers.origin))throw new Error('不允许跨站请求');
+  if(req.method==='POST'&&['/api/friend',...(options.apiOnly?[]:['/api/feedback'])].includes(req.url)){
+   const now=Date.now(),proxy=options.apiOnly&&['127.0.0.1','::1','::ffff:127.0.0.1'].includes(req.socket.remoteAddress);
+   const forwarded=proxy?String(req.headers['x-forwarded-for']||'').split(',').at(-1).trim():'';
+   const who=forwarded&&/^[a-fA-F0-9:.]{2,45}$/.test(forwarded)?forwarded:req.socket.remoteAddress;
+   for(const [k,v] of requests)if(now-v.time>60000)requests.delete(k);
+   const counter=requests.get(who)||{time:now,count:0};counter.count++;requests.set(who,counter);
+   if(counter.count>180)throw Error('操作过于频繁，请稍后重试');
+   if(!options.apiOnly&&req.headers.origin&&!new Set([`http://${req.headers.host}`,`https://${req.headers.host}`]).has(req.headers.origin))throw new Error('不允许跨站请求');
    if(!String(req.headers['content-type']).startsWith('application/json'))throw new Error('请求格式错误');
    let data='';for await(const part of req){data+=part;if(data.length>8192)throw new Error('请求过大');}
    const input=JSON.parse(data);const result=req.url==='/api/feedback'?saveFeedback(input,options.feedbackDir):service.act(input);
    res.setHeader('Content-Type','application/json; charset=utf-8');res.end(JSON.stringify(result));return;
   }
-  if(req.method!=='GET')throw new Error('不支持的请求');
+  if(req.method!=='GET'||options.apiOnly)throw new Error('不支持的请求');
   const name=decodeURIComponent(new URL(req.url,'http://localhost').pathname).slice(1)||'小骑士乐园-统一主题版.html';
-  const publicFiles=['小骑士乐园-统一主题版.html','manifest.webmanifest','service-worker.js','pwa.js','i18n.js','locales/zh-CN.js','locales/en-US.js','locales/ru-RU.js','locales/es-ES.js','locales/de-DE.js','locales/fr-FR.js','locales/pt-BR.js','locales/hi-IN.js','locales/ja-JP.js','locales/ko-KR.js','locales/content.js','friend-client.js','feedback-client.js','battle-save.js','app-info.js','immersive.js','classic-games.css','classic-games.js','classic-games-data.js','stockfish-engine.js','vendor/stockfish/stockfish-18-lite-single.js','vendor/stockfish/stockfish-18-lite-single.wasm','vendor/stockfish/stockfish-18-lite-bundle.js','vendor/stockfish/stockfish-18-lite-factory.js'];
+const publicFiles=['小骑士乐园-统一主题版.html','manifest.webmanifest','service-worker.js','pwa.js','i18n.js','locales/zh-CN.js','locales/en-US.js','locales/ru-RU.js','locales/es-ES.js','locales/de-DE.js','locales/fr-FR.js','locales/pt-BR.js','locales/hi-IN.js','locales/ja-JP.js','locales/ko-KR.js','locales/content.js','friend-config.js','friend-client.js','feedback-client.js','battle-save.js','app-info.js','immersive.js','classic-games.css','classic-games.js','classic-games-data.js','stockfish-engine.js','vendor/stockfish/stockfish-18-lite-single.js','vendor/stockfish/stockfish-18-lite-single.wasm','vendor/stockfish/stockfish-18-lite-bundle.js','vendor/stockfish/stockfish-18-lite-factory.js'];
   if(!publicFiles.includes(name)&&!/^assets\/[a-z_]+\.(png|webp)$/.test(name)&&!/^icons\/icon-(180|192|512)\.png$/.test(name))throw new Error('资源不存在');
   const type=name.endsWith('.html')?'text/html; charset=utf-8':name.endsWith('.css')?'text/css; charset=utf-8':name.endsWith('.webmanifest')?'application/manifest+json':name.endsWith('.js')?'text/javascript; charset=utf-8':name.endsWith('.wasm')?'application/wasm':name.endsWith('.webp')?'image/webp':'image/png';if(name==='service-worker.js')res.setHeader('Service-Worker-Allowed','/');res.setHeader('Content-Type',type);res.end(fs.readFileSync(path.join(__dirname,name)));
  }catch(e){res.statusCode=400;res.setHeader('Content-Type','application/json; charset=utf-8');res.end(JSON.stringify({error:e.message}));}
