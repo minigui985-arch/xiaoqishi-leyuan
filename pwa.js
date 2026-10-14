@@ -2,11 +2,12 @@
 (()=>{
  let installPrompt;
  const ua=navigator.userAgent,standalone=matchMedia('(display-mode: standalone)').matches||navigator.standalone===true;
+ const nativeApp=window.Capacitor?.isNativePlatform?.()===true;
  const isiOS=/iPad|iPhone|iPod/.test(ua),isHuawei=/HUAWEI|HONOR/i.test(ua),isSamsung=/SamsungBrowser|SM-/i.test(ua),isEmbedded=/MicroMessenger|QQ\//i.test(ua);
- if('serviceWorker' in navigator&&isSecureContext)addEventListener('load',()=>navigator.serviceWorker.register('./service-worker.js').catch(()=>{}));
+ if(!nativeApp&&'serviceWorker' in navigator&&isSecureContext)addEventListener('load',()=>navigator.serviceWorker.register('./service-worker.js').catch(()=>{}));
  addEventListener('beforeinstallprompt',event=>{event.preventDefault();installPrompt=event;document.querySelector('#installKnightApp')?.removeAttribute('hidden');});
  document.addEventListener('DOMContentLoaded',()=>{
-  if(standalone)return;
+  if(standalone||nativeApp)return;
   const home=document.querySelector('#view-home');if(!home)return;
   const button=document.createElement('button');button.id='installKnightApp';button.className='btn btn-primary mobile-install';button.textContent='安装到手机';
   const dialog=document.createElement('dialog');dialog.className='install-dialog';dialog.innerHTML='<h2>安装小骑士乐园</h2><p></p><button class="btn btn-primary">知道了</button>';

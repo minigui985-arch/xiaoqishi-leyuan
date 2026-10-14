@@ -1,0 +1,21 @@
+{
+  "name": "xiaoqishi-mobile",
+  "version": "0.8.1",
+  "private": true,
+  "scripts": {
+    "build:web": "node ../build-edgeone.cjs && node ../check-edgeone-deploy.cjs",
+    "check:native": "node check-native.cjs",
+    "sync:android": "npm run build:web && node cap-cli.cjs sync android",
+    "sync:ios": "npm run build:web && node cap-cli.cjs sync ios",
+    "open:android": "node cap-cli.cjs open android",
+    "open:ios": "node cap-cli.cjs open ios"
+  },
+  "dependencies": {
+    "@capacitor/android": "8.5.3",
+    "@capacitor/core": "8.5.3",
+    "@capacitor/ios": "8.5.3"
+  },
+  "devDependencies": {
+    "@capacitor/cli": "8.5.3"
+  }
+}

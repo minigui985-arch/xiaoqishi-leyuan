@@ -19,5 +19,6 @@ const {server}=require('./friend-server.cjs');
   ['Samsung','Mozilla/5.0 (Linux; Android 14; SM-S9280) AppleWebKit/537.36 SamsungBrowser/27.0 Mobile Safari/537.36','Samsung|三星浏览器']]){
    const context=await browser.newContext({viewport:{width:390,height:844},userAgent}),mobile=await context.newPage();await mobile.goto(base);await mobile.locator('#installKnightApp').click();assert.match(await mobile.locator('.install-dialog p').innerText(),new RegExp(expected),name);await context.close();
   }
+ const nativeContext=await browser.newContext({viewport:{width:390,height:844}});await nativeContext.addInitScript(()=>{window.Capacitor={isNativePlatform:()=>true}});const nativePage=await nativeContext.newPage();await nativePage.goto(base);assert.equal(await nativePage.locator('#installKnightApp').count(),0);assert.equal(await nativePage.evaluate(()=>navigator.serviceWorker.controller),null);await nativeContext.close();
  console.log('PASS: PWA manifest, icons, safe areas, service worker, offline reload, iPhone/Huawei/Samsung install guidance.');
 }finally{await browser.close();app.closeAllConnections();await new Promise(resolve=>app.close(resolve));}})().catch(error=>{console.error(error);process.exitCode=1;});

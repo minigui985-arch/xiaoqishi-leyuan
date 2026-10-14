@@ -15,7 +15,7 @@
 - 沉浸棋盘与多尺寸屏幕适配。
 - 12 局历史名局的难度、主题筛选与完整行军回放；
 - Stockfish 18 Lite 大师 AI，可在本地离线运行并回退到基础陪练。
-- 安卓与苹果共用的 PWA 安装基座，支持主屏幕图标、全面屏安全区和核心内容离线缓存。
+- 安卓与苹果共用的 PWA 安装基座，支持主屏幕图标、全面屏安全区和核心内容离线缓存；`mobile/` 中另有 Android Studio 与 Xcode 原生测试工程，尚未签名发布。
 - 内置简体中文、英语、俄语、西班牙语、德语、法语、葡萄牙语、印地语、日语和韩语；首次打开按设备首选语言自动显示，用户手动切换后会记住选择。
 - 真人对弈提供同一设备轮流下棋，以及两台设备通过房间码联调；好友房使用固定友好短句交流。
 - 实战可在“启蒙探索”与“国际标准赛事规则”间切换；赛事模式关闭提示、悔棋、走法亮点和途中复盘，并按三次重复/50回合申请及五次重复/75回合自动和棋执行。
@@ -49,6 +49,7 @@ GitHub Release：<https://github.com/minigui985-arch/xiaoqishi-leyuan/releases/t
 - `classic-games*`：历史名局数据、解析与界面；
 - `stockfish-engine.js`、`vendor/stockfish/`：大师 AI 接入层与 GPLv3 第三方引擎；
 - `manifest.webmanifest`、`service-worker.js`、`pwa.js`、`icons/`：安卓与苹果手机安装及离线支持；
+- `mobile/`：安卓与 iOS 原生测试工程及构建说明；
 - `check-*.cjs`：规则、课程、布局、联机和发布验证；
 - `LICENSE`、`NOTICE`、`COMMERCIAL-LICENSE.md`：许可、署名和商业授权条件；
 - 中文说明文档：需求、验收、交付和后续规划。
