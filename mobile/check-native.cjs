@@ -4,7 +4,7 @@ assert.equal(config.server?.url,undefined,'原生安装包不得依赖远程网�
 const web=path.resolve(root,config.webDir),read=p=>fs.readFileSync(path.join(root,p));
 const digest=b=>crypto.createHash('sha256').update(b).digest('hex');
 for(const target of ['android/app/src/main/assets/public','ios/App/App/public']){
- for(const asset of ['index.html','assets/child_w_keyed.webp','assets/child_b_keyed.webp','assets/adult_w_keyed.webp','assets/adult_b_keyed.webp','vendor/stockfish/stockfish-18-lite-single.wasm','LICENSE','THIRD_PARTY_NOTICES.md']){
+ for(const asset of ['index.html','privacy.html','support.html','assets/child_w_keyed.webp','assets/child_b_keyed.webp','assets/adult_w_keyed.webp','assets/adult_b_keyed.webp','vendor/stockfish/stockfish-18-lite-single.wasm','LICENSE','THIRD_PARTY_NOTICES.md']){
   assert.equal(digest(read(path.join(target,asset))),digest(fs.readFileSync(path.join(web,asset))),`${target}/${asset} 与发布资源不同步`);
  }
 }
