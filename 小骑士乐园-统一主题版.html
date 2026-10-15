@@ -1842,6 +1842,7 @@ function onMoveBoardClick(idx){
   animatePiece($('#mvBoardWrap'),pos,idx,type,'w');
   movesLesson.board[pos]=null;movesLesson.board[idx]={t:type,c:'w'};movesLesson.pos=idx;movesLesson.selected=null;
   movesLesson.progress[type]=++movesLesson.taskDone;
+  $('#mvStep').textContent='走对了！棋子已经到达 '+idx2name(idx)+'，稍后开始下一题。';
   const allDone=PIECE_ORDER.every(t=>(movesLesson.progress[t]||0)>=movesLesson.taskTotal);
   if(allDone && !S.lessons.moves){S.lessons.moves=true;grantStars(2);save();}
   SFX.good();
@@ -1850,7 +1851,7 @@ function onMoveBoardClick(idx){
     const all=PIECE_ORDER.every(t=>(movesLesson.progress[t]||0)>=movesLesson.taskTotal);
     resetMovesBoard();renderMovesTabs();
     if(all)guide('六种棋子的五题练习全部完成！可以去实战练习啦。');
-  },380);
+  },1100);
 }
 function renderMovesBoard(){
   const pos = movesLesson.pos;

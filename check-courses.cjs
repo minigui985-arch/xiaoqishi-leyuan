@@ -24,7 +24,7 @@ await page.locator('#mvDemo').click();await page.locator('.move-tab[data-type="n
 for(const type of ['p','r','n','b','q','k']){
  await page.locator('.move-tab[data-type="'+type+'"]').click();
  for(let n=0;n<5;n++){
-  const task=await page.evaluate(()=>({from:movesLesson.pos,to:movesLesson.task.to}));await cell('#mvBoardWrap',task.from);await cell('#mvBoardWrap',task.to);await page.waitForTimeout(450);
+  const task=await page.evaluate(()=>({from:movesLesson.pos,to:movesLesson.task.to}));await cell('#mvBoardWrap',task.from);await cell('#mvBoardWrap',task.to);assert.match(await page.locator('#mvStep').innerText(),/走对了/);await page.waitForTimeout(1200);
   assert.equal(await page.evaluate(t=>movesLesson.progress[t],type),n+1);
   if(n===2){await nav('home');await nav('moves');assert.equal(await page.evaluate(()=>movesLesson.taskDone),3);}
  }
@@ -35,3 +35,4 @@ for(const type of ['p','r','n','b','q','k']){
 assert.equal(await page.evaluate(()=>S.lessons.moves),true);await hide();await page.locator('#mvNext').click();assert.equal(await page.evaluate(()=>currentView),'play');
 assert.deepEqual(errors,[]);console.log('PASS board 5/5 + repeat; pieces 3/3; all six movement groups 30/30; navigation, cancelled demo, reward and next-course buttons');
 }finally{await browser.close();}})().catch(e=>{console.error(e);process.exitCode=1});
+
