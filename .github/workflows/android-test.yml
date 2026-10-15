@@ -6,9 +6,17 @@ on:
     paths:
       - '.github/workflows/android-test.yml'
       - 'mobile/**'
-      - 'pwa.js'
-      - 'build-edgeone.cjs'
-      - '小骑士乐园-统一主题版.html'
+      - '*.js'
+      - '*.cjs'
+      - '*.css'
+      - '*.html'
+      - '*.webmanifest'
+      - 'assets/**'
+      - 'icons/**'
+      - 'locales/**'
+      - 'vendor/**'
+      - 'LICENSE'
+      - 'THIRD_PARTY_NOTICES.md'
   workflow_dispatch:
 
 permissions:
@@ -40,3 +48,4 @@ jobs:
           path: mobile/android/app/build/outputs/apk/debug/app-debug.apk
           if-no-files-found: error
           retention-days: 7
+
