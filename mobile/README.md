@@ -2,13 +2,15 @@
 
 本目录包含 Capacitor Android 与 iOS 工程。课程、棋谱、人物图和 Stockfish 随安装包内置；好友房间使用独立的美国 HTTPS 棋局服务。原生界面不通过 `server.url` 加载 GitHub Pages，离线课程与联网好友对弈需分别验收。当前为测试工程，不代表已通过 App Store 或 Google Play 审核。
 
+本工程的国际版 Android 包名与 iOS Bundle ID 候选均为 `com.pengchenggongxing.xiaoqishi.international`，与拟议的大陆版标识 `cn.xiaoqishileyuan.mobile` 分开。商店建档前须由公司账号确认标识可注册。新国际 APK 会作为另一应用安装，旧调试包的本机数据不会自动共享。
+
 ## 构建
 
 在本目录运行 `npm ci`，再运行 `npm run sync:android` 或 `npm run sync:ios`。每次修改网页资源后都要重新同步并重新构建安装包。`npm run check:native` 检查内置资源、原生来源与服务器允许列表。Android 工程目标 API 为 36；商店提交前仍须在当时核对 Google Play 的要求。
 
 Android Studio 可打开 `android/` 并在真机安装调试包。仓库的 Android test APK 工作流只生成短期保留的 **debug APK**，不是商店签名的 AAB。上架需由应用主体确定最终包标识、签名密钥及 Google Play Console 账号，然后生成并验证正式 AAB。
 
-iOS 工程需在 macOS 的 Xcode 打开 `ios/`，用应用主体的 Apple Developer 团队签名并在真机测试。仓库的 iOS simulator build 只验证无签名模拟器编译，不能安装到真实 iPhone；TestFlight 与 App Store 仍需 Apple Developer 账号和 App Store Connect 提交。
+iOS 工程需在 macOS 的 Xcode 打开 `ios/`，用应用主体的 Apple Developer 团队签名并在真机测试。仓库的 iOS simulator build 只验证无签名模拟器编译，不能安装到真实 iPhone；TestFlight 与 App Store 仍需 Apple Developer 组织账号和 App Store Connect 提交。英国 iPhone Safari 主屏幕网页版不能代替 iOS 原生验收。
 
 ## 跨网络好友房间
 

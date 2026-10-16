@@ -1,10 +1,10 @@
 apply plugin: 'com.android.application'
 
 android {
-    namespace = "cn.xiaoqishileyuan.mobile"
+    namespace = "com.pengchenggongxing.xiaoqishi.international"
     compileSdk = rootProject.ext.compileSdkVersion
     defaultConfig {
-        applicationId "cn.xiaoqishileyuan.mobile"
+        applicationId "com.pengchenggongxing.xiaoqishi.international"
         minSdkVersion rootProject.ext.minSdkVersion
         targetSdkVersion rootProject.ext.targetSdkVersion
         versionCode 3
