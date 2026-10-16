@@ -2,7 +2,7 @@ name: Android test APK
 
 on:
   push:
-    branches: [main]
+    branches: [main, 'codex/mobile-fixes-20261016']
     paths:
       - '.github/workflows/android-test.yml'
       - 'mobile/**'

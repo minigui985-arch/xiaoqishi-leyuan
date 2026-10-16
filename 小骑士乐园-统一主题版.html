@@ -1846,12 +1846,13 @@ function onMoveBoardClick(idx){
   const allDone=PIECE_ORDER.every(t=>(movesLesson.progress[t]||0)>=movesLesson.taskTotal);
   if(allDone && !S.lessons.moves){S.lessons.moves=true;grantStars(2);save();}
   SFX.good();
+  setTimeout(()=>{if(epoch===movesLesson.epoch && currentView==='moves')renderMovesBoard();},420);
   setTimeout(()=>{
     if(epoch!==movesLesson.epoch || currentView!=='moves')return;
     const all=PIECE_ORDER.every(t=>(movesLesson.progress[t]||0)>=movesLesson.taskTotal);
     resetMovesBoard();renderMovesTabs();
     if(all)guide('六种棋子的五题练习全部完成！可以去实战练习啦。');
-  },1100);
+  },2200);
 }
 function renderMovesBoard(){
   const pos = movesLesson.pos;
