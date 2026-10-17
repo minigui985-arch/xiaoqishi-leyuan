@@ -5,9 +5,10 @@ document.addEventListener('DOMContentLoaded',()=>{
  body.chess-immersive *{visibility:hidden!important}
  body.chess-immersive .immersive-parent{transform:none!important;filter:none!important;contain:none!important;overflow:visible!important}
  body.chess-immersive .immersive-board,body.chess-immersive .immersive-board *{visibility:visible!important}
- body.chess-immersive .immersive-board{position:fixed!important;left:50%!important;top:50%!important;transform:translate(-50%,-50%)!important;width:min(calc(100vw - env(safe-area-inset-left) - env(safe-area-inset-right) - 4px),calc(100dvh - env(safe-area-inset-top) - env(safe-area-inset-bottom) - 24px))!important;max-width:none!important;margin:0!important;z-index:100000!important}
+ body.chess-immersive .immersive-board{position:fixed!important;left:50%!important;top:50%!important;transform:translate(-50%,-50%)!important;width:min(calc(100vw - env(safe-area-inset-left) - env(safe-area-inset-right) - 8px),calc(100dvh - env(safe-area-inset-top) - env(safe-area-inset-bottom) - 8px))!important;max-width:none!important;margin:0!important;z-index:100000!important}
  body.chess-immersive .immersive-board .board-inner{transform:none!important}
- body.chess-immersive #exitImmersive{visibility:visible!important;position:fixed;right:6px;top:6px;z-index:100001;padding:6px 10px;font-size:12px;background:var(--card);border:1px solid var(--card-border);border-radius:12px;color:var(--ink)}
+ body.chess-immersive #exitImmersive{visibility:visible!important;position:fixed;right:calc(env(safe-area-inset-right,0px) + 12px);top:calc(env(safe-area-inset-top,0px) + 12px);z-index:100001;min-width:48px;min-height:48px;padding:0 16px;font-size:15px;font-weight:700;background:var(--card);border:1px solid var(--card-border);border-radius:12px;color:var(--ink);touch-action:manipulation}
+ body.chess-immersive #exitImmersive:focus-visible{outline:3px solid var(--west);outline-offset:2px}
  body:not(.chess-immersive) #exitImmersive{display:none}
  .immersive-flank{display:none}
  body.chess-immersive::before,body.chess-immersive::after{content:'';position:fixed;top:16%;bottom:16%;width:22vw;pointer-events:none;opacity:.12;border-top:2px solid var(--west);border-bottom:2px solid var(--west);border-radius:50%;visibility:visible;z-index:0}
@@ -20,6 +21,20 @@ document.addEventListener('DOMContentLoaded',()=>{
  .flank-turn{padding:10px;border-radius:12px;background:var(--bg-deep);margin:16px 0;font-weight:700}
  .flank-captures{display:flex;flex-wrap:wrap;justify-content:center;gap:4px;margin-top:12px}.flank-captures svg{width:42px;height:42px}
  .immersive-flank p{font-size:.85rem;color:var(--ink-2)}
+ }
+ @media(max-width:700px),(max-width:900px) and (max-height:700px){
+ body.chess-immersive .immersive-board .board-files,body.chess-immersive .immersive-board .board-ranks{display:none}
+ body.chess-immersive .immersive-board .board-inner{gap:0}
+ body.chess-immersive .immersive-board .board{border-width:2px;border-radius:6px;box-shadow:none}
+ }
+ @media(max-width:700px) and (min-height:800px) and (orientation:portrait){
+ body.chess-immersive .immersive-flank,body.chess-immersive .immersive-flank *{visibility:visible!important}
+ body.chess-immersive .immersive-flank{display:flex;align-items:center;justify-content:space-between;gap:8px;position:fixed;left:12px;right:12px;z-index:100000;padding:10px 14px;background:var(--card);border:1px solid var(--card-border);border-radius:14px}
+ body.chess-immersive .immersive-flank.w{bottom:calc(env(safe-area-inset-bottom,0px) + 18px);border-left:4px solid var(--west)}
+ body.chess-immersive .immersive-flank.b{top:calc(env(safe-area-inset-top,0px) + 76px);border-left:4px solid var(--east)}
+ body.chess-immersive .immersive-flank p,body.chess-immersive .immersive-flank .flank-portrait,body.chess-immersive .immersive-flank h3,body.chess-immersive .immersive-flank .flank-captures{display:none}
+ body.chess-immersive .immersive-flank h2{margin:0;font-size:1rem;white-space:nowrap}
+ body.chess-immersive .immersive-flank .flank-turn{margin:0;padding:6px 8px;font-size:.8rem}
  }
  `;document.head.append(style);
  const exit=document.createElement('button');exit.id='exitImmersive';exit.textContent='退出沉浸';exit.title='退出沉浸模式（Esc）';document.body.append(exit);
