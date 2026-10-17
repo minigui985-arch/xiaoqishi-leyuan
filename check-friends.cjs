@@ -32,7 +32,11 @@ const normalWidth=await p2.locator('#friendBoard .board').evaluate(e=>e.getBound
 await p2.locator('[data-immerse="friendBoard"]').click();
 const immersiveFit=await p2.locator('#friendBoard .board').evaluate(e=>{const r=e.getBoundingClientRect();return {width:r.width,inside:r.left>=0&&r.right<=innerWidth&&r.top>=0&&r.bottom<=innerHeight};});
 assert.equal(immersiveFit.inside,true);assert.ok(immersiveFit.width>=normalWidth);
+assert.equal(await p2.locator('.immersive-flank.b').evaluate(e=>{const b=e.getBoundingClientRect(),w=document.querySelector('.immersive-flank.w').getBoundingClientRect();return b.top>w.top&&getComputedStyle(e).transform==='none';}),true);
 await p2.locator('#exitImmersive').click();
+await p1.setViewportSize({width:390,height:844});await p1.locator('[data-immerse="friendBoard"]').click();
+assert.equal(await p1.locator('.immersive-flank.b').evaluate(e=>{const b=e.getBoundingClientRect(),w=document.querySelector('.immersive-flank.w').getBoundingClientRect();return b.top<w.top&&getComputedStyle(e).transform==='none';}),true);
+await p1.locator('#exitImmersive').click();
  p2.once('dialog',dialog=>dialog.accept());await p2.locator('#friendResign').click();
  await p2.locator('#friendResultDialog').waitFor({state:'visible'});
  await p1.locator('#friendResultDialog').waitFor({state:'visible'});
@@ -40,4 +44,3 @@ await p2.locator('#exitImmersive').click();
  await p2.locator('#friendResultStay').click();assert.equal(await p2.locator('#friendOutcome').isVisible(),true);
 assert.deepEqual(errors,[]);console.log('PASS: two isolated browsers, create/join/ready/move, fixed child-safe communication, seat reload recovery; authorization, illegal moves, duplicate and stale requests; mobile width, opposite piece facing, immersive fit.');
 }finally{if(browser)await browser.close();await new Promise(r=>s.close(r));}})().catch(e=>{console.error(e);process.exitCode=1;});
-

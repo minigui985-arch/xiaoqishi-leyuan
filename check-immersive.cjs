@@ -8,5 +8,8 @@ const normalWidth=await p.locator('#playBoardWrap .board').evaluate(e=>e.getBoun
 await p.locator('[data-immerse="playBoardWrap"]').click();
 const immersed=await p.locator('#playBoardWrap .board').evaluate(e=>{const r=e.getBoundingClientRect();return {width:r.width,inside:r.left>=0&&r.right<=innerWidth&&r.top>=0&&r.bottom<=innerHeight};});
 assert.equal(immersed.inside,true);assert.ok(immersed.width>=normalWidth);
+assert.match(await p.locator('.immersive-flank.b').innerText(),/明军/);
+assert.equal(await p.locator('.immersive-flank.b').evaluate(e=>getComputedStyle(e).transform),'matrix(-1, 0, 0, -1, 0, 0)');
+assert.equal(await p.locator('.immersive-flank.w').evaluate(e=>getComputedStyle(e).transform),'none');
 await p.locator('#exitImmersive').click();
 console.log('PASS: fullscreen-denied fallback, desktop/mobile full board, hidden panels, Escape/button exit, moves and AI retained; local opposite facing and board enlargement.');}finally{await b.close();}})().catch(e=>{console.error(e);process.exitCode=1;});

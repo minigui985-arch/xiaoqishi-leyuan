@@ -27,7 +27,7 @@ document.addEventListener('DOMContentLoaded',()=>{
  async function api(payload){if(!available||!apiUrl)throw Error('线上好友房间尚未连接，请先使用同屏双人模式。');const r=await fetch(apiUrl,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(payload),signal:AbortSignal.timeout(8000),cache:'no-store'});const data=r.headers.get('content-type')?.includes('application/json')?await r.json():null;if(!r.ok||!data){if(r.status===404||!data)throw Error('线上好友对弈服务不可用，请先使用同屏双人模式');throw Error(data.error||'服务暂不可用');}return data;}
  function store(){try{localStorage.setItem('friendSeat',JSON.stringify(seat));}catch{say('无法保存席位，刷新后可能不能恢复。');}}
  function render(){
-  if(!state)return;document.dispatchEvent(new CustomEvent('knight-friend-state',{detail:state}));
+  if(!state)return;el('friendBoard').dataset.seatColor=seat.color;document.dispatchEvent(new CustomEvent('knight-friend-state',{detail:state}));
   say(`房间 ${seat.id} · 你是${seat.color==='w'?'十字军（白方）':'明军（黑方）'} · ${state.result||(!state.joined?'等待好友加入':!state.ready.w||!state.ready.b?'等待双方准备':state.turn===seat.color?'轮到你走棋':'等待好友走棋')}`);
   outcome.hidden=!state.result;
   if(state.result){const title=state.result.includes('白方获胜')?'白方获胜':state.result.includes('黑方获胜')?'黑方获胜':state.result.includes('将杀获胜')?state.result.slice(0,2)+'获胜':'本局和棋';const detail=state.result+'。棋盘和席位已保留，可以查看复盘或留在终局。';el('friendOutcomeTitle').textContent=resultDialog.querySelector('#friendResultTitle').textContent=title;el('friendOutcomeDetail').textContent=resultDialog.querySelector('#friendResultDetail').textContent=detail;const canReplay=!!state.history.length;el('friendOutcomeReplay').disabled=resultDialog.querySelector('#friendResultReplay').disabled=!canReplay;if(state.version!==shownResultVersion){shownResultVersion=state.version;if(!resultDialog.open)resultDialog.showModal();}}
@@ -58,4 +58,3 @@ document.addEventListener('DOMContentLoaded',()=>{
  checkService();
  setInterval(()=>{if(available&&!document.hidden&&currentView==='play'&&!state?.result)refresh();},2000);
 });
-
