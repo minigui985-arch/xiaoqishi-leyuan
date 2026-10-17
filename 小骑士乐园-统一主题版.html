@@ -1356,7 +1356,7 @@ function onBattleClick(idx){
  if(battle.over||battle.thinking||(!battle.human&&battle.turn!=='w'))return;
  const color=battle.turn,p=battle.board[idx],sel=battle.selected;
  if(sel!==null&&idx!==sel){
-  const moves=legalMoves(battle.board,sel,battle.cast).filter(m=>m.to===idx);
+  const moves=clickedLegalMoves(battle.board,sel,idx,battle.cast);
   if(moves.length){if(moves.some(m=>m.promotion)){choosePromotion(moves,doBattleMove,color);}else doBattleMove(moves[0]);return;}
    if(!p||p.c!==color){coachSay(tournamentRules()?'这一步不符合国际象棋合法走法，请重新选择。':(inCheck(battle.board,color)?'国王正在被攻击。试试移动国王、挡住路线，或吃掉进攻者。':'这条路线暂时走不通。看看亮点：它们是这枚棋子能安全到达的位置。'));return;}
  }
@@ -1846,12 +1846,13 @@ function onMoveBoardClick(idx){
   const allDone=PIECE_ORDER.every(t=>(movesLesson.progress[t]||0)>=movesLesson.taskTotal);
   if(allDone && !S.lessons.moves){S.lessons.moves=true;grantStars(2);save();}
   SFX.good();
+  setTimeout(()=>{if(epoch===movesLesson.epoch && currentView==='moves')renderMovesBoard();},420);
   setTimeout(()=>{
     if(epoch!==movesLesson.epoch || currentView!=='moves')return;
     const all=PIECE_ORDER.every(t=>(movesLesson.progress[t]||0)>=movesLesson.taskTotal);
     resetMovesBoard();renderMovesTabs();
     if(all)guide('六种棋子的五题练习全部完成！可以去实战练习啦。');
-  },1100);
+  },2200);
 }
 function renderMovesBoard(){
   const pos = movesLesson.pos;
@@ -2185,6 +2186,16 @@ let battleRuleMode='explore';try{battleRuleMode=localStorage.getItem('knight-rul
 const tournamentRules=()=>battleRuleMode==='tournament';
 const copyPosition=(b,c)=>({board:b.map(p=>p?{...p}:null),cast:JSON.parse(JSON.stringify(c||{}))});
 const sameMove=(a,b)=>a.from===b.from&&a.to===b.to&&(a.promotion||'')===(b.promotion||'');
+function clickedLegalMoves(board,from,to,cast){
+ const moves=legalMoves(board,from,cast),direct=moves.filter(m=>m.to===to);
+ if(direct.length)return direct;
+ const piece=board[from],target=board[to];
+ if(piece?.t==='k'&&target?.t==='r'&&target.c===piece.c&&Math.floor(from/8)===Math.floor(to/8))
+  return moves.filter(m=>m.castle===(to%8>from%8?'K':'Q'));
+ if(piece?.t==='p'&&target?.t==='p'&&target.c!==piece.c&&Math.floor(from/8)===Math.floor(to/8))
+  return moves.filter(m=>m.ep&&m.to%8===to%8);
+ return [];
+}
 function positionKey(b,turn,c){
  const ep=allLegalMoves(b,turn,c).some(m=>m.ep)?c.ep.join(','):'-';
  return b.map(p=>p?p.c+p.t:'.').join('')+'/'+turn+'/'+['wK','wQ','bK','bQ'].map(k=>c[k]?1:0).join('')+'/'+ep;

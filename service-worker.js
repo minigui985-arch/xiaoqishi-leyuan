@@ -1,8 +1,8 @@
 /* 原始开发者：不疾不徐 | Copyright (c) 2026 合肥市朋程共行电子商务有限责任公司 */
-const CACHE='knight-mobile-0.8.3-friend-result';
+const CACHE='knight-mobile-0.8.3-opposite-status';
 const APP='./小骑士乐园-统一主题版.html';
 const CORE=[
-  APP,'./manifest.webmanifest','./pwa.js','./app-info.js','./i18n.js',
+  APP,'./manifest.webmanifest','./pwa.js','./app-info.js','./i18n.js','./privacy.html','./support.html','./transfer-save.js',
   './locales/zh-CN.js','./locales/en-US.js','./locales/ru-RU.js','./locales/es-ES.js','./locales/de-DE.js','./locales/fr-FR.js','./locales/pt-BR.js','./locales/hi-IN.js','./locales/ja-JP.js','./locales/ko-KR.js','./locales/content.js','./battle-save.js',
   './friend-config.js','./friend-client.js','./feedback-client.js','./immersive.js','./classic-games.css',
   './classic-games.js','./classic-games-data.js','./stockfish-engine.js',

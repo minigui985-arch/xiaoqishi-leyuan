@@ -2,10 +2,21 @@ name: iOS simulator build
 
 on:
   push:
-    branches: [main]
+    branches: [main, 'codex/mobile-fixes-20261016']
     paths:
       - '.github/workflows/ios-test.yml'
       - 'mobile/**'
+      - '*.js'
+      - '*.cjs'
+      - '*.css'
+      - '*.html'
+      - '*.webmanifest'
+      - 'assets/**'
+      - 'icons/**'
+      - 'locales/**'
+      - 'vendor/**'
+      - 'LICENSE'
+      - 'THIRD_PARTY_NOTICES.md'
   workflow_dispatch:
 
 permissions:
@@ -22,5 +33,6 @@ jobs:
       - run: xcodebuild -version
       - run: npm ci --prefix mobile
       - run: npm run sync:android --prefix mobile && npm run sync:ios --prefix mobile && npm run check:native --prefix mobile
+      - run: node check-rules.cjs
       - run: xcodebuild -project App.xcodeproj -scheme App -configuration Debug -sdk iphonesimulator -destination 'generic/platform=iOS Simulator' CODE_SIGNING_ALLOWED=NO build
         working-directory: mobile/ios/App
