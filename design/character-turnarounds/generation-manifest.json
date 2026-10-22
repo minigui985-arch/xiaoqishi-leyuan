@@ -1,0 +1,123 @@
+{
+  "date": "2026-10-22",
+  "tool": "built-in image_gen",
+  "status": "concept-reference-not-runtime-assets",
+  "referenceFiles": [
+    "assets/child_w_keyed.webp",
+    "assets/child_b_keyed.webp",
+    "assets/adult_w_keyed.webp",
+    "assets/adult_b_keyed.webp"
+  ],
+  "assets": [
+    {
+      "name": "child-crusader-rook-v1.png",
+      "prompt": "Use case: stylized-concept. Create ONE original professional 3D turnaround sheet for the CHILDREN'S CRUSADER FORTRESS ROOK in the top middle: gray stone crenellated fortress, arched wooden gate with gold cross, white-and-gold banners, central white flag with gold cross. It is an architectural chess piece, no human face. Lower strip: front gate structure, rear masonry, removable banner/flag construction. Reference image is identity reference: use only this specified role, preserve its costume and props. Match the previously approved pawn sheets: friendly rounded chibi proportions, polished toy-like 3D render. Four consistent full-body orthographic views of the SAME subject across top row: front, left side, back, front three-quarter. Same clothing, props and proportions across views; full round ivory-and-gold chess base visible in each view. Lower strip as specified. Warm off-white plain studio background, generous spacing. No writing, labels, other characters or invented props. This is a modeling reference, not a cinematic scene.",
+      "superseded": false
+    },
+    {
+      "name": "child-crusader-knight-v1.png",
+      "prompt": "Use case: stylized-concept. Create ONE original professional 3D turnaround sheet for the CHILDREN'S CRUSADER MOUNTED KNIGHT in the top right: silver bucket helmet with gold cross, chainmail, ivory cross tunic, lance and white cross pennant, brown-maned white horse with cream gold-cross caparison, saddle and reins. Keep both rider and entire horse in each view. Lower strip: rider face calm / delighted / concerned, plus horse head detail. Reference image is identity reference: use only this specified role, preserve its costume and props. Match the previously approved pawn sheets: friendly rounded chibi proportions, polished toy-like 3D render. Four consistent full-body orthographic views of the SAME subject across top row: front, left side, back, front three-quarter. Same clothing, props and proportions across views; full round ivory-and-gold chess base visible in each view. Lower strip as specified. Warm off-white plain studio background, generous spacing. No writing, labels, other characters or invented props. This is a modeling reference, not a cinematic scene.",
+      "superseded": false
+    },
+    {
+      "name": "child-crusader-bishop-v1.png",
+      "prompt": "Use case: stylized-concept. Create ONE original professional 3D turnaround sheet for the CHILDREN'S CRUSADER BISHOP in bottom left: cream gold-cross mitre, cream gold-trimmed clerical robes, gold crozier in right hand and brown cross-marked book in left. Lower strip three close portraits: calm / delighted / concerned. Reference image is identity reference: use only this specified role, preserve its costume and props. Match the previously approved pawn sheets: friendly rounded chibi proportions, polished toy-like 3D render. Four consistent full-body orthographic views of the SAME subject across top row: front, left side, back, front three-quarter. Same clothing, props and proportions across views; full round ivory-and-gold chess base visible in each view. Lower strip as specified. Warm off-white plain studio background, generous spacing. No writing, labels, other characters or invented props. This is a modeling reference, not a cinematic scene.",
+      "superseded": false
+    },
+    {
+      "name": "child-crusader-queen-v1.png",
+      "prompt": "Use case: stylized-concept. Create ONE original professional 3D turnaround sheet for the CHILDREN'S CRUSADER QUEEN in bottom middle: brown wavy hair, gold cross crown with dark jewels, cream gown with gold crosses and gold trim, ermine-edged cape, gold cross sceptre. Lower strip three close portraits: calm / delighted / concerned. Reference image is identity reference: use only this specified role, preserve its costume and props. Match the previously approved pawn sheets: friendly rounded chibi proportions, polished toy-like 3D render. Four consistent full-body orthographic views of the SAME subject across top row: front, left side, back, front three-quarter. Same clothing, props and proportions across views; full round ivory-and-gold chess base visible in each view. Lower strip as specified. Warm off-white plain studio background, generous spacing. No writing, labels, other characters or invented props. This is a modeling reference, not a cinematic scene.",
+      "superseded": false
+    },
+    {
+      "name": "child-crusader-king-v1.png",
+      "prompt": "Use case: stylized-concept. Create ONE original professional 3D turnaround sheet for the CHILDREN'S CRUSADER KING in bottom right: brown hair and beard, gold cross crown, cream gold-cross royal robe, slate blue ermine-edged cape, both hands on ceremonial sword held vertically. Lower strip three close portraits: calm / delighted / concerned. Reference image is identity reference: use only this specified role, preserve its costume and props. Match the previously approved pawn sheets: friendly rounded chibi proportions, polished toy-like 3D render. Four consistent full-body orthographic views of the SAME subject across top row: front, left side, back, front three-quarter. Same clothing, props and proportions across views; full round ivory-and-gold chess base visible in each view. Lower strip as specified. Warm off-white plain studio background, generous spacing. No writing, labels, other characters or invented props. This is a modeling reference, not a cinematic scene.",
+      "superseded": true
+    },
+    {
+      "name": "adult-crusader-rook-v1.png",
+      "prompt": "Use case: stylized-concept. ONE original ADULT CRUSADER fortress ROOK, top-middle reference: gray stone medieval castle with central tower and flanking crenellated towers, ornate arched gated entrance, white gold-cross banners and a central white cross flag. No human face. Bottom strip: entrance close detail, rear stonework, separated removable banner and tower construction. modeling reference sheet. Preserve only this specified subject from the supplied six-role identity reference. Realistic adult proportions, high-quality 3D game concept matching the approved adult pawn: weathered steel, ivory cloth, gold ornament, dark marble circular chess pedestal. Four consistent full-subject orthographic views across upper row: front, left side, back, front three-quarter; all props and pedestal fully visible, identical clothing and silhouette in all views. Lower strip as specified. Neutral warm off-white studio background. Clear generous spacing, no text or labels, no unrelated objects, no extra characters. No chibi proportions.",
+      "superseded": false
+    },
+    {
+      "name": "adult-crusader-knight-v1.png",
+      "prompt": "Use case: stylized-concept. ONE original ADULT CRUSADER mounted KNIGHT, top-right reference: silver bucket-helmed adult knight in chainmail and ivory gold-cross surcoat, tall lance with white gold-cross pennant, armored dark horse with cream cross caparison, dark saddle and reins. Include full rider and full horse. Bottom strip: helmet visor, reins/saddle detail, armor/caparison attachment detail. Do not invent an exposed face beneath closed helmet. modeling reference sheet. Preserve only this specified subject from the supplied six-role identity reference. Realistic adult proportions, high-quality 3D game concept matching the approved adult pawn: weathered steel, ivory cloth, gold ornament, dark marble circular chess pedestal. Four consistent full-subject orthographic views across upper row: front, left side, back, front three-quarter; all props and pedestal fully visible, identical clothing and silhouette in all views. Lower strip as specified. Neutral warm off-white studio background. Clear generous spacing, no text or labels, no unrelated objects, no extra characters. No chibi proportions.",
+      "superseded": false
+    },
+    {
+      "name": "adult-crusader-bishop-v1.png",
+      "prompt": "Use case: stylized-concept. ONE original ADULT CRUSADER BISHOP, bottom-left reference: mature dignified man with gray beard, ivory gold-cross mitre, richly embroidered cream-gold clerical robe, gold crozier and dark cross-marked book. Bottom strip: same face calm focus / restrained joy / concern. modeling reference sheet. Preserve only this specified subject from the supplied six-role identity reference. Realistic adult proportions, high-quality 3D game concept matching the approved adult pawn: weathered steel, ivory cloth, gold ornament, dark marble circular chess pedestal. Four consistent full-subject orthographic views across upper row: front, left side, back, front three-quarter; all props and pedestal fully visible, identical clothing and silhouette in all views. Lower strip as specified. Neutral warm off-white studio background. Clear generous spacing, no text or labels, no unrelated objects, no extra characters. No chibi proportions.",
+      "superseded": false
+    },
+    {
+      "name": "adult-crusader-queen-v1.png",
+      "prompt": "Use case: stylized-concept. ONE original ADULT CRUSADER QUEEN, bottom-middle reference: mature dignified adult woman, long brown hair, gold cross crown, fitted ivory gold embroidered royal gown, dark navy cape with gold motifs and ermine trim, gold cross sceptre. Bottom strip: same face calm focus / restrained joy / concern. modeling reference sheet. Preserve only this specified subject from the supplied six-role identity reference. Realistic adult proportions, high-quality 3D game concept matching the approved adult pawn: weathered steel, ivory cloth, gold ornament, dark marble circular chess pedestal. Four consistent full-subject orthographic views across upper row: front, left side, back, front three-quarter; all props and pedestal fully visible, identical clothing and silhouette in all views. Lower strip as specified. Neutral warm off-white studio background. Clear generous spacing, no text or labels, no unrelated objects, no extra characters. No chibi proportions.",
+      "superseded": false
+    },
+    {
+      "name": "adult-crusader-king-v1.png",
+      "prompt": "Use case: stylized-concept. ONE original ADULT CRUSADER KING, bottom-right reference: mature bearded king in gold cross crown, cream-gold embroidered cross royal robe, dark blue ermine-trimmed cloak, hands resting on upright ceremonial sword. Bottom strip: same face calm focus / restrained joy / concern. modeling reference sheet. Preserve only this specified subject from the supplied six-role identity reference. Realistic adult proportions, high-quality 3D game concept matching the approved adult pawn: weathered steel, ivory cloth, gold ornament, dark marble circular chess pedestal. Four consistent full-subject orthographic views across upper row: front, left side, back, front three-quarter; all props and pedestal fully visible, identical clothing and silhouette in all views. Lower strip as specified. Neutral warm off-white studio background. Clear generous spacing, no text or labels, no unrelated objects, no extra characters. No chibi proportions.",
+      "superseded": false
+    },
+    {
+      "name": "child-ming-rook-v1.png",
+      "prompt": "Use case: stylized-concept. ONE original CHILDREN'S Ming RED CANNON ROOK in top-middle reference: red gold-banded cannon barrel, black wooden carriage, two black spoked wheels with gold hubs, small ignition fuse with stylized white smoke, black-red gold-trimmed chess base. No human face. Bottom strip: muzzle/breech close-up, separate wheel and axle, barrel/carriage exploded construction. No human operator. modeling reference sheet. Only the specified role from the provided six-role image is identity reference. Preserve Chinese Ming costume identity and all specified props. Match approved Ming pawn: round friendly chibi proportions and polished toy-like 3D render, black-red round gold-trimmed chess pedestal. Four consistent full-subject orthographic views across upper row: front, left side, back, front three-quarter, same costume and props across angles, all props/pedestal visible. Lower strip as specified. Warm off-white plain studio backdrop, generous spacing. No labels or lettering, no unrelated objects or extra characters. No European crown, crozier or cross heraldry.",
+      "superseded": false
+    },
+    {
+      "name": "child-ming-knight-v1.png",
+      "prompt": "Use case: stylized-concept. ONE original CHILDREN'S Ming MOUNTED CAVALRY KNIGHT in top-right reference: gold-winged black phoenix-style helmet, red plume, red scarf and red cape, black gold-detailed lamellar armor, three-barrel fire-gun, brown horse with black mane, red Chinese saddle blanket with gold dragon motifs, reins and horse bells. Keep full rider and horse. Bottom strip: same rider calm / delighted / concerned face and horse head. modeling reference sheet. Only the specified role from the provided six-role image is identity reference. Preserve Chinese Ming costume identity and all specified props. Match approved Ming pawn: round friendly chibi proportions and polished toy-like 3D render, black-red round gold-trimmed chess pedestal. Four consistent full-subject orthographic views across upper row: front, left side, back, front three-quarter, same costume and props across angles, all props/pedestal visible. Lower strip as specified. Warm off-white plain studio backdrop, generous spacing. No labels or lettering, no unrelated objects or extra characters. No European crown, crozier or cross heraldry.",
+      "superseded": false
+    },
+    {
+      "name": "child-ming-bishop-v1.png",
+      "prompt": "Use case: stylized-concept. ONE original CHILDREN'S Ming CIVIL MINISTER BISHOP in bottom-left reference: black wushamao official hat with broad horizontal wings, small black moustache and three-part beard, red round-collar robe with crane rank badge and gold embroidery, white hu tablet held with both hands. Bottom strip: same face calm / delighted / concerned. modeling reference sheet. Only the specified role from the provided six-role image is identity reference. Preserve Chinese Ming costume identity and all specified props. Match approved Ming pawn: round friendly chibi proportions and polished toy-like 3D render, black-red round gold-trimmed chess pedestal. Four consistent full-subject orthographic views across upper row: front, left side, back, front three-quarter, same costume and props across angles, all props/pedestal visible. Lower strip as specified. Warm off-white plain studio backdrop, generous spacing. No labels or lettering, no unrelated objects or extra characters. No European crown, crozier or cross heraldry.",
+      "superseded": false
+    },
+    {
+      "name": "child-ming-queen-v1.png",
+      "prompt": "Use case: stylized-concept. ONE original CHILDREN'S Ming EMPRESS QUEEN in bottom-middle reference: gold phoenix crown with pearls, green and red ornaments and bead pendants, black updo, red embroidered diyi robe with phoenix motifs, red silk ribbons, round floral fan held in front. Bottom strip: same face calm / delighted / concerned. modeling reference sheet. Only the specified role from the provided six-role image is identity reference. Preserve Chinese Ming costume identity and all specified props. Match approved Ming pawn: round friendly chibi proportions and polished toy-like 3D render, black-red round gold-trimmed chess pedestal. Four consistent full-subject orthographic views across upper row: front, left side, back, front three-quarter, same costume and props across angles, all props/pedestal visible. Lower strip as specified. Warm off-white plain studio backdrop, generous spacing. No labels or lettering, no unrelated objects or extra characters. No European crown, crozier or cross heraldry.",
+      "superseded": false
+    },
+    {
+      "name": "child-ming-king-v1.png",
+      "prompt": "Use case: stylized-concept. ONE original CHILDREN'S Ming EMPEROR KING in bottom-right reference: black yishanguan winged imperial cap with gold ornament, small moustache and beard, black robe with gold dragon and red panels, jade belt, red cape and green jade gui tablet. Bottom strip: same face calm / delighted / concerned. modeling reference sheet. Only the specified role from the provided six-role image is identity reference. Preserve Chinese Ming costume identity and all specified props. Match approved Ming pawn: round friendly chibi proportions and polished toy-like 3D render, black-red round gold-trimmed chess pedestal. Four consistent full-subject orthographic views across upper row: front, left side, back, front three-quarter, same costume and props across angles, all props/pedestal visible. Lower strip as specified. Warm off-white plain studio backdrop, generous spacing. No labels or lettering, no unrelated objects or extra characters. No European crown, crozier or cross heraldry.",
+      "superseded": true
+    },
+    {
+      "name": "adult-ming-rook-v1.png",
+      "prompt": "Use case: stylized-concept. ONE original ADULT MING RED CANNON ROOK in top-middle reference: long bronze-black cannon barrel engraved with gold dragons, red riveted wooden carriage, two wooden spoked iron-rimmed wheels, bronze hubs and rings, ignition fuse. No people. Bottom strip: muzzle and rear breech detail, wheel/axle detail, separated barrel/carriage assembly reference. modeling reference sheet. Use only specified role from supplied reference sheet, preserve its Chinese identity, historic costume and equipment. Adult realistic proportions, detailed silk/metal/leather materials, high-quality realistic 3D game concept consistent with approved adult Ming pawn. Dark round black marble gold-trimmed chess base. Four consistent full-subject orthographic views across upper row: front, left side, rear, front three-quarter. Same costume, same props, same proportions in every view, all objects and base fully visible. Lower strip as specified. Warm off-white plain studio background with generous spacing. No lettering, labels, extra characters, invented objects or European heraldry. No chibi proportions.",
+      "superseded": false
+    },
+    {
+      "name": "adult-ming-knight-v1.png",
+      "prompt": "Use case: stylized-concept. ONE original ADULT MING MOUNTED CAVALRY KNIGHT in top-right reference: mature adult Ming soldier with black-and-gold phoenix-wing helmet and red plume, black-red lamellar armor, red cape, three-barrel early fire-gun, black horse with ornate black/red/gold Chinese saddle and dragon caparison, reins and horse bells. Show full rider and horse. Bottom strip: same rider face calm focus / restrained victory / worried, plus horse-head detail. modeling reference sheet. Use only specified role from supplied reference sheet, preserve its Chinese identity, historic costume and equipment. Adult realistic proportions, detailed silk/metal/leather materials, high-quality realistic 3D game concept consistent with approved adult Ming pawn. Dark round black marble gold-trimmed chess base. Four consistent full-subject orthographic views across upper row: front, left side, rear, front three-quarter. Same costume, same props, same proportions in every view, all objects and base fully visible. Lower strip as specified. Warm off-white plain studio background with generous spacing. No lettering, labels, extra characters, invented objects or European heraldry. No chibi proportions.",
+      "superseded": false
+    },
+    {
+      "name": "adult-ming-bishop-v1.png",
+      "prompt": "Use case: stylized-concept. ONE original ADULT MING CIVIL MINISTER BISHOP in bottom-left reference: mature dignified man with black moustache and three-part long beard, black wushamao official hat with horizontal wings, red round-collar robe with crane rank badge and gold embroidery, ivory hu tablet held before chest. Bottom strip: same face calm focus / restrained joy / concern. modeling reference sheet. Use only specified role from supplied reference sheet, preserve its Chinese identity, historic costume and equipment. Adult realistic proportions, detailed silk/metal/leather materials, high-quality realistic 3D game concept consistent with approved adult Ming pawn. Dark round black marble gold-trimmed chess base. Four consistent full-subject orthographic views across upper row: front, left side, rear, front three-quarter. Same costume, same props, same proportions in every view, all objects and base fully visible. Lower strip as specified. Warm off-white plain studio background with generous spacing. No lettering, labels, extra characters, invented objects or European heraldry. No chibi proportions.",
+      "superseded": false
+    },
+    {
+      "name": "adult-ming-queen-v1.png",
+      "prompt": "Use case: stylized-concept. ONE original ADULT MING EMPRESS QUEEN in bottom-middle reference: dignified mature adult woman with black hair updo, elaborate gold phoenix crown with jade-green and pearl pendants and red ornaments, red embroidered diyi robe with phoenix and gold details, long red silk ribbons, round floral silk fan. Bottom strip: same face calm focus / restrained joy / concern. modeling reference sheet. Use only specified role from supplied reference sheet, preserve its Chinese identity, historic costume and equipment. Adult realistic proportions, detailed silk/metal/leather materials, high-quality realistic 3D game concept consistent with approved adult Ming pawn. Dark round black marble gold-trimmed chess base. Four consistent full-subject orthographic views across upper row: front, left side, rear, front three-quarter. Same costume, same props, same proportions in every view, all objects and base fully visible. Lower strip as specified. Warm off-white plain studio background with generous spacing. No lettering, labels, extra characters, invented objects or European heraldry. No chibi proportions.",
+      "superseded": false
+    },
+    {
+      "name": "adult-ming-king-v1.png",
+      "prompt": "Use case: stylized-concept. ONE original ADULT MING EMPEROR KING in bottom-right reference: mature adult man with black moustache and long black beard, tall black yishanguan cap with upright folded wings behind head (NOT broad horizontal minister hat wings), small gold forehead ornament, black silk dragon robe with gold embroidery and red panels, jade belt, red cape, jade gui tablet. Bottom strip: same face calm focus / restrained joy / concern. modeling reference sheet. Use only specified role from supplied reference sheet, preserve its Chinese identity, historic costume and equipment. Adult realistic proportions, detailed silk/metal/leather materials, high-quality realistic 3D game concept consistent with approved adult Ming pawn. Dark round black marble gold-trimmed chess base. Four consistent full-subject orthographic views across upper row: front, left side, rear, front three-quarter. Same costume, same props, same proportions in every view, all objects and base fully visible. Lower strip as specified. Warm off-white plain studio background with generous spacing. No lettering, labels, extra characters, invented objects or European heraldry. No chibi proportions.",
+      "superseded": false
+    },
+    {
+      "name": "child-ming-king-v2.png",
+      "prompt": "Precisely correct only the emperor's hat in every view and portrait of this children's Ming emperor turnaround. Replace broad horizontal civil-minister hat wings with a Ming emperor's black yishanguan cap: two upright folded lobes behind the crown, close to the head, NO horizontal projecting wings. Preserve face, proportions, red cape, black gold-dragon robe, jade belt and tablet, all poses, angles, expressions, white studio background and overall sheet layout exactly. No lettering.",
+      "superseded": false
+    },
+    {
+      "name": "child-crusader-king-v2.png",
+      "prompt": "Precisely correct only the Crusader king's tunic/royal robe visible beneath his slate-blue ermine-trimmed cape. It must be cream/ivory with gold trim and a gold cross on the chest, matching the original game costume; not charcoal-gray panels. Apply consistently to four full-body angles and three close portraits. Preserve the same king face, beard, crown, sword, slate-blue cape, poses, expressions and sheet layout. No new props, no lettering.",
+      "superseded": false
+    }
+  ]
+}
