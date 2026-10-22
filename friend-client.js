@@ -27,19 +27,20 @@ document.addEventListener('DOMContentLoaded',()=>{
  async function api(payload){if(!available||!apiUrl)throw Error('线上好友房间尚未连接，请先使用同屏双人模式。');const r=await fetch(apiUrl,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(payload),signal:AbortSignal.timeout(8000),cache:'no-store'});const data=r.headers.get('content-type')?.includes('application/json')?await r.json():null;if(!r.ok||!data){if(r.status===404||!data)throw Error('线上好友对弈服务不可用，请先使用同屏双人模式');throw Error(data.error||'服务暂不可用');}return data;}
  function store(){try{localStorage.setItem('friendSeat',JSON.stringify(seat));}catch{say('无法保存席位，刷新后可能不能恢复。');}}
  function render(){
-  if(!state)return;document.dispatchEvent(new CustomEvent('knight-friend-state',{detail:state}));
+  if(!state)return;el('friendBoard').dataset.seatColor=seat.color;document.dispatchEvent(new CustomEvent('knight-friend-state',{detail:state}));
   say(`房间 ${seat.id} · 你是${seat.color==='w'?'十字军（白方）':'明军（黑方）'} · ${state.result||(!state.joined?'等待好友加入':!state.ready.w||!state.ready.b?'等待双方准备':state.turn===seat.color?'轮到你走棋':'等待好友走棋')}`);
   outcome.hidden=!state.result;
   if(state.result){const title=state.result.includes('白方获胜')?'白方获胜':state.result.includes('黑方获胜')?'黑方获胜':state.result.includes('将杀获胜')?state.result.slice(0,2)+'获胜':'本局和棋';const detail=state.result+'。棋盘和席位已保留，可以查看复盘或留在终局。';el('friendOutcomeTitle').textContent=resultDialog.querySelector('#friendResultTitle').textContent=title;el('friendOutcomeDetail').textContent=resultDialog.querySelector('#friendResultDetail').textContent=detail;const canReplay=!!state.history.length;el('friendOutcomeReplay').disabled=resultDialog.querySelector('#friendResultReplay').disabled=!canReplay;if(state.version!==shownResultVersion){shownResultVersion=state.version;if(!resultDialog.open)resultDialog.showModal();}}
   for(const id of ['friendReady','friendResign','friendExport','friendDraw','friendLeave','friendReview'])el(id).hidden=false;el('friendShare').hidden=!seat.inviteCode;
   el('friendReview').disabled=!state.result||!state.history.length;el('friendColor').disabled=!state.result;el('friendReady').disabled=state.ready[seat.color]||!!state.result;el('friendResign').disabled=!!state.result;el('friendDraw').disabled=!!state.result||state.turn!==seat.color;el('friendCreate').disabled=!state.result;el('friendJoin').disabled=!state.result;
-  renderChessBoard(el('friendBoard'),state.board,{selected,flip:seat.color==='b',opposedPieces:true,onClick:click});
+  const moves=selected===null?[]:legalMoves(state.board,selected,state.cast);
+  renderChessBoard(el('friendBoard'),state.board,{selected,selectable:new Set(moves.map(m=>m.to)),captureSet:new Set(moves.filter(m=>m.capture).map(m=>m.to)),flip:seat.color==='b',opposedPieces:true,onClick:click});
   el('friendTalk').hidden=!state.joined;el('friendMessages').replaceChildren(...(state.messages||[]).map(message=>{const line=document.createElement('p');line.className=message.color===seat.color?'mine':'theirs';line.textContent=`${message.color===seat.color?'我':message.color==='w'?'十字军':'明军'}：${message.text}`;return line;}));el('friendMessages').scrollTop=el('friendMessages').scrollHeight;
  }
  async function refresh(){if(!seat||busy)return;busy=true;try{const next=await api({...seat,action:'state'});state=next;if(next.version!==lastVersion){lastVersion=next.version;selected=null;render();}}catch(e){say('同步失败：'+e.message+'。可重试或退出/清理席位。');el('friendLeave').hidden=false;lastVersion=-1;}finally{busy=false;}}
  async function command(action,extra={}){if(busy||!state)return;busy=true;try{state=await api({...seat,action,version:state.version,op:crypto.randomUUID(),...extra});selected=null;lastVersion=state.version;render();}catch(e){say(e.message);lastVersion=-1;}finally{busy=false;}}
  async function click(i){if(!state||busy||state.result||state.turn!==seat.color||!state.ready.w||!state.ready.b)return;
-  if(selected!==null){const candidates=legalMoves(state.board,selected,state.cast).filter(m=>m.to===i);if(candidates.length){let m=candidates[0];if(candidates.some(m=>m.promotion)){choosePromotion(candidates,m=>command('move',{from:m.from,to:m.to,promotion:m.promotion}),seat.color);return;}await command('move',{from:m.from,to:m.to,promotion:m.promotion});return;}}
+  if(selected!==null){const candidates=clickedLegalMoves(state.board,selected,i,state.cast);if(candidates.length){let m=candidates[0];if(candidates.some(m=>m.promotion)){choosePromotion(candidates,m=>command('move',{from:m.from,to:m.to,promotion:m.promotion}),seat.color);return;}await command('move',{from:m.from,to:m.to,promotion:m.promotion});return;}}
   selected=state.board[i]?.c===seat.color?i:null;render();
  }
  async function enter(action){if(busy)return;busy=true;try{const raw=el('friendCode').value.trim().toUpperCase(),color=el('friendColor').value,match=raw.match(/^([A-F0-9]{12})-([A-Z2-9]{10})$/);if(action==='join'&&!match)throw Error('请输入完整邀请码：房间号-邀请码');const id=match?.[1]||'',inviteCode=match?.[2]||'';if(!pending||pending.action!==action||pending.id!==id||pending.inviteCode!==inviteCode||pending.color!==color){pending={action,id,inviteCode,color,clientKey:crypto.randomUUID()};try{localStorage.setItem('friendPending',JSON.stringify(pending));}catch{}}seat=await api(pending);if(seat.inviteCode)el('friendCode').value=seat.id+'-'+seat.inviteCode;store();pending=null;try{localStorage.removeItem('friendPending');}catch{}state=null;lastVersion=shownResultVersion=-1;outcome.hidden=true;resultDialog.close();}catch(e){say(e.message);}finally{busy=false;}await refresh();}
@@ -57,4 +58,3 @@ document.addEventListener('DOMContentLoaded',()=>{
  checkService();
  setInterval(()=>{if(available&&!document.hidden&&currentView==='play'&&!state?.result)refresh();},2000);
 });
-

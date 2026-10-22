@@ -1,14 +1,14 @@
 apply plugin: 'com.android.application'
 
 android {
-    namespace = "cn.xiaoqishileyuan.mobile"
+    namespace = "com.pengchenggongxing.xiaoqishi.international"
     compileSdk = rootProject.ext.compileSdkVersion
     defaultConfig {
-        applicationId "cn.xiaoqishileyuan.mobile"
+        applicationId "com.pengchenggongxing.xiaoqishi.international"
         minSdkVersion rootProject.ext.minSdkVersion
         targetSdkVersion rootProject.ext.targetSdkVersion
-        versionCode 2
-        versionName "0.8.3"
+        versionCode 3
+        versionName "0.8.4-test"
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
         aaptOptions {
              // Files and dirs to omit from the packaged assets dir, modified to accommodate modern web apps.

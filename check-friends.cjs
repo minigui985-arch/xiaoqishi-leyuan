@@ -22,7 +22,7 @@ await p1.locator('#friendCreate').click();await p1.waitForFunction(()=>document.
 const invitation=await p1.locator('#friendCode').inputValue();assert.match(invitation,/^[A-F0-9]{12}-[A-Z2-9]{10}$/);await p2.goto(base+'/?invite='+invitation+'#play');await p2.waitForFunction(()=>document.querySelector('.play-mode[data-mode=online]')?.classList.contains('active'));assert.equal(await p2.locator('#friendCode').inputValue(),invitation);await p2.locator('#friendJoin').click();await p2.waitForFunction(()=>!document.querySelector('#friendReady').hidden);await p1.waitForTimeout(2200);
 await p1.locator('#friendReady').click();await p2.waitForTimeout(2200);await p2.locator('#friendReady').click();await p1.waitForFunction(()=>document.querySelector('#friendStatus').textContent.includes('轮到你'));
 await p1.locator('[data-phrase="good"]').click();await p2.waitForFunction(()=>document.querySelector('#friendMessages').textContent.includes('好棋！'));
-await p1.locator('#friendBoard [data-idx="12"]').click();await p1.locator('#friendBoard [data-idx="28"]').click();await p2.waitForFunction(()=>document.querySelector('#friendStatus').textContent.includes('轮到你'));
+await p1.locator('#friendBoard [data-idx="12"]').click();assert.equal(await p1.locator('#friendBoard [data-idx="28"].selectable').count(),1);await p1.locator('#friendBoard [data-idx="28"]').click();await p2.waitForFunction(()=>document.querySelector('#friendStatus').textContent.includes('轮到你'));
 assert.equal(await p2.locator('#friendBoard [data-idx="28"] .piece').count(),1);await p2.reload();await p2.evaluate(()=>{go('play');hideGuide();});await p2.waitForFunction(()=>document.querySelector('#friendStatus').textContent.includes('轮到你'));
 assert.equal(await p2.locator('#friendBoard [data-idx="28"] .piece').count(),1);
 await p2.setViewportSize({width:390,height:844});assert.ok(await p2.evaluate(()=>document.documentElement.scrollWidth<=innerWidth));if(process.env.KNIGHT_SAVE_PREVIEW==='1')await p2.locator('#friendBoard').screenshot({path:__dirname+'/preview-friend-board.png'});
@@ -32,6 +32,15 @@ const normalWidth=await p2.locator('#friendBoard .board').evaluate(e=>e.getBound
 await p2.locator('[data-immerse="friendBoard"]').click();
 const immersiveFit=await p2.locator('#friendBoard .board').evaluate(e=>{const r=e.getBoundingClientRect();return {width:r.width,inside:r.left>=0&&r.right<=innerWidth&&r.top>=0&&r.bottom<=innerHeight};});
 assert.equal(immersiveFit.inside,true);assert.ok(immersiveFit.width>=normalWidth);
+assert.equal(await p2.locator('.immersive-flank.b').evaluate(e=>{const b=e.getBoundingClientRect(),w=document.querySelector('.immersive-flank.w').getBoundingClientRect();return b.top>w.top&&getComputedStyle(e).transform==='none';}),true);
 await p2.locator('#exitImmersive').click();
+await p1.setViewportSize({width:390,height:844});await p1.locator('[data-immerse="friendBoard"]').click();
+assert.equal(await p1.locator('.immersive-flank.b').evaluate(e=>{const b=e.getBoundingClientRect(),w=document.querySelector('.immersive-flank.w').getBoundingClientRect();return b.top<w.top&&getComputedStyle(e).transform==='none';}),true);
+await p1.locator('#exitImmersive').click();
+ p2.once('dialog',dialog=>dialog.accept());await p2.locator('#friendResign').click();
+ await p2.locator('#friendResultDialog').waitFor({state:'visible'});
+ await p1.locator('#friendResultDialog').waitFor({state:'visible'});
+ for(const page of [p1,p2]){assert.match(await page.locator('#friendResultTitle').textContent(),/白方获胜/);assert.match(await page.locator('#friendOutcomeDetail').textContent(),/黑方认输/);assert.equal(await page.locator('#friendOutcome').isVisible(),true);assert.equal(await page.locator('#friendResultReplay').isEnabled(),true);assert.equal(await page.locator('#friendBoard [data-idx="28"] .piece').count(),1);}
+ await p2.locator('#friendResultStay').click();assert.equal(await p2.locator('#friendOutcome').isVisible(),true);
 assert.deepEqual(errors,[]);console.log('PASS: two isolated browsers, create/join/ready/move, fixed child-safe communication, seat reload recovery; authorization, illegal moves, duplicate and stale requests; mobile width, opposite piece facing, immersive fit.');
 }finally{if(browser)await browser.close();await new Promise(r=>s.close(r));}})().catch(e=>{console.error(e);process.exitCode=1;});

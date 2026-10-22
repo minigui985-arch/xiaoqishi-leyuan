@@ -12,15 +12,16 @@ const inviteCode=()=>Array.from({length:10},()=> 'ABCDEFGHJKLMNPQRSTUVWXYZ234567
 function fail(message){throw new Error(message);}
 function createRoomService(file){
  const encode=rooms=>JSON.stringify([...rooms],(k,v)=>v instanceof Set?[...v]:v);
- const decode=text=>new Map(JSON.parse(text).map(([id,r])=>[id,{...r,messages:r.messages||[],lastSignal:r.lastSignal||{},seen:new Set(r.seen)}]));
+ const decode=text=>new Map(JSON.parse(text).map(([id,r])=>[id,{...r,messages:r.messages||[],lastSignal:r.lastSignal||{},seen:new Set((r.seen||[]).slice(-256))}]));
  let rooms=file&&fs.existsSync(file)?decode(fs.readFileSync(file,'utf8')):new Map();
- function apply(input){
+ function apply(input,onCreate){
  if(!input||typeof input!=='object'||Array.isArray(input))fail('请求格式错误');
  for(const [id,r] of rooms)if(Date.now()-r.created>86400000)rooms.delete(id);
  if(['create','join'].includes(input.action)&&input.clientKey&&!/^[a-f0-9-]{36}$/i.test(input.clientKey))fail('请求身份格式错误');
  if(input.action==='create'){
   if(input.clientKey)for(const r of rooms.values())if(r.keys?.[r.host]===input.clientKey){r.inviteCode=r.inviteCode||inviteCode();return {id:r.id,token:r.seats[r.host],color:r.host,inviteCode:r.inviteCode};}
   if(rooms.size>=30)fail('测试房间已满，请稍后再试');
+  onCreate?.();
   const id=crypto.randomBytes(6).toString('hex').toUpperCase(),secret=token();
   const board=engine.setupBoard(),cast=engine.castlingState();
   const host=input.color==='b'?'b':input.color==='random'?(crypto.randomInt(2)?'b':'w'):'w';
@@ -44,7 +45,7 @@ function createRoomService(file){
   const now=Date.now();if(now-(r.lastSignal?.[color]||0)<1500)fail('请稍等一下再发送');r.lastSignal=r.lastSignal||{};r.lastSignal[color]=now;r.messages=r.messages||[];r.messages.push({id:input.op,color,code:input.message,text:phrases[input.message],at:now});r.messages=r.messages.slice(-20);
  }
  else if(r.result)fail('对局已经结束');
- else if(input.action==='ready'){r.ready[color]=true;}
+ else if(input.action==='ready'){if(r.ready[color])return snapshot();r.ready[color]=true;}
  else if(input.action==='resign'){r.result=color==='w'?'黑方获胜：白方认输':'白方获胜：黑方认输';}
  else if(input.action==='draw'){
   if(r.turn!==color||!r.ready.w||!r.ready.b)fail('请在自己的回合申请');
@@ -60,12 +61,12 @@ function createRoomService(file){
   else if(engine.simpleDeadPosition(r.board))r.result='和棋：常见必和子力';
   else if(r.positions.filter(k=>k===key).length>=5||(r.cast.halfmove||0)>=150)r.result='和棋：五次重复或75回合';
  }else fail('未知操作');
- r.version++;r.seen.add(input.op);return snapshot();
+ r.version++;r.seen.add(input.op);if(r.seen.size>256)r.seen.delete(r.seen.values().next().value);return snapshot();
  }
- return {act(input){const before=encode(rooms);try{const result=apply(input);const after=encode(rooms);if(file&&after!==before){fs.mkdirSync(path.dirname(file),{recursive:true});const tmp=file+'.tmp';fs.writeFileSync(tmp,after,{mode:0o600});fs.renameSync(tmp,file);}return JSON.parse(JSON.stringify(result));}catch(e){rooms=decode(before);throw e;}}};
+ return {act(input,onCreate){const before=encode(rooms);try{const result=apply(input,onCreate);const after=encode(rooms);if(file&&after!==before){fs.mkdirSync(path.dirname(file),{recursive:true});const tmp=file+'.tmp';fs.writeFileSync(tmp,after,{mode:0o600});fs.renameSync(tmp,file);}return JSON.parse(JSON.stringify(result));}catch(e){rooms=decode(before);throw e;}}};
 }
 const {act}=createRoomService();
-function server(options={}){if(options.apiOnly&&(!options.roomFile||!options.allowedOrigins?.length))throw Error('公网模式必须配置持久棋局文件与允许的网页来源');const service=createRoomService(options.roomFile);const requests=new Map();return http.createServer(async(req,res)=>{
+function server(options={}){if(options.apiOnly&&(!options.roomFile||!options.allowedOrigins?.length))throw Error('公网模式必须配置持久棋局文件与允许的网页来源');const service=createRoomService(options.roomFile);const requests=new Map(),creates=new Map();return http.createServer(async(req,res)=>{
  res.setHeader('Cache-Control','no-store');res.setHeader('X-Content-Type-Options','nosniff');
  try{
   const origin=req.headers.origin;
@@ -90,15 +91,16 @@ function server(options={}){if(options.apiOnly&&(!options.roomFile||!options.all
    if(!options.apiOnly&&req.headers.origin&&!new Set([`http://${req.headers.host}`,`https://${req.headers.host}`]).has(req.headers.origin))throw new Error('不允许跨站请求');
    if(!String(req.headers['content-type']).startsWith('application/json'))throw new Error('请求格式错误');
    let data='';for await(const part of req){data+=part;if(data.length>8192)throw new Error('请求过大');}
-   const input=JSON.parse(data);const result=req.url==='/api/feedback'?saveFeedback(input,options.feedbackDir):service.act(input);
+   const input=JSON.parse(data);const result=req.url==='/api/feedback'?saveFeedback(input,options.feedbackDir):service.act(input,options.apiOnly&&input.action==='create'?()=>{for(const [ip,entry] of creates)if(now-entry.time>=86400000)creates.delete(ip);const entry=creates.get(who)||{time:now,count:0};if(entry.count>=5)fail('创建房间过于频繁，请稍后再试');entry.count++;creates.set(who,entry);}:undefined);
    res.setHeader('Content-Type','application/json; charset=utf-8');res.end(JSON.stringify(result));return;
   }
   if(req.method!=='GET'||options.apiOnly)throw new Error('不支持的请求');
   const name=decodeURIComponent(new URL(req.url,'http://localhost').pathname).slice(1)||'小骑士乐园-统一主题版.html';
-const publicFiles=['小骑士乐园-统一主题版.html','manifest.webmanifest','service-worker.js','pwa.js','i18n.js','locales/zh-CN.js','locales/en-US.js','locales/ru-RU.js','locales/es-ES.js','locales/de-DE.js','locales/fr-FR.js','locales/pt-BR.js','locales/hi-IN.js','locales/ja-JP.js','locales/ko-KR.js','locales/content.js','friend-config.js','friend-client.js','feedback-client.js','battle-save.js','app-info.js','immersive.js','classic-games.css','classic-games.js','classic-games-data.js','stockfish-engine.js','vendor/stockfish/stockfish-18-lite-single.js','vendor/stockfish/stockfish-18-lite-single.wasm','vendor/stockfish/stockfish-18-lite-bundle.js','vendor/stockfish/stockfish-18-lite-factory.js'];
+const publicFiles=['小骑士乐园-统一主题版.html','privacy.html','support.html','manifest.webmanifest','service-worker.js','pwa.js','i18n.js','locales/zh-CN.js','locales/en-US.js','locales/ru-RU.js','locales/es-ES.js','locales/de-DE.js','locales/fr-FR.js','locales/pt-BR.js','locales/hi-IN.js','locales/ja-JP.js','locales/ko-KR.js','locales/content.js','friend-config.js','friend-client.js','feedback-client.js','battle-save.js','transfer-save.js','app-info.js','immersive.js','classic-games.css','classic-games.js','classic-games-data.js','stockfish-engine.js','vendor/stockfish/stockfish-18-lite-single.js','vendor/stockfish/stockfish-18-lite-single.wasm','vendor/stockfish/stockfish-18-lite-bundle.js','vendor/stockfish/stockfish-18-lite-factory.js'];
   if(!publicFiles.includes(name)&&!/^assets\/[a-z_]+\.(png|webp)$/.test(name)&&!/^icons\/icon-(180|192|512)\.png$/.test(name))throw new Error('资源不存在');
   const type=name.endsWith('.html')?'text/html; charset=utf-8':name.endsWith('.css')?'text/css; charset=utf-8':name.endsWith('.webmanifest')?'application/manifest+json':name.endsWith('.js')?'text/javascript; charset=utf-8':name.endsWith('.wasm')?'application/wasm':name.endsWith('.webp')?'image/webp':'image/png';if(name==='service-worker.js')res.setHeader('Service-Worker-Allowed','/');res.setHeader('Content-Type',type);res.end(fs.readFileSync(path.join(__dirname,name)));
  }catch(e){res.statusCode=400;res.setHeader('Content-Type','application/json; charset=utf-8');res.end(JSON.stringify({error:e.message}));}
 });}
 if(require.main===module)server({roomFile:require('./data-paths.cjs').roomFile}).listen(8787,'127.0.0.1',()=>console.log('本地联调：http://127.0.0.1:8787（房间保存至统一运行数据目录；禁止直接公网发布）'));
 module.exports={act,server,createRoomService};
+
