@@ -1,0 +1,53 @@
+name: Single crusader CPU image-to-3D control
+on:
+  push:
+    branches: [codex/character-samples-20261023]
+    paths:
+      - .github/workflows/character-image-pilot.yml
+      - tools/run-crusader-cpu-pilot-20261023.py
+      - tools/prepare-crusader-pilot-inputs-20261023.py
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  cpu-control:
+    runs-on: ubuntu-22.04
+    timeout-minutes: 20
+    env:
+      OMP_NUM_THREADS: '4'
+      MKL_NUM_THREADS: '4'
+      MAX_JOBS: '2'
+      HF_HUB_DISABLE_TELEMETRY: '1'
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.10'
+      - name: Prepare locked reference crop
+        run: |
+          pip install Pillow==10.1.0
+          mkdir -p character-samples-20261023
+          cp design/character-turnarounds/child-crusader-pawn-v1.png character-samples-20261023/
+          python tools/prepare-crusader-pilot-inputs-20261023.py
+      - name: Install isolated CPU dependencies
+        run: |
+          pip install torch==2.4.1 torchvision==0.19.1 --index-url https://download.pytorch.org/whl/cpu
+          pip install numpy==1.26.4 omegaconf==2.3.0 einops==0.7.0 transformers==4.35.0 trimesh==4.0.5 rembg==2.0.57 onnxruntime==1.19.2 imageio==2.35.1 ninja
+          pip install --no-build-isolation git+https://github.com/tatsy/torchmcubes.git@bc36b08c62c5931e1dfc666581b3a8589278647f
+      - name: Fetch pinned upstream source and model
+        run: |
+          git clone https://github.com/VAST-AI-Research/TripoSR.git "$RUNNER_TEMP/TripoSR"
+          git -C "$RUNNER_TEMP/TripoSR" checkout 107cefdc244c39106fa830359024f6a2f1c78871
+          python - <<'PY'
+          import os
+          from huggingface_hub import snapshot_download
+          snapshot_download('stabilityai/TripoSR',revision='5b521936b01fbe1890f6f9baed0254ab6351c04a',allow_patterns=['config.yaml','model.ckpt'],local_dir=os.environ['RUNNER_TEMP']+'/triposr-weights')
+          PY
+      - name: Generate one CPU control, without animation or texture claims
+        run: python tools/run-crusader-cpu-pilot-20261023.py --source "$RUNNER_TEMP/TripoSR" --weights "$RUNNER_TEMP/triposr-weights" --output character-cpu-pilot-output
+      - uses: actions/upload-artifact@v4
+        with:
+          name: crusader-triposr-cpu-unapproved
+          path: character-cpu-pilot-output
+          retention-days: 1
+          if-no-files-found: error
