@@ -1,0 +1,174 @@
+{
+  "schema": 1,
+  "status": "reference-locked-models-pending",
+  "roles": [
+    {
+      "id": "child-crusader-p",
+      "reference": "child-crusader-pawn-v1.png",
+      "sha256": "8f23db2b8bd2b60e2be46b42f2bcde73405198f2978b6ef4ce7c3c2f1beefe97",
+      "model": null,
+      "fidelityApproved": false
+    },
+    {
+      "id": "child-crusader-r",
+      "reference": "child-crusader-rook-v1.png",
+      "sha256": "c9abf9cd8d7dde5dd964e9c00c904294ca0787f9353b9c4a4d8cb809e46db9e1",
+      "model": null,
+      "fidelityApproved": false
+    },
+    {
+      "id": "child-crusader-n",
+      "reference": "child-crusader-knight-v1.png",
+      "sha256": "0c8f5d642099d3922e77f3bcb37ee180ff180d9b2851d15aadb1f68c4983b1e7",
+      "model": null,
+      "fidelityApproved": false
+    },
+    {
+      "id": "child-crusader-b",
+      "reference": "child-crusader-bishop-v1.png",
+      "sha256": "6f985d40ca5bea4021c9896bb130a931eb8f5a2ccac70b17d7240ca4a360013a",
+      "model": null,
+      "fidelityApproved": false
+    },
+    {
+      "id": "child-crusader-q",
+      "reference": "child-crusader-queen-v1.png",
+      "sha256": "8b5481927efdda5c5ba3c765b51c0153b11e0039b751ff3fc6ae1527fb101863",
+      "model": null,
+      "fidelityApproved": false
+    },
+    {
+      "id": "child-crusader-k",
+      "reference": "child-crusader-king-v2.png",
+      "sha256": "cc62e239e8eef55b8704addfad4f07ee5d979b417fc256d01bfd72f38c2b839e",
+      "model": null,
+      "fidelityApproved": false
+    },
+    {
+      "id": "child-ming-p",
+      "reference": "child-ming-pawn-v1.png",
+      "sha256": "5f02887bca9cb4a57d672ac4d8697bd3261f87ac66bfb71b3840b59bce7f3a4b",
+      "model": null,
+      "fidelityApproved": false
+    },
+    {
+      "id": "child-ming-r",
+      "reference": "child-ming-rook-v1.png",
+      "sha256": "b5f06718c57d90b210c6c2c31444cb9106493305e028e49dc4f8c44b5954d88a",
+      "model": null,
+      "fidelityApproved": false
+    },
+    {
+      "id": "child-ming-n",
+      "reference": "child-ming-knight-v1.png",
+      "sha256": "f2d44e0b567834b1204f17625cac04ec555b3afd15f5c67607021bb7b8ddd4a7",
+      "model": null,
+      "fidelityApproved": false
+    },
+    {
+      "id": "child-ming-b",
+      "reference": "child-ming-bishop-v1.png",
+      "sha256": "5aa89daed67c922fc56e4cf16a7f894bc739531fa347c5f7f2a28bad6a62e67e",
+      "model": null,
+      "fidelityApproved": false
+    },
+    {
+      "id": "child-ming-q",
+      "reference": "child-ming-queen-v1.png",
+      "sha256": "c7baff84422c39cee11e9e9a32a52346b364a6410d19d2796b0d20caaf248e37",
+      "model": null,
+      "fidelityApproved": false
+    },
+    {
+      "id": "child-ming-k",
+      "reference": "child-ming-king-v2.png",
+      "sha256": "6d6cb507ad74f7f40be59877501e6ebee33e7c28059b6f36b6f65b02908da370",
+      "model": null,
+      "fidelityApproved": false
+    },
+    {
+      "id": "adult-crusader-p",
+      "reference": "adult-crusader-pawn-v1.png",
+      "sha256": "f3d78e7e5d3d25e91383a30ab8a73d59a0c84c949b7a81e60a329e499d477647",
+      "model": null,
+      "fidelityApproved": false
+    },
+    {
+      "id": "adult-crusader-r",
+      "reference": "adult-crusader-rook-v1.png",
+      "sha256": "af6dfba651ff49afbc73a268f34566642a1da891f76a5cc902e424e9c8d597c7",
+      "model": null,
+      "fidelityApproved": false
+    },
+    {
+      "id": "adult-crusader-n",
+      "reference": "adult-crusader-knight-v1.png",
+      "sha256": "c0095cb818f7cc6093e205f0c87561b43ddf71f1bfb353f52628e8f00305ee67",
+      "model": null,
+      "fidelityApproved": false
+    },
+    {
+      "id": "adult-crusader-b",
+      "reference": "adult-crusader-bishop-v1.png",
+      "sha256": "18507cdf2ea804b4f33fac13670f0677afab021fd5cf534f49fbabbdf6a6682b",
+      "model": null,
+      "fidelityApproved": false
+    },
+    {
+      "id": "adult-crusader-q",
+      "reference": "adult-crusader-queen-v1.png",
+      "sha256": "b66f8684a958480ed80b12ffa607cf079ef1c5a1d6940b74be45cc81d4567d91",
+      "model": null,
+      "fidelityApproved": false
+    },
+    {
+      "id": "adult-crusader-k",
+      "reference": "adult-crusader-king-v1.png",
+      "sha256": "e92ab7a270846045352a2b6dcaf36442cb01574c2eb6b6125b489263f5e65b48",
+      "model": null,
+      "fidelityApproved": false
+    },
+    {
+      "id": "adult-ming-p",
+      "reference": "adult-ming-pawn-v1.png",
+      "sha256": "8a2ccb256f28de91430f0545d5c71e19968718968c3dbfd0a48462fc609ed6e9",
+      "model": null,
+      "fidelityApproved": false
+    },
+    {
+      "id": "adult-ming-r",
+      "reference": "adult-ming-rook-v1.png",
+      "sha256": "3e27a1afb8473bb77c28043e364bd29eeff1a7eb8ab1088b80aad799c39ecefa",
+      "model": null,
+      "fidelityApproved": false
+    },
+    {
+      "id": "adult-ming-n",
+      "reference": "adult-ming-knight-v1.png",
+      "sha256": "8eb787c37d3095ed8137a5209887fb576786f88af02177ee5bc96cd9d129fd9d",
+      "model": null,
+      "fidelityApproved": false
+    },
+    {
+      "id": "adult-ming-b",
+      "reference": "adult-ming-bishop-v1.png",
+      "sha256": "60058285bb135142c4352de6ab4f5f2af5d4043211450fc4b67a2d2d9b5ccdb4",
+      "model": null,
+      "fidelityApproved": false
+    },
+    {
+      "id": "adult-ming-q",
+      "reference": "adult-ming-queen-v1.png",
+      "sha256": "00fe2d8df5f2068f351e9ac5e9609df1ecd8c872ab327f487b595820a579b1c2",
+      "model": null,
+      "fidelityApproved": false
+    },
+    {
+      "id": "adult-ming-k",
+      "reference": "adult-ming-king-v1.png",
+      "sha256": "5163211549b23cda38591ef806a183136e6c989ec496fcf8c5ae7b8d9e774aa0",
+      "model": null,
+      "fidelityApproved": false
+    }
+  ]
+}
