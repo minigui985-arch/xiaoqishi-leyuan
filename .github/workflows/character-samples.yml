@@ -1,0 +1,46 @@
+name: Build character samples requiring visual rework
+on:
+  push:
+    branches: [codex/character-samples-20261023]
+    paths:
+      - tools/build-character-samples-20261023.py
+      - tools/check-character-samples-20261023.py
+      - .github/workflows/character-samples.yml
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  model-samples:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v4
+      - name: Download and verify pinned Blender
+        working-directory: ${{ runner.temp }}
+        run: |
+          curl -fsSL --retry 3 --connect-timeout 15 --max-time 300 -O https://download.blender.org/release/Blender4.5/blender-4.5.14.sha256
+          curl -fsSL --retry 3 --connect-timeout 15 --max-time 300 -O https://download.blender.org/release/Blender4.5/blender-4.5.14-linux-x64.tar.xz
+          python - <<'PY'
+          from pathlib import Path
+          import hashlib
+          name='blender-4.5.14-linux-x64.tar.xz'
+          expected=next(line.split()[0] for line in Path('blender-4.5.14.sha256').read_text().splitlines() if line.split()[-1].lstrip('*')==name)
+          with open(name,'rb') as stream:
+              assert hashlib.file_digest(stream,'sha256').hexdigest()==expected
+          print('Official Blender archive checksum verified')
+          PY
+          tar -xJf blender-4.5.14-linux-x64.tar.xz
+      - name: Prepare locked references
+        run: |
+          mkdir -p character-samples-20261023
+          cp design/character-turnarounds/child-crusader-pawn-v1.png design/character-turnarounds/child-ming-pawn-v1.png character-samples-20261023/
+      - name: Build unapproved articulated samples
+        run: '"$RUNNER_TEMP/blender-4.5.14-linux-x64/blender" --background --threads 2 --python tools/build-character-samples-20261023.py -- --output "$GITHUB_WORKSPACE/character-samples-20261023"'
+      - name: Verify GLB structure and rework status
+        run: python tools/check-character-samples-20261023.py
+      - uses: actions/upload-artifact@v4
+        with:
+          name: character-samples-20261023-rework
+          path: character-samples-20261023
+          if-no-files-found: error
+          retention-days: 14
