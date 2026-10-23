@@ -15,7 +15,7 @@ for name,box in boxes.items():
     crop=image.crop(box);path=folder/f'crusader-{name}.png';crop.save(path)
     with Image.open(path) as saved:
         assert saved.size==crop.size and ImageChops.difference(crop,saved).getbbox() is None
-    items.append({'view':name,'file':path.name,'box':box,'size':crop.size,'sha256':hashlib.sha256(path.read_bytes()).hexdigest()})
+    items.append({'view':name,'file':path.name,'box':box,'size':crop.size,'sha256':hashlib.sha256(path.read_bytes()).hexdigest(),'rgbPixelsSha256':hashlib.sha256(crop.convert('RGB').tobytes()).hexdigest()})
 assert hashlib.sha256(source.read_bytes()).hexdigest()==expected
 report={'source':source.name,'sourceSha256':expected,'operation':'pixel-exact crop only; no resize, redraw or background replacement','crops':items,'scope':'one child crusader pawn; free trials only','visualApproval':False}
 (folder/'input-manifest.json').write_text(json.dumps(report,ensure_ascii=False,indent=2),encoding='utf-8')

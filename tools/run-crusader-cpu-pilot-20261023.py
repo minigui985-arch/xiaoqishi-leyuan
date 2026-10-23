@@ -18,12 +18,13 @@ from tsr.utils import resize_foreground
 
 root=Path(__file__).resolve().parents[1]
 input_path=root/'character-samples-20261023/image-to-3d-pilot/inputs/crusader-front.png'
-assert hashlib.sha256(input_path.read_bytes()).hexdigest()=='1c135df6a729731d38954e80578f0bc2e7e7ff5e036892b0d316d90fd9d94601'
+original=Image.open(input_path).convert('RGB')
+pixels_sha=hashlib.sha256(original.tobytes()).hexdigest()
+assert original.size==(459,512) and pixels_sha=='c7d4881782c7c3a351853455f0077f036a0a409608ff37e38f54786576566f4d'
 output=Path(args.output);output.mkdir(parents=True,exist_ok=True)
 torch.set_num_threads(4);torch.manual_seed(20261023);np.random.seed(20261023)
 started=time.monotonic()
 print('PILOT_STAGE background-removal',flush=True)
-original=Image.open(input_path).convert('RGB')
 masked=rembg.remove(original,session=rembg.new_session('u2net',providers=['CPUExecutionProvider']))
 masked.save(output/'input-alpha.png')
 prepared=resize_foreground(masked,.85)
@@ -46,6 +47,6 @@ assert magic==0x46546c67 and version==2 and total==len(data)
 length,kind=struct.unpack_from('<II',data,12);assert kind==0x4e4f534a
 doc=json.loads(data[20:20+length])
 assert any('COLOR_0' in p['attributes'] for m in doc['meshes'] for p in m['primitives'])
-report={'model':'TripoSR','sourceCommit':'107cefdc244c39106fa830359024f6a2f1c78871','device':'cpu','singleView':True,'inputSha256':hashlib.sha256(input_path.read_bytes()).hexdigest(),'seed':20261023,'mcResolution':192,'vertices':len(mesh.vertices),'triangles':len(mesh.faces),'bytes':len(data),'sha256':hashlib.sha256(data).hexdigest(),'seconds':round(time.monotonic()-started,2),'images':len(doc.get('images',[])),'animationCount':len(doc.get('animations',[])),'fidelityApproved':False,'limitations':'Older single-view control with vertex colors; no PBR textures, skinning, animation or visual approval.'}
+report={'model':'TripoSR','sourceCommit':'107cefdc244c39106fa830359024f6a2f1c78871','weightsRevision':'5b521936b01fbe1890f6f9baed0254ab6351c04a','device':'cpu','singleView':True,'inputSha256':hashlib.sha256(input_path.read_bytes()).hexdigest(),'inputRgbPixelsSha256':pixels_sha,'seed':20261023,'mcResolution':192,'vertices':len(mesh.vertices),'triangles':len(mesh.faces),'bytes':len(data),'sha256':hashlib.sha256(data).hexdigest(),'seconds':round(time.monotonic()-started,2),'images':len(doc.get('images',[])),'animationCount':len(doc.get('animations',[])),'fidelityApproved':False,'limitations':'Older single-view control with vertex colors; no PBR textures, skinning, animation or visual approval.'}
 (output/'result.json').write_text(json.dumps(report,ensure_ascii=False,indent=2),encoding='utf-8')
 print('PILOT_RESULT '+json.dumps(report),flush=True)
