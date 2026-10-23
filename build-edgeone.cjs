@@ -9,9 +9,10 @@ if (!output.startsWith(distRoot)) throw new Error('拒绝清理工作区以外�
 fs.rmSync(output, { recursive: true, force: true });
 fs.mkdirSync(output, { recursive: true });
 const runtimeFiles = [
+  'chess-3d.js','chess-3d-scene.mjs','vendor/three/three.module.js','vendor/three/three.core.js','vendor/three/LICENSE','vendor/three/SOURCE.md',
   'manifest.webmanifest', 'service-worker.js', 'pwa.js', 'app-info.js', 'i18n.js',
   'locales/zh-CN.js', 'locales/en-US.js','locales/ru-RU.js','locales/es-ES.js','locales/de-DE.js','locales/fr-FR.js','locales/pt-BR.js','locales/hi-IN.js', 'locales/ja-JP.js', 'locales/ko-KR.js', 'locales/content.js',
-  'battle-save.js', 'friend-config.js', 'friend-client.js', 'feedback-client.js', 'immersive.js',
+  'battle-save.js', 'transfer-save.js', 'friend-config.js', 'friend-client.js', 'feedback-client.js', 'immersive.js',
   'learning.js', 'classic-games.css', 'classic-games.js', 'classic-games-data.js',
   'stockfish-engine.js', 'privacy.html', 'support.html', 'COPYRIGHT', 'AUTHORS.md', 'NOTICE', 'LICENSE',
   'COMMERCIAL-LICENSE.md', 'THIRD_PARTY_NOTICES.md',

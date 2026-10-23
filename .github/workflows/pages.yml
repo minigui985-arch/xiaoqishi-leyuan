@@ -1,31 +1,38 @@
 name: Publish international web preview
-
 on:
-  push:
-    branches: [main]
   workflow_dispatch:
-
 permissions:
   contents: read
   pages: write
   id-token: write
-
 concurrency:
   group: github-pages
-  cancel-in-progress: true
-
+  cancel-in-progress: false
 jobs:
   deploy:
     runs-on: ubuntu-latest
     environment:
       name: github-pages
-      url: ${{ steps.deployment.outputs.page_url }}
+      url: ${{ steps.deployment.outputs.page_url }}device-test-20261023/
     steps:
-      - uses: actions/checkout@v6
+      - uses: actions/checkout@v4
+        with:
+          ref: d5693560bc0f6fb0dafe9792da5a04fb6d6375da
+          path: baseline
+      - uses: actions/checkout@v4
+        with:
+          path: candidate
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
       - run: node build-edgeone.cjs && node check-edgeone-deploy.cjs
+        working-directory: baseline
+      - run: node check-rules.cjs && node build-edgeone.cjs && node check-edgeone-deploy.cjs
+        working-directory: candidate
+      - run: mkdir -p baseline/dist/edgeone-pages/device-test-20261023 && cp -a candidate/dist/edgeone-pages/. baseline/dist/edgeone-pages/device-test-20261023/
       - uses: actions/configure-pages@v5
       - uses: actions/upload-pages-artifact@v4
         with:
-          path: dist/edgeone-pages
+          path: baseline/dist/edgeone-pages
       - id: deployment
         uses: actions/deploy-pages@v4
