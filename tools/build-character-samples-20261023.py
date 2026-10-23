@@ -85,6 +85,8 @@ def curve(name,points,thickness,mat,p=None):
     data.bevel_depth=thickness;data.bevel_resolution=3
     spline=data.splines.new('BEZIER');spline.bezier_points.add(len(points)-1)
     for point,co in zip(spline.bezier_points,points):point.co=co;point.handle_left_type='AUTO';point.handle_right_type='AUTO'
+    if name=='Swept red plume':
+        for point,radius in zip(spline.bezier_points,[.65,1,.85,.55,.025]):point.radius=radius
     obj=bpy.data.objects.new(name,data);bpy.context.collection.objects.link(obj);parent(obj,p)
     obj.data.materials.append(mat)
     return obj
@@ -95,11 +97,54 @@ def mesh(name,verts,faces,mat,p=None):
     return finish(obj,name,mat,p)
 
 def shell(name,z0,z1,rx0,ry0,rx1,ry1,mat,p,start=0,end=math.tau,steps=64):
+    cloth=any(word in name.lower() for word in ['torso','surcoat','skirt'])
+    rows=16 if cloth else 1
     verts=[]
-    for z,rx,ry in [(z0,rx0,ry0),(z1,rx1,ry1)]:
+    for row in range(rows+1):
+        t=row/rows;z=z0+(z1-z0)*t
+        belly=math.sin(t*math.pi)*.055 if 'torso' in name.lower() else 0
+        rx=rx0+(rx1-rx0)*t+belly;ry=ry0+(ry1-ry0)*t+belly*.7
         for i in range(steps+1):
-            a=start+(end-start)*i/steps;verts.append((math.sin(a)*rx,-math.cos(a)*ry,z))
-    return mesh(name,verts,[(i,i+1,steps+i+2,steps+i+1) for i in range(steps)],mat,p)
+            a=start+(end-start)*i/steps
+            fold=(.018*math.cos(a*12+t*.7)+.009*math.cos(a*21-t))*(1-t*.65) if cloth else 0
+            verts.append((math.sin(a)*(rx+fold),-math.cos(a)*(ry+fold),z))
+    faces=[]
+    for row in range(rows):
+        for i in range(steps):
+            n=row*(steps+1)+i;faces.append((n,n+1,n+steps+2,n+steps+1))
+    return mesh(name,verts,faces,mat,p)
+
+def surface_texture(mat,kind):
+    # Tangent-space detail is packed into the GLB, so it survives browser export.
+    import numpy as np
+    size=512;y,x=np.mgrid[0:size,0:size]/size
+    if kind=='cloth':
+        height=.4*np.sin(x*math.tau*96)*np.cos(y*math.tau*96)+.15*np.sin(y*math.tau*192)
+        strength=.09
+    elif kind=='wood':
+        height=np.sin(x*math.tau*18+.8*np.sin(y*math.tau*2))+.3*np.sin(x*math.tau*49+y*math.tau*3)
+        strength=.12
+    else:
+        height=np.sin(x*math.tau*83)+.3*np.sin(x*math.tau*171+y*math.tau*2);strength=.025
+    dy,dx=np.gradient(height)
+    normal=np.stack((-dx*strength*10,-dy*strength*10,np.ones_like(x)),axis=-1)
+    normal/=np.linalg.norm(normal,axis=-1,keepdims=True)
+    pixels=np.ones((size,size,4),dtype=np.float32);pixels[:,:,:3]=normal*.5+.5
+    image=bpy.data.images.new(kind+' surface normal 512',width=size,height=size,alpha=False)
+    image.colorspace_settings.name='Non-Color';image.pixels.foreach_set(pixels.ravel());image.pack()
+    tree=mat.node_tree;tex=tree.nodes.new('ShaderNodeTexImage');tex.image=image
+    mapping=tree.nodes.new('ShaderNodeNormalMap');mapping.inputs['Strength'].default_value=.12 if kind=='metal' else .25
+    tree.links.new(tex.outputs['Color'],mapping.inputs['Color'])
+    tree.links.new(mapping.outputs['Normal'],tree.nodes.get('Principled BSDF').inputs['Normal'])
+
+def face_y(x,z):
+    return -.015-.45*math.sqrt(max(.02,1-abs(x/.56)**(2/.82)-abs((z-2.46)/.53)**(2/.82)))
+
+def face_patch(name,points,mat,p,depth=.009):
+    cx=sum(x for x,z in points)/len(points);cz=sum(z for x,z in points)/len(points)
+    verts=[(cx,face_y(cx,cz)-depth,cz)]+[(x,face_y(x,z)-depth,z) for x,z in points]
+    return mesh(name,verts,[(0,i+1,(i+1)%len(points)+1) for i in range(len(points))],mat,p)
+
 
 def cross(x,y,z,w,h,mat,p):
     cube('Raised gold cross upright',(x,y,z),(w*.25,.035,h),mat,p,.012)
@@ -159,23 +204,26 @@ def build(faction):
     scene=bpy.context.scene;scene.render.fps=24;scene.frame_start=1;scene.frame_end=73
     white=faction=='crusader'
     mats={
-        'skin':material('Warm porcelain skin','EDB98C',rough=.5),
+        'mouth':material('Smile interior','552326',rough=.65),
+        'tongue':material('Smile tongue','D87776',rough=.5),
+        'skin':material('Warm porcelain skin','F2BD91',rough=.43),
         'cheek':material('Rosy cheeks','E7937E',rough=.65),
         'black':material('Ink eye and openings','171714',rough=.4),
         'eye':material('Eye catchlight','FFFDF6',rough=.2),
         'ivory':material('Ivory cotton surcoat','F3E6CB',rough=.8),
-        'gold':material('Antique warm gold','D7A444',.7,.28),
-        'steel':material('Brushed warm steel','A8A7A0',.65,.36),
+        'gold':material('Antique warm gold','E8B94E',.65,.29),
+        'steel':material('Brushed warm steel','B6B9B9',.72,.32),
         'dark':material('Charcoal lacquered armor','242827',.35,.4),
         'mail':material('Chain mail rings','6E726E',.7,.4),
-        'red':material('Ming vermilion cloth','A82622',rough=.65),
-        'plume':material('Crimson horsehair plume','C91E22',rough=.55),
+        'red':material('Ming vermilion cloth','BD3027',rough=.6),
+        'plume':material('Crimson horsehair plume','DE302A',rough=.5),
         'leather':material('Brown leather','593B27',rough=.7),
         'wood':material('Polished walnut gun stock','653B20',rough=.45),
         'boot':material('Dark boots','25221D',rough=.5),
         'fire':material('Muzzle flash amber','FF9D19',rough=.5,emission=True),
         'core':material('Muzzle flash core','FFF2AD',rough=.5,emission=True),
     }
+    for name,kind in [('ivory','cloth'),('red','cloth'),('wood','wood'),('steel','metal')]:surface_texture(mats[name],kind)
     root=empty('Character');root['role']='child-'+faction+'-p';root['fidelityApproved']=False
     root['status']='rework-required'
     body=empty('Body',(0,0,.2),root)
@@ -217,21 +265,31 @@ def build(faction):
                     cube('Skirt lamella',(x,-.327,z),(.11,.038,.10),mats['dark'] if col!=1 else mats['red'],body,.012)
                     sphere('Skirt rivet',(x,-.354,z+.018),(.015,.008,.015),mats['gold'],body,12,8)
 
+    for side in [-1,1]:
+        for index in range(3):
+            x=side*(.15+index*.095)
+            curve('Tailored chest seam',[(x*.72,-.257,1.89),(x,-.330,1.62),(x*.97,-.332,1.27)],.007,cloth,body)
+
     # Belt encircles the body rather than floating as a straight chest strip.
-    belt=shell('Leather belt',1.06,1.19,.49,.325,.48,.32,mats['leather'],body)
+    belt=shell('Leather belt',1.06,1.19,.515,.361,.505,.356,mats['leather'],body)
     for dx,dz,w,h in [(-.14,0,.035,.18),(.14,0,.035,.18),(0,.075,.28,.035),(0,-.075,.28,.035)]:
-        cube('Belt buckle',(dx,-.35,1.13+dz),(w,.055,h),mats['gold'],body,.008)
+        cube('Belt buckle',(dx,-.385,1.13+dz),(w,.055,h),mats['gold'],body,.008)
 
     for side,joint in [(-1,right),(1,left)]:
         arm_top=(side*.48,0,1.79);arm_bottom=(side*.62,-.06,1.34)
         sleeve=rod('Chainmail sleeve' if white else 'Red sleeve',arm_top,arm_bottom,.17,mats['mail'] if white else mats['red'],joint)
         sphere('Shoulder cap',(side*.46,0,1.78),(.22,.25,.18),mats['mail'] if white else mats['dark'],joint)
         if white:
+            for row in range(3):
+                for col in range(9):
+                    angle=col*math.tau/9+row*.17;z=1.76+row*.055
+                    torus('Shoulder chain link',(side*.46+math.sin(angle)*.215,math.cos(angle)*.24,z),.034,.009,mats['steel'],joint,rotation=(math.pi/2,0,-angle),major=10,minor=4)
             for row in range(6):
                 z=1.41+row*.069
                 for col in range(8):
-                    a=col*math.tau/8+row*.12;x=side*(.50+(1.79-z)*.30)
-                    torus('Sleeve chain link',(x+math.sin(a)*.168,math.cos(a)*.168,z),.037,.009,mats['steel'],joint,rotation=(math.pi/2,0,a),major=10,minor=4)
+                    a=col*math.tau/8+row*.12;t=(1.79-z)/.45;x=side*(.48+t*.14)
+                    torus('Sleeve chain link',(x+math.sin(a)*.18,-t*.06+math.cos(a)*.18,z),.037,.009,mats['steel'],joint,rotation=(math.pi/2,0,-a),major=10,minor=4)
+            cuff=rod('Glove cuff',(side*.61,-.06,1.40),(side*.635,-.09,1.30),.18,mats['leather'],joint)
         else:
             for stripe in range(3):
                 cube('Shoulder gold lamella',(side*(.46+stripe*.06),-.19,1.82-stripe*.065),(.12,.045,.12),mats['gold'],joint,.02)
@@ -239,15 +297,32 @@ def build(faction):
         for finger in range(3):
             sphere('Finger',(side*.68,-.263,1.22+finger*.075),(.105,.05,.038),mats['leather'] if white else mats['skin'],joint,16,10)
 
-    # Three-dimensional rounded face with separate eyes, brows, mouth and nose.
-    cube('Face',(0,-.015,2.46),(1.02,.79,.96),mats['skin'],head,.29)
+    # Continuous rounded cheeks and chin, following the approved open-smile face.
+    face=sphere('Rounded child face',(0,-.015,2.46),(.56,.45,.53),mats['skin'],head,64,40)
+    for vert in face.data.vertices:
+        vert.co.x=math.copysign(.56*abs(vert.co.x/.56)**.82,vert.co.x)
+        vert.co.z=math.copysign(.53*abs(vert.co.z/.53)**.82,vert.co.z)
+    colors=face.data.color_attributes.new(name='Complexion',type='FLOAT_COLOR',domain='POINT')
+    for vert,color in zip(face.data.vertices,colors.data):
+        x,y,z=vert.co;warm=0
+        if y<0:
+            warm=max(math.exp(-(((x-s*.32)/.105)**2+((z+.14)/.085)**2)*1.5) for s in [-1,1])
+        base=mats['skin'].node_tree.nodes.get('Principled BSDF').inputs['Base Color'].default_value
+        color.color=(base[0],base[1]*(1-warm*.23),base[2]*(1-warm*.18),1)
+    tree=mats['skin'].node_tree;vertex=tree.nodes.new('ShaderNodeVertexColor');vertex.layer_name='Complexion'
+    tree.links.new(vertex.outputs['Color'],tree.nodes.get('Principled BSDF').inputs['Base Color'])
     for side in [-1,1]:
-        sphere('Eye',(side*.205,-.416,2.51),(.085,.039,.123),mats['black'],head)
-        sphere('Catchlight',(side*.205-.018,-.452,2.555),(.025,.012,.029),mats['eye'],head,16,10)
-        sphere('Cheek',(side*.32,-.416,2.29),(.095,.015,.057),mats['cheek'],head)
-        curve('Brow',[(side*.205-.09,-.422,2.70),(side*.205,-.44,2.735),(side*.205+.08,-.423,2.70)],.024,mats['black'],head)
-    sphere('Nose',(0,-.443,2.365),(.045,.034,.04),mats['skin'],head)
-    curve('Smile',[(-.125,-.425,2.24),(0,-.455,2.19),(.125,-.425,2.24)],.024,mats['leather'],head)
+        x=side*.205;z=2.51;y=face_y(x,z)
+        sphere('Glossy oval eye',(x,y-.020,z),(.083,.040,.116),mats['black'],head,32,20)
+        sphere('Main eye catchlight',(x-.021,y-.057,z+.043),(.026,.012,.030),mats['eye'],head,20,12)
+        sphere('Small eye catchlight',(x+.022,y-.058,z-.028),(.011,.006,.012),mats['eye'],head,16,8)
+        points=[(x-.085,2.69),(x-.012,2.715),(x+.073,2.695)]
+        curve('Friendly arched brow',[(px,face_y(px,pz)-.014,pz) for px,pz in points],.020,mats['leather'],head)
+    sphere('Rounded nose',(0,face_y(0,2.37)-.018,2.37),(.046,.041,.037),mats['skin'],head)
+    mouth=[(-.135,2.275),(-.075,2.265),(0,2.26),(.075,2.265),(.135,2.275),(.111,2.20),(.075,2.155),(0,2.137),(-.075,2.155),(-.111,2.20)]
+    face_patch('Open smiling mouth',mouth,mats['mouth'],head)
+    face_patch('Upper smile teeth',[(-.113,2.265),(0,2.251),(.113,2.265),(.094,2.235),(0,2.226),(-.094,2.235)],mats['eye'],head,.014)
+    face_patch('Small rosy tongue',[(-.062,2.162),(-.043,2.181),(0,2.186),(.043,2.181),(.062,2.162),(0,2.147)],mats['tongue'],head,.015)
 
     if white:
         cross(0,-.309,1.58,.36,.42,mats['gold'],body)
@@ -256,13 +331,15 @@ def build(faction):
         cylinder('Helmet top',(0,0,3.275),.595,.035,mats['steel'],head)
         shell('Helmet cheek and rear plates',2.12,2.83,.68,.55,.64,.52,mats['steel'],head,start=math.radians(58),end=math.radians(302),steps=56)
         shell('Gold helmet brow',2.79,2.87,.65,.535,.645,.533,mats['gold'],head)
-        cube('Vertical helmet gold cross',(0,-.548,2.99),(.105,.043,.71),mats['gold'],head,.018)
+        cube('Vertical helmet gold cross',(0,-.548,2.99),(.135,.043,.64),mats['gold'],head,.018)
         for z in [2.98,3.12]:
             sphere('Gold cross rivet',(0,-.58,z),(.028,.012,.028),mats['gold'],head,16,8)
         for z in [2.28,2.43,2.58,2.99,3.12]:
             for deg in range(70,301,24):
                 a=math.radians(deg);rx=.675 if z<2.8 else .62;ry=.55 if z<2.8 else .515
-                sphere('Helmet ventilation opening',(math.sin(a)*rx,-math.cos(a)*ry,z),(.021,.021,.027),mats['black'],head,12,8)
+                point=Vector((math.sin(a)*rx,-math.cos(a)*ry,z));normal=Vector((math.sin(a)/rx,-math.cos(a)/ry,0)).normalized()
+                opening=sphere('Recessed helmet ventilation',point,(.017,.004,.022),mats['black'],None,16,10)
+                opening.rotation_mode='QUATERNION';opening.rotation_quaternion=normal.to_track_quat('Y','Z');parent(opening,head)
         for x in [-.22,.22]:
             for row in range(5):
                 for col in range(6):
@@ -277,8 +354,9 @@ def build(faction):
         rod('Sword grip',(-.73,-.20,1.20),(-.80,-.20,1.52),.064,mats['leather'],weapon)
         sphere('Sword pommel',(-.72,-.20,1.15),(.09,.08,.08),mats['gold'],weapon)
         guard=cube('Sword crossguard',(-.81,-.20,1.55),(.47,.13,.09),mats['gold'],weapon,.035);guard.rotation_euler.y=-.16
-        blade=[(-.91,-.20,1.61),(-.74,-.20,1.61),(-1.12,-.20,2.64),(-.84,-.25,1.65),(-1.10,-.235,2.48),(-.84,-.15,1.65)]
-        mesh('Faceted sword blade',blade,[(0,3,4,2),(3,1,2,4),(0,2,4,5),(1,5,4,2),(0,5,1,3)],mats['steel'],weapon)
+        blade=[(-.96,-.20,1.61),(-.71,-.20,1.61),(-1.08,-.20,2.49),(-.835,-.26,1.65),(-1.04,-.235,2.34),(-.835,-.14,1.65)]
+        blade_obj=mesh('Faceted sword blade',blade,[(0,3,4,2),(3,1,2,4),(0,2,4,5),(1,5,4,2),(0,5,1,3)],mats['steel'],weapon)
+        for polygon in blade_obj.data.polygons:polygon.use_smooth=False
         clip='attack_sword'
         for frame,rot in [(1,(0,0,0)),(18,(0,-.65,-.30)),(34,(.15,.85,.20)),(46,(.12,.38,.05)),(73,(0,0,0))]:key(right,frame,rotation=rot)
         for frame,rot in [(1,(0,0,0)),(18,(.18,-.12,-.18)),(34,(.22,-.20,-.18)),(73,(0,0,0))]:key(left,frame,rotation=rot)
@@ -314,6 +392,18 @@ def build(faction):
             for z in [1.19,1.47]:
                 curve('Dragon claws',[(.73,-.525,z),(.73+side*.12,-.525,z+.055),(.73+side*.15,-.525,z+.13)],.017,mats['gold'],shield)
             curve('Dragon horns',[(.70,-.535,1.69),(.70+side*.07,-.535,1.76),(.70+side*.09,-.535,1.80)],.014,mats['gold'],shield)
+        sphere('Dragon brow',(.685,-.564,1.69),(.072,.020,.022),mats['gold'],shield)
+        sphere('Dragon snout',(.643,-.551,1.655),(.055,.030,.024),mats['gold'],shield)
+        sphere('Dragon eye',(.665,-.584,1.688),(.009,.007,.009),mats['black'],shield,16,8)
+        curve('Dragon lower jaw',[(.70,-.554,1.65),(.655,-.558,1.625),(.62,-.555,1.64)],.013,mats['gold'],shield)
+        for side in [-1,1]:
+            curve('Dragon flowing whisker',[(.65,-.56,1.65),(.65+side*.08,-.555,1.61),(.65+side*.10,-.55,1.69)],.007,mats['gold'],shield)
+            for z in [1.19,1.47]:
+                for finger in [-1,0,1]:
+                    curve('Dragon spread talon',[(.73+side*.12,-.546,z+.055),(.73+side*(.16+finger*.018),-.547,z+.085),(.73+side*(.17+finger*.025),-.547,z+.12+finger*.024)],.008,mats['gold'],shield)
+        for index in range(15):
+            t=index/14;z=1.03+t*.57;x=.745+.075*math.sin(t*math.tau*1.6)
+            sphere('Dragon raised scale',(x,-.557,z),(.020,.011,.014),mats['gold'],shield,12,8)
         # Short hand cannon with a real open muzzle and a separate recoil pivot.
         rear=Vector((-.68,-.12,1.66));front=Vector((-.68,-.98,1.92));axis=(front-rear).normalized()
         rod('Walnut barrel body',rear,front,.115,mats['wood'],weapon)
@@ -347,7 +437,19 @@ def build(faction):
 
     # Preserve editable source, joint names and the exact pending-approval status.
     scene.frame_set(1)
+    # Shorter torso/legs restore the turnaround's chibi proportion; props keep their shape.
+    body.scale.z=.84
+    for joint in [head,right,left]:joint.scale.z=1/.84
+    for obj in list(scene.objects):
+        if obj.type=='MESH' and mats['skin'] in list(obj.data.materials) and not obj.data.color_attributes.get('Complexion'):
+            colors=obj.data.color_attributes.new(name='Complexion',type='FLOAT_COLOR',domain='POINT')
+            base=mats['skin'].node_tree.nodes.get('Principled BSDF').inputs['Base Color'].default_value
+            for color in colors.data:color.color=base
     merge_static_parts()
+    for obj in list(scene.objects):
+        if obj.type=='MESH' and any(m.use_nodes and any(n.type=='TEX_IMAGE' for n in m.node_tree.nodes) for m in obj.data.materials):
+            bpy.ops.object.select_all(action='DESELECT');obj.select_set(True);bpy.context.view_layer.objects.active=obj
+            bpy.ops.object.mode_set(mode='EDIT');bpy.ops.mesh.select_all(action='SELECT');bpy.ops.uv.smart_project(island_margin=.015);bpy.ops.object.mode_set(mode='OBJECT')
     bpy.ops.wm.save_as_mainfile(filepath=str(out/f'child-{faction}-pawn-sample.blend'))
     bpy.ops.object.select_all(action='SELECT')
     props=bpy.ops.export_scene.gltf.get_rna_type().properties
@@ -360,7 +462,7 @@ def build(faction):
     print('SAMPLE_RESULT',json.dumps(result),flush=True)
     return result
 
-report={'samples':[build('crusader'),build('ming')],'blender':bpy.app.version_string,'approval':'rework-required','note':'User review requires reference-fidelity rework. Pure-color rigid samples lack detailed textures, skinning and facial expressions; these are not approved final assets.'}
+report={'samples':[build('crusader'),build('ming')],'blender':bpy.app.version_string,'approval':'rework-required','revision':'reference-refinement-r2','note':'Rounded complexion, open smile, folded cloth, embedded surface normals and dragon relief revised. Still rigid animation samples pending visual approval, not final game assets.'}
 (out/'sample-manifest.json').write_text(json.dumps(report,ensure_ascii=False,indent=2),encoding='utf-8')
 assert all(sample['triangles']>1000 and sample['channels']>0 for sample in report['samples'])
 print('Both editable and animated GLB samples exported.',flush=True)

@@ -21,11 +21,15 @@ for faction,clip in [('crusader','attack_sword'),('ming','attack_fire')]:
     root=next(node for node in doc['nodes'] if node.get('name')=='Character')
     assert root['extras']['fidelityApproved'] is False
     assert root['extras']['status']=='rework-required'
+    assert len(doc.get('images',[]))>=2 and len(doc.get('textures',[]))>=2,'Refined surfaces must survive GLB export'
+    for image in doc['images']:assert 'bufferView' in image and 'uri' not in image,'Textures must be embedded'
+    assert any('normalTexture' in item for item in doc['materials'])
+    assert any('COLOR_0' in primitive['attributes'] for item in doc['meshes'] for primitive in item['primitives']),'Complexion missing from exported geometry'
     expected=next(sample for sample in report['samples'] if sample['role']==f'child-{faction}-p')
     assert expected['status']=='rework-required'
     assert hashlib.sha256(data).hexdigest()==expected['sha256']
     assert (folder/f'child-{faction}-pawn-sample.blend').stat().st_size>10000
-    results.append({'role':expected['role'],'triangles':expected['triangles'],'bytes':len(data),'clip':clip,'sha256':expected['sha256']})
+    results.append({'role':expected['role'],'triangles':expected['triangles'],'bytes':len(data),'embeddedImages':len(doc['images']),'clip':clip,'sha256':expected['sha256']})
 checks={'crusader':'8f23db2b8bd2b60e2be46b42f2bcde73405198f2978b6ef4ce7c3c2f1beefe97','ming':'5f02887bca9cb4a57d672ac4d8697bd3261f87ac66bfb71b3840b59bce7f3a4b'}
 for faction,expected in checks.items():assert hashlib.sha256((folder/f'child-{faction}-pawn-v1.png').read_bytes()).hexdigest()==expected
 (folder/'structural-check.json').write_text(json.dumps({'passed':True,'models':results,'referencesMatchLockedHashes':True,'fidelityApproved':False},indent=2),encoding='utf-8')
