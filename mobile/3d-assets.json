@@ -1,0 +1,18 @@
+[
+  "vendor/three/examples/jsm/loaders/GLTFLoader.js",
+  "vendor/three/examples/jsm/environments/RoomEnvironment.js",
+  "vendor/three/examples/jsm/utils/BufferGeometryUtils.js",
+  "vendor/three/examples/jsm/utils/SkeletonUtils.js",
+  "assets/models/child-crusader-p-budget50.glb",
+  "assets/models/child-crusader-r-budget50.glb",
+  "assets/models/child-crusader-n-budget50.glb",
+  "assets/models/child-crusader-b-budget50.glb",
+  "assets/models/child-crusader-q-budget50.glb",
+  "assets/models/child-crusader-k-budget50.glb",
+  "assets/models/child-ming-p-budget50.glb",
+  "assets/models/child-ming-r-budget50.glb",
+  "assets/models/child-ming-n-budget50.glb",
+  "assets/models/child-ming-b-budget50.glb",
+  "assets/models/child-ming-q-budget50.glb",
+  "assets/models/child-ming-k-budget50.glb"
+]

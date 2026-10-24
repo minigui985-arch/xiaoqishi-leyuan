@@ -6,8 +6,13 @@ assert.match(fs.readFileSync(path.join(root,'android/app/build.gradle'),'utf8'),
 assert.match(fs.readFileSync(path.join(root,'ios/App/App.xcodeproj/project.pbxproj'),'utf8'),new RegExp(`PRODUCT_BUNDLE_IDENTIFIER = ${config.appId.replaceAll('.','\\.')};`));
 const web=path.resolve(root,config.webDir),read=p=>fs.readFileSync(path.join(root,p));
 const digest=b=>crypto.createHash('sha256').update(b).digest('hex');
+const sceneAssets=['chess-3d.js','chess-3d-scene.mjs','vendor/three/three.module.js','vendor/three/three.core.js','vendor/three/LICENSE','vendor/three/SOURCE.md','service-worker.js','transfer-save.js'];
+sceneAssets.push(...require('./3d-assets.json'));
+for(const asset of sceneAssets){
+ assert.equal(digest(fs.readFileSync(path.join(web,asset))),digest(read('../'+asset)),`${asset} 网页包落后于源码，请先重新构建`);
+}
 for(const target of ['android/app/src/main/assets/public','ios/App/App/public']){
- for(const asset of ['index.html','privacy.html','support.html','assets/child_w_keyed.webp','assets/child_b_keyed.webp','assets/adult_w_keyed.webp','assets/adult_b_keyed.webp','vendor/stockfish/stockfish-18-lite-single.wasm','LICENSE','THIRD_PARTY_NOTICES.md']){
+ for(const asset of [...sceneAssets,'index.html','privacy.html','support.html','assets/child_w_keyed.webp','assets/child_b_keyed.webp','assets/adult_w_keyed.webp','assets/adult_b_keyed.webp','vendor/stockfish/stockfish-18-lite-single.wasm','LICENSE','THIRD_PARTY_NOTICES.md']){
   assert.equal(digest(read(path.join(target,asset))),digest(fs.readFileSync(path.join(web,asset))),`${target}/${asset} 与发布资源不同步`);
  }
 }
@@ -31,4 +36,4 @@ const unit=read('../deploy/ucloud/knight-friend.service').toString();
 for(const origin of ['https://minigui985-arch.github.io','https://localhost','capacitor://localhost']){
  assert.ok(unit.includes(origin),`好友服务缺少 ${origin} 来源`);
 }
-console.log('PASS: Android/iOS 内置资源、原生好友接口来源及服务允许列表一致。');
+console.log('PASS: 源码、网页包、Android/iOS 3D 内置资源、原生好友接口来源及服务允许列表一致。');

@@ -9,9 +9,10 @@ if (!output.startsWith(distRoot)) throw new Error('拒绝清理工作区以外�
 fs.rmSync(output, { recursive: true, force: true });
 fs.mkdirSync(output, { recursive: true });
 const runtimeFiles = [
+  'chess-3d.js','chess-3d-scene.mjs','vendor/three/three.module.js','vendor/three/three.core.js','vendor/three/LICENSE','vendor/three/SOURCE.md',
   'manifest.webmanifest', 'service-worker.js', 'pwa.js', 'app-info.js', 'i18n.js',
   'locales/zh-CN.js', 'locales/en-US.js','locales/ru-RU.js','locales/es-ES.js','locales/de-DE.js','locales/fr-FR.js','locales/pt-BR.js','locales/hi-IN.js', 'locales/ja-JP.js', 'locales/ko-KR.js', 'locales/content.js',
-  'battle-save.js', 'friend-config.js', 'friend-client.js', 'feedback-client.js', 'immersive.js',
+  'battle-save.js', 'transfer-save.js', 'friend-config.js', 'friend-client.js', 'feedback-client.js', 'immersive.js',
   'learning.js', 'classic-games.css', 'classic-games.js', 'classic-games-data.js',
   'stockfish-engine.js', 'privacy.html', 'support.html', 'COPYRIGHT', 'AUTHORS.md', 'NOTICE', 'LICENSE',
   'COMMERCIAL-LICENSE.md', 'THIRD_PARTY_NOTICES.md',
@@ -31,6 +32,7 @@ function copy(relative, target = relative) {
   fs.mkdirSync(path.dirname(destination), { recursive: true });
   fs.copyFileSync(source, destination);
 }
+runtimeFiles.push(...require('./mobile/3d-assets.json'));
 for (const file of runtimeFiles) copy(file);
 copy('company-site/index.html');
 copy('小骑士乐园-统一主题版.html', 'index.html');
@@ -49,7 +51,7 @@ function inventory(directory = output) {
 }
 inventory();
 fs.writeFileSync(path.join(output, 'deployment-info.json'), JSON.stringify({
-  product: '小骑士乐园', version: '0.8.3-friend-beta',
+  product: '小骑士乐园', version: '0.8.5-test.20261024-r6',
   target: 'Tencent EdgeOne Pages static closed beta', generatedAt: new Date().toISOString(),
   developer: '不疾不徐', copyright: '合肥市朋程共行电子商务有限责任公司',
   notes: '国际网页部署支持课程、名局、离线对弈、本机双人和经 HTTPS API 邀请的好友房间；在线反馈收件暂未启用。', files

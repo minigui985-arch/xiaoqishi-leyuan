@@ -128,6 +128,7 @@ function mountReplayControls(history=battle.history){
  if(!$('#replayToolbar')){
   $('#reviewProgress').insertAdjacentHTML('beforebegin',`<div class="replay-tabs" role="group" aria-label="复盘方式"><button id="keyMoments" class="btn btn-soft" aria-pressed="true">关键时刻</button><button id="wholeReplay" class="btn btn-ghost" aria-pressed="false">全局行军回放</button></div><div id="replayToolbar" class="hidden"><div class="replay-transport"><button id="replayFirst" class="btn btn-ghost" aria-label="回到开局">开局</button><button id="replayBack" class="btn btn-ghost" aria-label="上一步">上一步</button><button id="replayPlay" class="btn btn-primary">播放</button><button id="replayForward" class="btn btn-ghost" aria-label="下一步">下一步</button><button id="replayLast" class="btn btn-ghost" aria-label="最后一步">终局</button><label>节奏 <select id="replaySpeed" aria-label="回放节奏"><option value="3600">慢速</option><option value="2400" selected>正常</option><option value="1500">快速</option></select></label></div><input id="replaySeek" type="range" min="0" value="0" aria-label="选择回放步数"></div>`);
   $('#reviewDialog').addEventListener('close',pauseReplay);$('#reviewDialog').addEventListener('cancel',pauseReplay);
+  document.addEventListener('visibilitychange',()=>{if(document.hidden&&replay.playing){pauseReplay();renderReplay();}});
  }
  $('#replayToolbar').classList.add('hidden');
  $('#keyMoments').onclick=()=>{leaveReplay();renderReview();};

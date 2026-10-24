@@ -939,6 +939,7 @@ function toggleSkin(){
     el.outerHTML=pieceSVG(el.dataset.character,el.dataset.color);
   });
   if(!$('#pieceDetail').classList.contains('hidden')) showPieceDetail(piecesLesson.active || 'p');
+  window.Knight3D?.refreshSkins();
 }
 /* ---------- 棋盘缩放与拖拽 ---------- */
 function initBoardZoom(){
@@ -1275,11 +1276,12 @@ function renderChessBoard(wrapEl, board, opts){
       ${routeNum?`<span class="route-num">${routeNum}</span>`:''}
     </div>`;
   }
-  wrapEl.innerHTML = `<div class="board-files">${filesHtml}</div>
+  for(const child of [...wrapEl.childNodes])if(!child.classList?.contains('chess3d-stage'))child.remove();
+  wrapEl.insertAdjacentHTML('afterbegin', `<div class="board-files">${filesHtml}</div>
     <div class="board-inner">
       <div class="board-ranks">${ranksHtml}</div>
       <div class="board">${sqHtml}</div>
-    </div>`;
+    </div>`);
   if(opts.onClick){
     wrapEl.querySelectorAll('.sq').forEach(sq=>{
       sq.addEventListener('click', ()=> opts.onClick(parseInt(sq.dataset.idx,10)));
@@ -1287,6 +1289,7 @@ function renderChessBoard(wrapEl, board, opts){
     });
   }
   setTimeout(initBoardZoom, 30);
+  window.Knight3D?.render(wrapEl,board,opts);
 }
 function animatePiece(wrapEl, from, to, type, color){
   const boardEl = wrapEl.querySelector('.board');
@@ -1351,6 +1354,7 @@ function renderBattleSelection(){
  const legal=battle.selected===null?[]:legalMoves(battle.board,battle.selected,battle.cast),selectable=new Set(),captures=new Set();
  if(!tournamentRules())legal.forEach(move=>{selectable.add(move.to);if(move.capture)captures.add(move.to);});
  board.querySelectorAll('.sq').forEach(square=>{const i=Number(square.dataset.idx);square.classList.toggle('selected',i===battle.selected);square.classList.toggle('selectable',selectable.has(i));square.classList.toggle('capture',captures.has(i));});
+ window.Knight3D?.selection($('#playBoardWrap'),battle.selected,selectable,captures);
 }
 function onBattleClick(idx){
  if(battle.over||battle.thinking||(!battle.human&&battle.turn!=='w'))return;
@@ -2342,8 +2346,9 @@ let replay={active:false,playing:false,ply:0,history:[],timer:null,frame:null,ep
 function mountReplayControls(history=battle.history){
  pauseReplay();replay.active=false;replay.ply=0;replay.history=JSON.parse(JSON.stringify(history||[]));replay.voice=!muted&&replaySpeechAvailable();
  if(!$('#replayToolbar')){
-  $('#reviewProgress').insertAdjacentHTML('beforebegin',`<div class="replay-tabs" role="group" aria-label="复盘方式"><button id="keyMoments" class="btn btn-soft" aria-pressed="true">关键时刻</button><button id="wholeReplay" class="btn btn-ghost" aria-pressed="false">全局行军回放</button></div><div id="replayToolbar" class="hidden"><div class="replay-transport"><button id="replayFirst" class="btn btn-ghost" aria-label="回到开局">开局</button><button id="replayBack" class="btn btn-ghost" aria-label="上一步">上一步</button><button id="replayPlay" class="btn btn-primary">播放</button><button id="replayForward" class="btn btn-ghost" aria-label="下一步">下一步</button><button id="replayLast" class="btn btn-ghost" aria-label="最后一步">终局</button><button id="replayVoice" class="btn btn-ghost" aria-pressed="false">语音讲解：关</button><label>节奏 <select id="replaySpeed" aria-label="回放节奏"><option value="3600">慢速</option><option value="2400" selected>正常</option><option value="1500">快速</option></select></label></div><input id="replaySeek" type="range" min="0" value="0" aria-label="选择回放步数"></div>`);
+  $('#reviewProgress').insertAdjacentHTML('beforebegin',`<div class="replay-tabs" role="group" aria-label="复盘方式"><button id="keyMoments" class="btn btn-soft" aria-pressed="true">关键时刻</button><button id="wholeReplay" class="btn btn-ghost" aria-pressed="false">全局行军回放</button></div><div id="replayToolbar" class="hidden"><div class="replay-transport"><button id="replayFirst" class="btn btn-ghost" aria-label="回到开局">开局</button><button id="replayBack" class="btn btn-ghost" aria-label="上一步">上一步</button><button id="replayPlay" class="btn btn-primary">播放</button><button id="replayForward" class="btn btn-ghost" aria-label="下一步">下一步</button><button id="replayLast" class="btn btn-ghost" aria-label="最后一步">终局</button><button id="replayVoice" class="btn btn-ghost" aria-pressed="false">语音讲解：关</button><label>节奏 <select id="replaySpeed" aria-label="回放节奏"><option value="3600">慢速</option><option value="2400" selected>正常</option><option value="1500">快速</option></select></label><label>3D 动作 <select id="replayMotion" aria-label="3D 动作速度"><option value="1">正常</option><option value="0.5">半速</option><option value="0.25">四分之一速</option></select></label></div><input id="replaySeek" type="range" min="0" value="0" aria-label="选择回放步数"></div>`);
   $('#reviewDialog').addEventListener('close',pauseReplay);$('#reviewDialog').addEventListener('cancel',pauseReplay);
+  document.addEventListener('visibilitychange',()=>{if(document.hidden&&replay.playing){pauseReplay();renderReplay();}});
  }
  $('#replayToolbar').classList.add('hidden');
  $('#keyMoments').onclick=()=>{leaveReplay();renderReview();};
@@ -2351,7 +2356,12 @@ function mountReplayControls(history=battle.history){
  $('#replayFirst').onclick=()=>seekReplay(0);$('#replayLast').onclick=()=>seekReplay(replay.history.length);
  $('#replayBack').onclick=()=>seekReplay(replay.ply-1);$('#replayForward').onclick=()=>seekReplay(replay.ply+1);
  $('#replaySeek').oninput=e=>seekReplay(+e.target.value);
- $('#replayPlay').onclick=()=>{if(replay.playing){pauseReplay();renderReplay();}else{if(replay.ply>=replay.history.length)replay.ply=0;replay.playing=true;renderReplay();playReplayStep();}};
+ $('#replayPlay').onclick=()=>{
+  if(replay.playing){pauseReplay(true);if(!replay.motionPaused)renderReplay();return;}
+  if(replay.motionPaused){const remaining=window.Knight3D?.resume($('#reviewBoard'));replay.motionPaused=false;if(remaining!==false&&Number.isFinite(remaining)){replay.playing=true;$('#replayPlay').textContent='暂停';scheduleReplayStep($('#reviewMessage').textContent,remaining+20);return;}}
+  if(replay.ply>=replay.history.length)replay.ply=0;replay.playing=true;renderReplay();playReplayStep();
+ };
+ $('#replayMotion').onchange=()=>{const playing=replay.playing;pauseReplay();renderReplay();if(playing){replay.playing=true;playReplayStep();}};
  $('#replaySpeed').onchange=()=>{if(replay.playing){pauseReplay();replay.playing=true;playReplayStep();}};
   $('#replayVoice').onclick=()=>{replay.voice=!replay.voice;updateReplayVoice();if(replay.voice)speakReplay($('#reviewMessage').textContent);else stopReplayVoice();};
  setReplayTabs(false);$('#keyMoments').hidden=false;
@@ -2369,7 +2379,12 @@ function speakReplay(text){
  const prefix=utterance.lang.split('-')[0];const voice=window.speechSynthesis.getVoices().find(v=>v.lang.toLowerCase().startsWith(prefix));if(voice)utterance.voice=voice;window.speechSynthesis.speak(utterance);
 }
 function replayStepDelay(text){return Math.max(+$('#replaySpeed').value,Math.min(10000,String(text).length*160));}
-function pauseReplay(){clearTimeout(replay.timer);clearTimeout(replay.frame);replay.epoch++;replay.playing=false;stopReplayVoice();$('#reviewBoard .piece-anim')?.remove();if($('#replayPlay'))$('#replayPlay').textContent='播放';}
+function pauseReplay(hold=false){
+ clearTimeout(replay.timer);clearTimeout(replay.frame);replay.epoch++;replay.playing=false;stopReplayVoice();
+ replay.motionPaused=hold===true&&!!window.Knight3D?.pause($('#reviewBoard'));
+ if(!replay.motionPaused){$('#reviewBoard .piece-anim')?.remove();window.Knight3D?.cancel($('#reviewBoard'));}
+ if($('#replayPlay'))$('#replayPlay').textContent='播放';
+}
 function leaveReplay(){pauseReplay();replay.active=false;$('#replayToolbar')?.classList.add('hidden');setReplayTabs(false);}
 function seekReplay(ply){pauseReplay();replay.ply=Math.max(0,Math.min(replay.history.length,ply));renderReplay();speakReplay($('#reviewMessage').textContent);}
 function replayPosition(ply){
@@ -2412,12 +2427,18 @@ function renderReplay(){
 function playReplayStep(){
  if(!replay.playing||!replay.active||!$('#reviewDialog').open)return;
  if(replay.ply>=replay.history.length){pauseReplay();renderReplay();return;}
- const epoch=replay.epoch,h=replay.history[replay.ply],m=h.move,p=h.before.board[m.from];
+ const h=replay.history[replay.ply],m=h.move,p=h.before.board[m.from];
  renderReplay();drawRoutes($('#reviewBoard'),[{...m,color:h.color==='w'?'#276a87':'#b7483b'}]);
  const narration=replayNarration(h,replay.ply+1);$('#reviewMessage').textContent=narration;speakReplay(narration);
  const reduced=window.matchMedia('(prefers-reduced-motion: reduce)').matches;
- if(!reduced){$('#reviewBoard [data-idx="'+m.from+'"] .piece')?.style.setProperty('visibility','hidden');animatePiece($('#reviewBoard'),m.from,m.to,p.t,p.c);}
- replay.frame=setTimeout(()=>{if(epoch!==replay.epoch||!replay.playing||!$('#reviewDialog').open)return;replay.ply++;renderReplay();if(replay.ply>=replay.history.length){pauseReplay();renderReplay();return;}replay.timer=setTimeout(playReplayStep,replayStepDelay(narration));},reduced?0:400);
+ const duration=Math.round((m.capture||m.ep||h.before.board[m.to]?1800:1000)/+$('#replayMotion').value);
+ const animated=!reduced&&window.Knight3D?.animate($('#reviewBoard'),m.from,m.to,{...m,duration});
+ if(!reduced&&!animated){$('#reviewBoard [data-idx="'+m.from+'"] .piece')?.style.setProperty('visibility','hidden');animatePiece($('#reviewBoard'),m.from,m.to,p.t,p.c);}
+ scheduleReplayStep(narration,reduced?0:animated?duration+20:400);
+}
+function scheduleReplayStep(narration,duration){
+ const epoch=replay.epoch;
+ replay.frame=setTimeout(()=>{if(epoch!==replay.epoch||!replay.playing||!$('#reviewDialog').open)return;replay.ply++;renderReplay();if(replay.ply>=replay.history.length){pauseReplay();renderReplay();return;}replay.timer=setTimeout(playReplayStep,replayStepDelay(narration));},duration);
 }
 /* END_GUIDED_LEARNING_V1 */
 
@@ -2446,6 +2467,7 @@ document.addEventListener('DOMContentLoaded', initApp);
 <script src="friend-client.js"></script>
 <script src="feedback-client.js"></script>
 <script src="immersive.js"></script>
+<script src="chess-3d.js?v=armies-20261024-r6"></script>
 <script src="pwa.js"></script>
 </body>
 </html>

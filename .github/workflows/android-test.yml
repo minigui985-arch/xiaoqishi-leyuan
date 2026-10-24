@@ -42,10 +42,11 @@ jobs:
       - run: npm run sync:android --prefix mobile && npm run sync:ios --prefix mobile && npm run check:native --prefix mobile
       - run: chmod +x gradlew && ./gradlew assembleDebug
         working-directory: mobile/android
+      - name: Verify debug APK signature
+        run: $ANDROID_HOME/build-tools/36.0.0/apksigner verify --verbose --print-certs mobile/android/app/build/outputs/apk/debug/app-debug.apk
       - uses: actions/upload-artifact@v4
         with:
           name: xiaoqishi-android-debug
           path: mobile/android/app/build/outputs/apk/debug/app-debug.apk
           if-no-files-found: error
           retention-days: 7
-
