@@ -57,7 +57,8 @@ export function createScene(wrap,getOptions,onLost){
  function rod(g,c,a,b,r=.025){const start=new T.Vector3(...a),end=new T.Vector3(...b),d=end.clone().sub(start);const m=cylinder(g,c,0,0,0,r,r,d.length());m.position.copy(start.add(end).multiplyScalar(.5));m.quaternion.setFromUnitVectors(new T.Vector3(0,1,0),d.normalize());return m;}
  function cross(g,x,y,z,size=.18){box(g,0xd5a94e,x,y,z,size*.28,size,.018);box(g,0xd5a94e,x,y+size*.15,z,size*.8,size*.24,.018);}
  function character(type,color,adult){
-  if(!adult){const template=characterTemplates.get((color==='w'?'crusader':'ming')+type);if(template)return template.clone(true);}
+  // Adult models are pending: both themes share the accepted child roster, including replay captures.
+  const template=characterTemplates.get((color==='w'?'crusader':'ming')+type);if(template)return template.clone(true);
   const key=type+color+adult;if(templates.has(key))return templates.get(key).clone(true);
   const g=new T.Group(),west=color==='w',cloth=west?0xeee2c6:0x982b2d,armor=west?0x8f9eac:0x242c35,gold=0xd9ab52,skin=0xedbf95;
   cylinder(g,west?0xd0ad66:0x763c32,0,.035,0,.31,.34,.07,.3);

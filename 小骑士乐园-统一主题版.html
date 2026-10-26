@@ -621,6 +621,11 @@ body.board-page .bottomnav{position:static;transform:none;max-width:none;width:1
 
 .language-select{min-height:44px;padding:0 10px;border:1px solid var(--card-border);border-radius:12px;background:var(--card);color:var(--ink);font:inherit;font-weight:700;cursor:pointer}
 @media(max-width:560px){.language-select{max-width:92px;padding:0 6px;font-size:12px}}
+
+/* Adult art uses the same source sheets; lift dark details after chroma keying. */
+[data-theme=adult] .character-art{filter:brightness(1.12) contrast(.96) saturate(1.14)}
+[data-theme=adult] .piece .character-art{filter:brightness(1.12) contrast(.96) saturate(1.14) drop-shadow(0 1px 1px #0002)}
+[data-theme=adult] .piece-card .character-art,[data-theme=adult] .pd-ico .character-art{mix-blend-mode:normal}
 </style>
 <!-- 全局渐变与滤镜定义（棋子立体效果用） -->
 <svg width="0" height="0" style="position:absolute" aria-hidden="true">
@@ -2467,7 +2472,7 @@ document.addEventListener('DOMContentLoaded', initApp);
 <script src="friend-client.js"></script>
 <script src="feedback-client.js"></script>
 <script src="immersive.js"></script>
-<script src="chess-3d.js?v=armies-20261025-r10"></script>
+<script src="chess-3d.js?v=armies-20261026-r11"></script>
 <script src="pwa.js"></script>
 </body>
 </html>

@@ -26,13 +26,13 @@
   if(entry.scene){off(entry);return;}if(entry.loading)return;
   entry.loading=true;entry.button.disabled=true;entry.help.textContent='正在加载本机 3D 棋盘…';
   try{
-   module=module||import('./chess-3d-scene.mjs?v=armies-20261025-r10');const {createScene,preloadCharacters,lowMemoryDevice}=await module;await preloadCharacters((done,total)=>{entry.help.textContent=`正在加载角色 ${done}/${total}，首次加载需要一些时间…`;});
+   module=module||import('./chess-3d-scene.mjs?v=armies-20261026-r11');const {createScene,preloadCharacters,lowMemoryDevice}=await module;await preloadCharacters((done,total)=>{entry.help.textContent=`正在加载角色 ${done}/${total}，首次加载需要一些时间…`;});
    if(lowMemoryDevice)for(const other of boards.values())if(other!==entry&&other.scene)off(other);
    entry.scene=createScene(entry.wrap,()=>entry.opts,()=>off(entry,'3D 暂不可用，已返回平面棋盘。'));
    entry.wrap.classList.add('chess3d-on');entry.scene.update(entry.board,entry.opts,true);
    entry.button.textContent='平面棋盘';entry.button.setAttribute('aria-pressed','true');
    entry.tools.querySelectorAll('[data-camera]').forEach(b=>b.hidden=false);
-   entry.help.textContent='试制角色，尚未定稿。点角色与目标格走棋；拖动旋转；方向键选格、回车确认。';
+   entry.help.textContent=(window.__chessSkinMode==='adult'?'成人主题暂用儿童3D角色。':'')+'点角色与目标格走棋；拖动旋转；方向键选格、回车确认。';
   }catch(error){off(entry,'此设备暂不能开启 3D，请使用平面棋盘。');console.warn('Knight 3D:',error.message);module=null;}
   finally{entry.loading=false;entry.button.disabled=false;}
  }
