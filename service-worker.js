@@ -1,5 +1,5 @@
 /* 原始开发者：不疾不徐 | Copyright (c) 2026 合肥市朋程共行电子商务有限责任公司 */
-const CACHE='knight-mobile-0.8.5-armies-20261024-r6';
+const CACHE='knight-mobile-0.8.5-armies-20261025-r10';
 const APP='./小骑士乐园-统一主题版.html';
 const CORE=[
   './chess-3d.js','./chess-3d-scene.mjs','./vendor/three/three.module.js','./vendor/three/three.core.js',

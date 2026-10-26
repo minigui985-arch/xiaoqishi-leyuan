@@ -26,7 +26,8 @@
   if(entry.scene){off(entry);return;}if(entry.loading)return;
   entry.loading=true;entry.button.disabled=true;entry.help.textContent='正在加载本机 3D 棋盘…';
   try{
-   module=module||import('./chess-3d-scene.mjs?v=armies-20261024-r6');const {createScene,preloadCharacters}=await module;await preloadCharacters((done,total)=>{entry.help.textContent=`正在加载角色 ${done}/${total}，首次加载需要一些时间…`;});
+   module=module||import('./chess-3d-scene.mjs?v=armies-20261025-r10');const {createScene,preloadCharacters,lowMemoryDevice}=await module;await preloadCharacters((done,total)=>{entry.help.textContent=`正在加载角色 ${done}/${total}，首次加载需要一些时间…`;});
+   if(lowMemoryDevice)for(const other of boards.values())if(other!==entry&&other.scene)off(other);
    entry.scene=createScene(entry.wrap,()=>entry.opts,()=>off(entry,'3D 暂不可用，已返回平面棋盘。'));
    entry.wrap.classList.add('chess3d-on');entry.scene.update(entry.board,entry.opts,true);
    entry.button.textContent='平面棋盘';entry.button.setAttribute('aria-pressed','true');
@@ -59,5 +60,5 @@
   refreshSkins(){for(const entry of boards.values())if(entry.scene)entry.scene.update(entry.board,entry.opts,true);}
  };
  document.addEventListener('visibilitychange',()=>{if(document.hidden)for(const entry of boards.values())window.Knight3D.cancel(entry.wrap);});
- new MutationObserver(()=>{for(const [wrap,entry]of boards){if(!wrap.querySelector('.board')){off(entry);entry.tools.remove();boards.delete(wrap);}else entry.tools.hidden=wrap.offsetWidth===0;}}).observe(document.body,{childList:true,subtree:true});
+ new MutationObserver(()=>{for(const [wrap,entry]of boards){if(!wrap.querySelector('.board')){off(entry);entry.tools.remove();boards.delete(wrap);}else {entry.tools.hidden=wrap.offsetWidth===0;if(entry.tools.hidden&&entry.scene)off(entry);}}}).observe(document.body,{childList:true,subtree:true});
 })();

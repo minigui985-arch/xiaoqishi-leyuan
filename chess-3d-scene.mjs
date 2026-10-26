@@ -2,6 +2,7 @@
 import * as T from './vendor/three/three.module.js';
 import {RoomEnvironment} from './vendor/three/examples/jsm/environments/RoomEnvironment.js';
 import {GLTFLoader} from './vendor/three/examples/jsm/loaders/GLTFLoader.js';
+export const lowMemoryDevice=navigator.maxTouchPoints>0 && (matchMedia('(pointer: coarse)').matches || /iPhone|iPad|iPod/.test(navigator.userAgent) || navigator.platform==='MacIntel');
 const characterTemplates=new Map();let characterLoad;
 // Geometry and textures are shared across all instances and boards.
 export function preloadCharacters(onProgress=()=>{}){
@@ -10,7 +11,7 @@ export function preloadCharacters(onProgress=()=>{}){
   const loader=new GLTFLoader();
   for(const camp of ['crusader','ming'])for(const role of ['p','r','n','b','q','k']){
    const key=camp+role;if(characterTemplates.has(key))continue;
-   const model=(await loader.loadAsync(new URL('./assets/models/child-'+camp+'-'+role+'-budget50.glb',import.meta.url).href)).scene;
+   const model=(await loader.loadAsync(new URL('./assets/models/child-'+camp+'-'+role+(lowMemoryDevice?'-mobile50.glb':'-budget50.glb'),import.meta.url).href)).scene;
    model.updateMatrixWorld(true);
    const bounds=new T.Box3().setFromObject(model),size=bounds.getSize(new T.Vector3()),center=bounds.getCenter(new T.Vector3());
    if(!(size.y>0))throw Error('角色模型尺寸无效：'+key);
@@ -36,7 +37,8 @@ const reduced=()=>matchMedia('(prefers-reduced-motion: reduce)').matches;
 export function createScene(wrap,getOptions,onLost){
  const stage=document.createElement('div');stage.className='chess3d-stage';
  const renderer=new T.WebGLRenderer({antialias:true,alpha:false,powerPreference:'low-power'});
- renderer.setClearColor(0xf4e7ce);
+ const theme=getComputedStyle(wrap);
+ renderer.setClearColor(new T.Color(theme.getPropertyValue('--bg-deep').trim()||'#eee2cf').lerp(new T.Color('#e4e4e4'),.18));
  renderer.outputColorSpace=T.SRGBColorSpace;renderer.toneMapping=T.ACESFilmicToneMapping;
  renderer.toneMappingExposure=.85;
  const canvas=renderer.domElement;canvas.tabIndex=0;canvas.setAttribute('role','group');
@@ -98,9 +100,13 @@ export function createScene(wrap,getOptions,onLost){
   g.rotation.y=west?Math.PI:0;g.scale.setScalar(adult?1:1.04);
   templates.set(key,g);return g.clone(true);
  }
+ // Match the actual 2D surface, without PBR lighting or exposure shifting its CSS colors.
+ const squareColor=(kind,fallback)=>{const el=wrap.querySelector('.sq.'+kind);return el?getComputedStyle(el).backgroundColor:theme.getPropertyValue('--'+kind+'-sq').trim()||fallback;};
+ const lightSquare='#'+new T.Color(squareColor('light','#eadcc3')).lerp(new T.Color('#e4e4e4'),.18).getHexString(),darkSquare=squareColor('dark','#8b8273');
+ function squareMaterial(color){const key='square:'+color;if(!materials.has(key)){const m=new T.MeshBasicMaterial({color,toneMapped:false});materials.set(key,m);resources.add(m);}return materials.get(key);}
  const squares=[],pieces=new T.Group();scene.add(pieces);
  const board=new T.Group();scene.add(board);box(board,0x684631,0,-.15,0,8.8,.4,8.8);box(board,0xba925a,0,.015,0,8.35,.08,8.35);
- for(let i=0;i<64;i++){const pos=place(i),color=(i%8+Math.floor(i/8))%2?0xf2eee4:0x4b4f52;const sq=box(board,color,pos.x,.07,pos.z,.98,.08,.98);sq.userData.index=i;sq.userData.color=color;squares.push(sq);}
+ for(let i=0;i<64;i++){const pos=place(i),color=(i%8+Math.floor(i/8))%2?lightSquare:darkSquare;const sq=box(board,color,pos.x,.07,pos.z,.98,.08,.98);sq.material=squareMaterial(color);sq.userData.index=i;sq.userData.color=color;squares.push(sq);}
  const cursor=mesh(scene,new T.TorusGeometry(.39,.025,5,24),0xe6b453,0,.14,0);cursor.rotation.x=-Math.PI/2;cursor.visible=false;
  const ray=new T.Raycaster(),pointer=new T.Vector2();let current=[],nodes=[],opts={},skin='',angle=0,elevation=1.02,zoomed=false,flipped=false,frame=0,animation=null,disposed=false,keyIndex=12;
  function cameraPosition(){
@@ -114,15 +120,15 @@ export function createScene(wrap,getOptions,onLost){
  const renderSize=new T.Vector2();
  function resize(){
   if(disposed)return;const w=wrap.clientWidth,h=wrap.clientHeight||w;if(!w||!h)return;
-  // Keep iPhone native pixel density while bounding large-canvas GPU memory.
-  const ratio=Math.min(devicePixelRatio||1,3,Math.sqrt(2500000/(w*h)));
+  // Touch devices reserve memory for decoded textures and Safari itself.
+  const ratio=Math.min(devicePixelRatio||1,lowMemoryDevice?1.5:3,Math.sqrt((lowMemoryDevice?1000000:2500000)/(w*h)));
   renderer.getSize(renderSize);if(renderSize.x===w&&renderSize.y===h&&renderer.getPixelRatio()===ratio)return;
   if(renderer.getPixelRatio()!==ratio)renderer.setPixelRatio(ratio);
   renderer.setSize(w,h,false);camera.aspect=w/h;camera.updateProjectionMatrix();draw();
  }
  const observer=new ResizeObserver(resize);observer.observe(wrap);window.addEventListener('resize',resize);
  function reset(){angle=flipped?Math.PI:0;elevation=1.02;zoomed=false;draw();}
- function highlight(options){opts=options;for(let i=0;i<64;i++){const c=i===opts.selected?0xe2ac48:opts.captureSet?.has(i)?0xc46b55:opts.selectable?.has(i)?0xd8bc7d:opts.lastMove?.includes(i)?0xc49a52:squares[i].userData.color;squares[i].material=material(c);}draw();}
+ function highlight(options){opts=options;for(let i=0;i<64;i++){const c=i===opts.selected?0xe2ac48:opts.captureSet?.has(i)?0xc46b55:opts.selectable?.has(i)?0xd8bc7d:opts.lastMove?.includes(i)?0xc49a52:squares[i].userData.color;squares[i].material=squareMaterial(c);}draw();}
  function stop(){cancelAnimationFrame(frame);frame=0;animation=null;}
  function rebuild(){pieces.clear();nodes=[];const adult=window.__chessSkinMode==='adult';for(let i=0;i<64;i++){const p=current[i];if(!p)continue;const g=character(p.t,p.c,adult);g.position.copy(place(i));g.userData={...g.userData,index:i};nodes[i]=g;pieces.add(g);}}
  function emotion(node,phase,losing=false){if(!node)return;const face=node.getObjectByName('face');if(face){face.rotation.z=Math.sin(phase*Math.PI)*(losing?-.25:.13);const mouth=face.getObjectByName('mouth');if(mouth)mouth.scale.y=1+Math.sin(phase*Math.PI)*(losing?4:1);}}
