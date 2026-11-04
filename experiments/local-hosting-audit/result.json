@@ -1,0 +1,62 @@
+{
+  "scope": "R11 local package and static resource inspection only",
+  "apk_sha256_verified": "b0bd36a80e3f31237ad85d18320ab802d9dbc3f99cf89113d2b97117bcdeb58d",
+  "apk_crc_passed": true,
+  "apk_embedded_glb_count": 24,
+  "apk_required_runtime_present": [
+    "index.html",
+    "chess-3d.js",
+    "chess-3d-scene.mjs",
+    "stockfish-engine.js",
+    "vendor/stockfish/stockfish-18-lite-single.wasm",
+    "vendor/three/three.module.js",
+    "vendor/three/three.core.js"
+  ],
+  "web_file_count_excluding_apk": 89,
+  "web_bytes_excluding_apk": 184139741,
+  "largest_web_files": [
+    {
+      "path": "assets/models/child-ming-n-budget50.glb",
+      "bytes": 11098712
+    },
+    {
+      "path": "assets/models/child-ming-b-budget50.glb",
+      "bytes": 11045888
+    },
+    {
+      "path": "assets/models/child-ming-q-budget50.glb",
+      "bytes": 10912676
+    },
+    {
+      "path": "assets/models/child-ming-p-budget50.glb",
+      "bytes": 10672656
+    },
+    {
+      "path": "assets/models/child-crusader-n-budget50.glb",
+      "bytes": 10220096
+    },
+    {
+      "path": "assets/models/child-crusader-p-budget50.glb",
+      "bytes": 10097504
+    },
+    {
+      "path": "assets/models/child-crusader-k-budget50.glb",
+      "bytes": 9785176
+    },
+    {
+      "path": "assets/models/child-crusader-b-budget50.glb",
+      "bytes": 9728212
+    }
+  ],
+  "web_files_over_25_MiB": [],
+  "excluded_apk_downloads": [
+    "xiaoqishi-android-0.8.5-test-20261024-r6.apk",
+    "xiaoqishi-android-0.8.6-test-20261026-r10.apk",
+    "xiaoqishi-android-0.8.7-test-20261026-r11.apk"
+  ],
+  "precache_local_paths_present": 43,
+  "glb_explicitly_precached": false,
+  "device_airplane_mode_test": "not performed",
+  "hosting_deployment_test": "not performed",
+  "domestic_network_isolation": "not passed: friend-config.js still specifies international API"
+}
