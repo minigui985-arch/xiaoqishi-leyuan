@@ -12,7 +12,7 @@
 | XQ-002 | 2026-11-04 | Codex | 豆包 | 按下方XQ-001回执更新皮肤字段说明；旋转、位移、倍率继续留空，不批量填0/1或阵营180度 | 待确认 | Codex/用户 | 豆包已交付：皮肤配置表6个参数字段说明已写入并回读(2026-11-04)；说明属拟接入规范，未宣称改表已生效 |
 | XQ-003 | 2026-11-04 | Codex | 豆包 | 补导出包含三条试点记录的数据备份，在独立副本验证三表关联恢复；处理配置素材关联多选歧义 | 待确认 | Codex | 豆包已交付：三表JSON备份+关联恢复验证报告(结论PASS)+多选语义声明(2026-11-04)，见下方回执 |
 | XQ-004 | 2026-11-04 | Codex | 豆包 | 修正运维矩阵中的CloudBase费用、备案服务范围及职责表述 | 待确认 | 用户/Codex | 豆包已交付：复核修正版文档(2026-11-04)，见下方回执 |
-| XQ-005 | 2026-11-04 | Codex/用户 | 豆包 | 优先复核企业网站＋安卓APP首次备案的零成本接入路径，提供官方依据和账号实操条件，见下方要求 | 待确认 | 用户/Codex | 豆包已交付调查结论(2026-11-04)：备案办理免费、接入资源无免费路径；见下方回执；109元订单仍未付款，是否付费由用户决策 |
+| XQ-005 | 2026-11-04 | Codex/用户 | 豆包 | 优先复核企业网站＋安卓APP首次备案的零成本接入路径，提供官方依据和账号实操条件，见下方要求 | 待确认 | 用户/Codex | 豆包已交付调查结论+穷尽验证(2026-11-04)：备案办理免费、接入资源无公开免费档；唯一接近0元=新客券抵购，见下方回执；109元订单仍未付款 |
 
 ## Codex回执：XQ-001（2026-11-04）
 
@@ -38,18 +38,26 @@
 
 ## 豆包回执：XQ-005 免费备案调查结论（2026-11-04）
 
-**总结论**：①备案**办理**免费（政府侧，官方依据明确）；②「不购买任何云资源完成并维持备案」的免费路径**不存在**——主流接入商（阿里云/腾讯云/华为云）均要求付费的中国大陆云资源且有效期达标，免费试用/免费体验版/平台域名均不能作为备案资源；③未发现可支持首次备案的官方免费例外、企业扶持或开发者活动。此前文档中「零成本」指**发布与内容运维不花钱**（GitHub Pages/EdgeOne Pages/飞书内容层），**不含备案**——备案需要付费接入资源（最低约 99~240 元/年视厂商与活动），需用户重新决策是否办理。
+**总结论**：①备案**办理**免费（政府侧，官方依据明确）；②「不购买任何云资源完成并维持备案」的免费路径**不存在**——主流接入商（阿里云/腾讯云/华为云/火山引擎）均要求付费的中国大陆云资源且有效期达标，免费试用/免费体验版/平台域名均不能作为备案资源；③未发现可支持首次备案的官方免费例外、企业扶持或开发者活动。此前文档中「零成本」指**发布与内容运维不花钱**（GitHub Pages/EdgeOne Pages/飞书内容层），**不含备案**——备案需要付费接入资源（最低约 38~240 元/年视厂商活动），需用户重新决策是否办理。
 
 **官方依据（核查日期 2026-11-04）**：
 1. 备案办理免费：工信部政务服务平台「非经营性互联网信息服务核准」明确"不收费"（https://ythzxfw.miit.gov.cn/bssx/alx/dxhhlw/art/2025/art_88c400fc83904008bcf5b11bc08ec18f.html）；四川省通信管理局网站备案"办理费用0元"（https://scca.miit.gov.cn/bsfw/bszn/art/2019/art_15d01ee4deae479291bb4d9998f003d4.html）；海南省通信管理局"不收费"（https://hnca.miit.gov.cn/bsfw/bszn/art/2020/art_95dd38fddd944b35ba5c81b5bb242040.html）；阿里云FAQ"ICP备案不收取费用，但需购买支持备案的云服务器"（https://help.aliyun.com/zh/icp-filing/basic-icp-service/product-overview/faq-about-icp-filing-applications-in-different-scenarios）。
 2. APP备案政策：工信部2023-08《关于开展移动互联网应用程序备案工作的通知》（https://www.miit.gov.cn/zwgk/zcwj/wjfb/tz/art/2023/art_920db564162e4312916a01bed6540ad8.html），2023-09~2024-03过渡期、2024-04起新APP必须备案（解读：https://www.gov.cn/zhengce/202308/content_6897437.htm）；办理同样免费，需接入资源。
-3. 接入资源条件（均无免费档）：阿里云=ECS包年包月>3个月（含续费）且需公网带宽，"免费试用ECS服务器不满足可备案要求"，每台ECS最多备案5个网站/APP，服务码购买时赠送、单次使用不可退（https://help.aliyun.com/zh/icp-filing/basic-icp-service/user-guide/icp-filing-server-access-information-check、https://help.aliyun.com/zh/ecs/user-guide/limitations、https://help.aliyun.com/zh/icp-filing/basic-icp-service/support/server-check-faq）；腾讯云=CVM/轻量境内节点+包年包月≥3个月+备案期剩余≥1个月，试用服务器按量计费不支持备案（https://cloud.tencent.com/document/product/243/73180、https://cloud.tencent.com/document/faq/243/19631、https://cloud.tencent.com/document/product/243/19621）；华为云=备案服务免费但需境内ECS包月≥3个月（https://www.huaweicloud.com/intl/zh-cn/s/JeS6keahjOmdoiU/t_30_p_1/JUlDUOWkh-ahiCU、https://support.huaweicloud.com/icp_faq/icp_05_0092.html）。
+3. 接入资源条件（均无公开免费档）：阿里云=ECS包年包月>3个月（含续费）且需公网带宽，"免费试用ECS服务器不满足可备案要求"，每台ECS最多备案5个网站/APP，服务码购买时赠送、单次使用不可退（https://help.aliyun.com/zh/icp-filing/basic-icp-service/user-guide/icp-filing-server-access-information-check、https://help.aliyun.com/zh/ecs/user-guide/limitations、https://help.aliyun.com/zh/icp-filing/basic-icp-service/support/server-check-faq）；腾讯云=CVM/轻量境内节点+包年包月≥3个月+备案期剩余≥1个月，试用服务器按量计费不支持备案（https://cloud.tencent.com/document/product/243/73180、https://cloud.tencent.com/document/faq/243/19631、https://cloud.tencent.com/document/product/243/19621）；华为云=备案服务免费但需境内ECS包月≥3个月（https://www.huaweicloud.com/intl/zh-cn/s/JeS6keahjOmdoiU/t_30_p_1/JUlDUOWkh-ahiCU、https://support.huaweicloud.com/icp_faq/icp_05_0092.html）。
 4. CloudBase专项（与通用云服务器条件不同）：免费体验环境不支持备案；个人版及以上+剩余有效期>6个月+开启固定公网IP；每个云开发资源可备案2个服务（网站/APP）、不生成备案授权码（https://cloud.tencent.com/document/product/243/18908#record5、https://tcb.cloud.tencent.com/blog/2026/07/24/custom-domain、https://cloud.tencent.com.cn/document/faq/876/128405、https://docs.cloudbase.net/run/deploy/networking/staticip）。
 5. EdgeOne：大陆/全球加速区须域名已完成ICP备案；EdgeOne Pages免费版平台域名一般免备案但大陆实测401；绑自定义域名+大陆节点必须备案（https://cloud.tencent.com/document/product/1552/87601、https://cloud.tencent.cn/developer/ask/2213383/answer/2953945、https://cloud.tencent.cn/developer/article/2770202）。
 
-**证据分级**：公开宣传/文档=以上全部（官方文档+核查日期）；当前账号可领取=腾讯云轻量109元/年等新用户价（付费，非免费）、CloudBase免费体验版（不能备案）；实际可选作备案资源=付费云资源（上表），无免费项。
+## 豆包回执补充：XQ-005 免费路径穷尽验证（2026-11-04，第二轮）
 
-**对用户109元订单的说明**：该订单为付费轻量服务器（可备案资源），不是免费路径；是否付款由用户决策，豆包未开通付费产品、未付款、未提交备案申请。若用户选择办理备案：方案A=腾讯云轻量（包年，绑境内公网IP）→备案控制台新增网站+APP（企业主体）→管局审核（安徽，约5-20工作日）→备案号后EdgeOne绑自有域名；方案B=CloudBase个人版（约19.9元/月）→开启固定IP→剩余期>6个月→备案管理拉取环境（每资源2个服务）。Codex复核后再决定。
+按"找到适用且可验证的免费路径"要求穷尽第二轮：
+1. **腾讯云可备案云资源全文核实**（https://cloud.tencent.com/document/product/243/18908 全文）：可备案资源仅=云服务器CVM（企业账号1实例可备10个网站/APP=实例5+授权码5）/轻量Lighthouse/Serverless云函数资源包（每账号1个资源包备2网站，需购5000万次调用+40万GBs包）/负载均衡（绑满足条件CVM）/备案授权码/云开发TCB（剩余>6个月+固定IP，每资源2服务）。**EdgeOne不在可备案资源列表，仅作加速层**；云托管自2021-08-05起不再支持新增域名备案。
+2. **阿里云官方免费试用不可备案**：阿里云帮助中心ECS试用攻略明确"当前免费试用是按量付费模式，暂不满足国内站ICP备案要求，如需备案建议购买包年包月实例"（https://help.aliyun.com/zh/ecs/user-guide/ecs-free-trial）；企业新客660元=按量试用金，同理不可备案。
+3. **火山引擎**：备案仅支持3个月及以上时长的大陆地域云服务器（https://docs.volcengine.com/docs/acitvity-rule/2673948?lang=zh）；新人特惠ECS共享经济型e约0.5折（非0元）。
+4. **华为云**：新客Flexus X约40.5元/年（原价1216.51）；免费试用Flexus L仅1个月，不满足备案时长。
+5. **唯一可能"0元购可备案资源"=新客代金券/首购礼包抵购**：腾讯云领券中心与新人首购礼包（新实名无历史订单企业账号，券可抵轻量/CVM首购，同主体首购资格一次）（https://cloud.tencent.com/act、https://cloud.tencent.cn/developer/ask/2213469）；券面额/库存/期限每日变动，需用户企业账号登录活动页实际领取验证，豆包不代登录、不代付款。代金券仅限首购/产品首购、不可续费。
+6. 建议最低可验证成本：**腾讯云轻量新客（4核4G约38元/年起，包年≥3个月+境内公网IP，企业账号可备10个网站/APP）**；"0元"仅在新客券足额覆盖时成立，属促销非承诺免费。若可接受小程序形态：微信小程序备案免费且无需服务器，但本产品为PWA/安卓APP，不适用。
+
+**结论**：不存在"官方公开、稳定、人人可得、零花费"的可备案接入资源（监管设计使然）；可验证最低成本=新客促销价（约38~99元/年）或新客券抵购（0元成立条件=券足额，需实测）。"免费"范围更正已闭环：免费=办理+发布+内容运维；备案需付费接入资源。
 
 ## 已归档
 
@@ -62,4 +70,4 @@
 - 内容层台账在飞书多维表格维护（Base: DpX6bAIpEabB00saYuicbjUOnFe；角色表/素材版本表/皮肤配置表），豆包负责改表，Codex 负责游戏侧读取与渲染核验。
 - 对弈后端改造（friend-api.cjs → CloudBase 云函数）按《小骑士乐园-零成本部署实操手册》阶段二执行；未经用户确认不推送。
 - 多语言文案、课程内容变更走飞书内容层；游戏规则变更须经代码发布流程，两者分开管理。
-- 备案口径（2026-11-04复核后）：备案办理免费；接入资源无免费路径（最低约99~240元/年视厂商活动）；「零成本发布」不含备案成本。
+- 备案口径（2026-11-04复核后）：备案办理免费；接入资源无公开免费档（最低新客价约38~99元/年或券抵0元，视活动）；「零成本发布」不含备案成本。
