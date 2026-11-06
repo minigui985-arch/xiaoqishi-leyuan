@@ -1,5 +1,13 @@
 # 第三方组件声明
 
+## Three.js 0.186.1
+
+可选3D棋盘使用Three.js及GLTFLoader、RoomEnvironment等附加模块，依据MIT许可证授权。
+
+- 组件目录：`vendor/three/`
+- 许可证全文：`vendor/three/LICENSE`
+- 来源：`vendor/three/SOURCE.md`
+
 ## Stockfish.js 18.0.0
 
 “大师 AI”使用 Stockfish.js 18.0.0 的 asm.js 单文件发行版。Stockfish 是自由软件，依据 GNU General Public License version 3 授权。

@@ -13,4 +13,19 @@ const html=fs.existsSync(path.join(output,'index.html'))?fs.readFileSync(path.jo
 for(const marker of ['manifest.webmanifest','i18n.js','locales/ru-RU.js','friend-config.js','friend-client.js','stockfish-engine.js']) if(!html.includes(marker)) failures.push(`首页未引用：${marker}`);
 if(!fs.readFileSync(path.join(output,'pwa.js'),'utf8').includes('service-worker.js')) failures.push('PWA 脚本未注册 service-worker.js');
 if(failures.length){ console.error(failures.join('\n')); process.exit(1); }
+// Check the actual publish artifact: missing model copies otherwise fail only after clicking 3D.
+const assert=require('node:assert/strict');
+assert.ok(html.includes('chess-3d.js?v=armies-20261026-r11'));
+const assets=require('./mobile/3d-assets.json');
+assert.equal(assets.filter(file=>file.endsWith('.glb')).length,24);
+for(const file of ['chess-3d.js','chess-3d-scene.mjs','vendor/three/three.module.js','vendor/three/three.core.js',...assets]){
+  const data=fs.readFileSync(path.join(output,file));
+  assert.ok(data.length>0,file);
+  if(file.endsWith('.glb')){
+    assert.equal(data.toString('ascii',0,4),'glTF',file);
+    assert.equal(data.readUInt32LE(4),2,file);
+    assert.equal(data.readUInt32LE(8),data.length,file);
+  }
+}
+assert.equal(html,fs.readFileSync(path.join(output,'小骑士乐园-统一主题版.html'),'utf8'));
 console.log('EdgeOne Pages 发布包校验通过');
