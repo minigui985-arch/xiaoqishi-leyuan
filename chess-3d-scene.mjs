@@ -4,14 +4,13 @@ import {RoomEnvironment} from './vendor/three/examples/jsm/environments/RoomEnvi
 import {GLTFLoader} from './vendor/three/examples/jsm/loaders/GLTFLoader.js';
 export const lowMemoryDevice=navigator.maxTouchPoints>0 && (matchMedia('(pointer: coarse)').matches || /iPhone|iPad|iPod/.test(navigator.userAgent) || navigator.platform==='MacIntel');
 const characterTemplates=new Map();let characterLoad;
-// Geometry and textures are shared across all instances and boards.
-export function preloadCharacters(onProgress=()=>{}){
- if(characterTemplates.size===12)return Promise.resolve();
- if(!characterLoad)characterLoad=(async()=>{
-  const loader=new GLTFLoader();
-  for(const camp of ['crusader','ming'])for(const role of ['p','r','n','b','q','k']){
-   const key=camp+role;if(characterTemplates.has(key))continue;
-   const model=(await loader.loadAsync(new URL('./assets/models/child-'+camp+'-'+role+(lowMemoryDevice?'-mobile50.glb':'-budget50.glb'),import.meta.url).href)).scene;
+const characterRoles=['p','r','n','b','q','k'],characterCamps=['crusader','ming'];
+const characterAssets=characterCamps.flatMap(camp=>characterRoles.map(role=>({camp,role,key:camp+role})));
+async function loadCharacter(loader,camp,role,key,onProgress){
+ const suffix=lowMemoryDevice?'-mobile50.glb':'-budget50.glb';
+ for(let attempt=1;attempt<=2;attempt++){
+  try{
+   const model=(await loader.loadAsync(new URL('./assets/models/child-'+camp+'-'+role+suffix,import.meta.url).href)).scene;
    model.updateMatrixWorld(true);
    const bounds=new T.Box3().setFromObject(model),size=bounds.getSize(new T.Vector3()),center=bounds.getCenter(new T.Vector3());
    if(!(size.y>0))throw Error('角色模型尺寸无效：'+key);
@@ -22,8 +21,26 @@ export function preloadCharacters(onProgress=()=>{}){
    model.scale.setScalar(scale);model.position.set(-center.x*scale,-bounds.min.y*scale,-center.z*scale);
    const template=new T.Group();template.rotation.y=camp==='crusader'?Math.PI:0;template.add(model);
    template.userData.asset=key;characterTemplates.set(key,template);
-   onProgress(characterTemplates.size,12);
+   onProgress(characterTemplates.size,characterAssets.length);
+   return;
+  }catch(error){
+   if(attempt===2)throw error;
+   await new Promise(resolve=>setTimeout(resolve,350));
   }
+ }
+}
+// Geometry and textures are shared across all instances and boards.
+export function preloadCharacters(onProgress=()=>{}){
+ if(characterTemplates.size===characterAssets.length)return Promise.resolve();
+ if(!characterLoad)characterLoad=(async()=>{
+  const loader=new GLTFLoader();
+  const queue=characterAssets.filter(asset=>!characterTemplates.has(asset.key));
+  let cursor=0;const failures=[];
+  async function worker(){
+   while(cursor<queue.length){const asset=queue[cursor++];try{await loadCharacter(loader,asset.camp,asset.role,asset.key,onProgress);}catch(error){failures.push(error);}}
+  }
+  await Promise.all(Array.from({length:Math.min(lowMemoryDevice?2:3,queue.length)},worker));
+  if(failures.length)throw new AggregateError(failures,'部分角色模型加载失败');
  })().catch(error=>{characterLoad=null;throw error;});
  return characterLoad;
 }
