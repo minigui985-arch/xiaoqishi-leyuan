@@ -15,9 +15,10 @@
  body.chess-immersive .chess3d-tools{visibility:visible!important;position:fixed;bottom:max(8px,env(safe-area-inset-bottom));left:50%;transform:translateX(-50%);z-index:100002;background:var(--card);padding:4px 8px;border-radius:12px;margin:0;max-width:95vw;flex-wrap:nowrap}
  body.chess-immersive .chess3d-tools *{visibility:visible!important}
  body.chess-immersive .chess3d-help{display:none}
+ @media (max-width:600px){body.chess-immersive.chess3d-active .immersive-flank.w,body.chess-immersive.chess3d-active.friend-black-seat .immersive-flank.b{bottom:calc(env(safe-area-inset-bottom,0px) + 148px)}}
  `;document.head.append(style);
  function off(entry,message){
-  entry.scene?.dispose();entry.scene=null;entry.wrap.classList.remove('chess3d-on');entry.button.textContent='3D 动画试制';entry.button.setAttribute('aria-pressed','false');
+  entry.scene?.dispose();entry.scene=null;entry.wrap.classList.remove('chess3d-on');if(![...boards.values()].some(item=>item.scene))document.body.classList.remove('chess3d-active');entry.button.textContent='3D 动画试制';entry.button.setAttribute('aria-pressed','false');
   entry.tools.querySelectorAll('[data-camera]').forEach(b=>b.hidden=true);
   entry.tools.querySelector('[data-camera="zoom"]').textContent='放大';
   entry.help.textContent=message||'动画试制预览；角色外形尚未通过三视图验收。';
@@ -26,13 +27,20 @@
   if(entry.scene){off(entry);return;}if(entry.loading)return;
   entry.loading=true;entry.button.disabled=true;entry.help.textContent='正在加载本机 3D 棋盘…';
   try{
-   module=module||import('./chess-3d-scene.mjs?v=armies-20261026-r11');const {createScene,preloadCharacters,lowMemoryDevice}=await module;await preloadCharacters((done,total)=>{entry.help.textContent=`正在加载角色 ${done}/${total}，首次加载需要一些时间…`;});
+   module=module||import('./chess-3d-scene.mjs?v=armies-20261123-r12');const {createScene,preloadCharacters,lowMemoryDevice}=await module;
    if(lowMemoryDevice)for(const other of boards.values())if(other!==entry&&other.scene)off(other);
    entry.scene=createScene(entry.wrap,()=>entry.opts,()=>off(entry,'3D 暂不可用，已返回平面棋盘。'));
-   entry.wrap.classList.add('chess3d-on');entry.scene.update(entry.board,entry.opts,true);
+   entry.wrap.classList.add('chess3d-on');document.body.classList.add('chess3d-active');entry.scene.update(entry.board,entry.opts,true);
    entry.button.textContent='平面棋盘';entry.button.setAttribute('aria-pressed','true');
    entry.tools.querySelectorAll('[data-camera]').forEach(b=>b.hidden=false);
-   entry.help.textContent=(window.__chessSkinMode==='adult'?'成人主题暂用儿童3D角色。':'')+'点角色与目标格走棋；拖动旋转；方向键选格、回车确认。';
+   entry.help.textContent='正在加载高精度角色 0/12；棋盘和简化棋子已可操作…';
+   preloadCharacters((done,total)=>{if(!entry.scene)return;entry.help.textContent=`正在加载高精度角色 ${done}/${total}…`;entry.scene.update(entry.board,entry.opts,true);}).then(()=>{
+    if(!entry.scene)return;entry.scene.update(entry.board,entry.opts,true);
+    entry.help.textContent=(window.__chessSkinMode==='adult'?'成人主题暂用儿童3D角色。':'')+'点角色与目标格走棋；拖动旋转；方向键选格、回车确认。';
+   }).catch(error=>{
+    if(entry.scene)entry.help.textContent='部分高精度角色加载失败，已保留可操作的简化棋子；请检查网络后重新进入 3D。';
+    console.warn('Knight 3D character preload:',error.message);
+   });
   }catch(error){off(entry,'此设备暂不能开启 3D，请使用平面棋盘。');console.warn('Knight 3D:',error.message);module=null;}
   finally{entry.loading=false;entry.button.disabled=false;}
  }
