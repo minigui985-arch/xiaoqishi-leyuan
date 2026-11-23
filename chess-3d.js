@@ -15,7 +15,7 @@
  body.chess-immersive .chess3d-tools{visibility:visible!important;position:fixed;bottom:max(8px,env(safe-area-inset-bottom));left:50%;transform:translateX(-50%);z-index:100002;background:var(--card);padding:4px 8px;border-radius:12px;margin:0;max-width:95vw;flex-wrap:nowrap}
  body.chess-immersive .chess3d-tools *{visibility:visible!important}
  body.chess-immersive .chess3d-help{display:none}
- @media (max-width:600px){body.chess-immersive.chess3d-active .immersive-flank.w{bottom:calc(env(safe-area-inset-bottom,0px) + 148px)}}
+ @media (max-width:600px){body.chess-immersive.chess3d-active .immersive-flank.w,body.chess-immersive.chess3d-active.friend-black-seat .immersive-flank.b{bottom:calc(env(safe-area-inset-bottom,0px) + 148px)}}
  `;document.head.append(style);
  function off(entry,message){
   entry.scene?.dispose();entry.scene=null;entry.wrap.classList.remove('chess3d-on');if(![...boards.values()].some(item=>item.scene))document.body.classList.remove('chess3d-active');entry.button.textContent='3D 动画试制';entry.button.setAttribute('aria-pressed','false');
