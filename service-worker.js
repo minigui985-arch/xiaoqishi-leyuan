@@ -1,5 +1,5 @@
 /* 原始开发者：不疾不徐 | Copyright (c) 2026 合肥市朋程共行电子商务有限责任公司 */
-const CACHE='knight-mobile-0.8.8-web-r11-20261106';
+const CACHE='knight-mobile-0.8.8-web-r12-20261123';
 const APP='./小骑士乐园-统一主题版.html';
 const CORE=[
   './chess-3d.js','./chess-3d-scene.mjs','./vendor/three/three.module.js','./vendor/three/three.core.js',
@@ -21,11 +21,15 @@ self.addEventListener('fetch',event=>{
   const request=event.request;
   if(request.method!=='GET')return;
   const url=new URL(request.url);
-  if(url.origin!==location.origin||url.pathname.includes('/api/'))return;
+  if(url.origin!==location.origin||url.pathname.includes('/api/')||url.pathname.includes('/assets/models/'))return;
+  if(url.pathname.endsWith('/chess-3d.js')||url.pathname.endsWith('/chess-3d-scene.mjs')){
+    const key=url.pathname.endsWith('/chess-3d.js')?'./chess-3d.js':'./chess-3d-scene.mjs';
+    event.respondWith(caches.match(key).then(cached=>cached||fetch(request)));
+    return;
+  }
   if(request.mode==='navigate'){
     event.respondWith(fetch(request).then(async response=>{if(response.ok){const copy=response.clone();caches.open(CACHE).then(cache=>cache.put(APP,copy));return response;}return await caches.match(APP)||response;}).catch(()=>caches.match(APP)));
     return;
   }
   event.respondWith(caches.match(request).then(cached=>cached||fetch(request).then(response=>{if(response.ok)caches.open(CACHE).then(cache=>cache.put(request,response.clone()));return response;})));
 });
-
