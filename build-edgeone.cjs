@@ -34,7 +34,9 @@ function copy(relative, target = relative) {
 }
 runtimeFiles.push(...require('./mobile/3d-assets.json'));
 for (const file of runtimeFiles) copy(file);
-copy('company-site/index.html');
+const companySite = path.join(root, 'company-site');
+if (!fs.existsSync(companySite)) throw new Error('缺少发布目录：company-site');
+fs.cpSync(companySite, path.join(output, 'company-site'), { recursive: true });
 copy('小骑士乐园-统一主题版.html', 'index.html');
 copy('小骑士乐园-统一主题版.html');
 const files = [];
